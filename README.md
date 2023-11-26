@@ -4,10 +4,9 @@
 
 A javascript SDK to integrate FanPoints into your server.
 
-
 ## Usage
 
-##  Development
+## Development
 
 ### 👋 Quick Start
 

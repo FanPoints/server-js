@@ -1,13 +1,17 @@
+// @ts-check
+
 /**
  * @typedef {import('./src/types/types').User} User
  */
 
 /**
- * @returns {User} user
+ * @returns {User}
  */
 const generateUser = () => {
-  return {
-    name: "John",
-    age: "e",
-  };
+    return {
+        name: 'John',
+        age: 42,
+    };
 };
+
+export default generateUser;
