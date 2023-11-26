@@ -1,6 +1,4 @@
 // @ts-nocheck
-/* eslint-disable */
-
 /**
  * This script is used by graphql-codegen to fetch the GraphQL schema from the api repository
  * (https://github.com/FanPoints/api).
