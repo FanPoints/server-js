@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * @typedef {import('./src/types/types').User} User
  */

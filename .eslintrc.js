@@ -1,9 +1,11 @@
 module.exports = {
     root: true,
+
     parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
     },
+
     extends: [
         'standard',
         'plugin:eslint-comments/recommended',
@@ -11,12 +13,14 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'prettier',
     ],
+
     plugins: [
         'eslint-comments',
         'promise',
         'unused-imports',
         '@typescript-eslint',
     ],
+
     rules: {
         'no-undef': 'off',
         'import/extensions': ['off'],
