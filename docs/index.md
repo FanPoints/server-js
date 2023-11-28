@@ -1,6 +1,6 @@
 ---
-title: General Docs
+title: FanPoints
 layout: home
 ---
 
--   [API reference](./api/index.html)
+Hey there! Welcome to the FanPoints documentation. Here you can find all the information you need to get started with FanPoints.
