@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
-        "checkJs": true,
-        "noEmit": true
+        "target": "esnext",
+        "skipLibCheck": true,
+        "moduleResolution": "node"
     }
 }

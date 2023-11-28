@@ -1,20 +1,19 @@
 {
     "name": "@fanpoints/server-js",
     "version": "0.0.1",
+    "type": "module",
     "description": "The SDK that allows to integrate FanPoints on the server-side.",
-    "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
         "format": "prettier --write .",
-        "lint": "eslint . --ext .js,.ts; tsc;",
-        "check-types": "tsc --noemit",
+        "lint": "eslint src --ext .js,.ts; tsc --noemit;",
+        "build": "rollup -c",
         "generate-graphql": "doppler run --mount ./src/queries/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/FanPoints/server-js.git"
     },
-    "author": "",
+    "author": "Marc Padrutt & Tobia Ochsner",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/FanPoints/server-js/issues"
@@ -22,22 +21,25 @@
     "homepage": "https://github.com/FanPoints/server-js#readme",
     "devDependencies": {
         "@graphql-codegen/cli": "5.0.0",
+        "@graphql-codegen/near-operation-file-preset": "^3.0.0",
         "@graphql-codegen/typescript": "4.0.1",
         "@graphql-codegen/typescript-generic-sdk": "^4.0.0",
+        "@graphql-codegen/typescript-operations": "^4.0.1",
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+        "@rollup/plugin-typescript": "^11.1.5",
         "@typescript-eslint/eslint-plugin": "^6.12.0",
         "@typescript-eslint/parser": "^6.12.0",
         "eslint": "^8.54.0",
         "eslint-config-prettier": "^9.0.0",
-        "eslint-config-standard": "^17.1.0",
         "eslint-plugin-eslint-comments": "^3.2.0",
         "eslint-plugin-import": "^2.29.0",
-        "eslint-plugin-jsdoc": "^46.9.0",
-        "eslint-plugin-promise": "^6.1.1",
         "eslint-plugin-unused-imports": "^3.0.0",
-        "graphql": "^16.8.1",
+        "eslint-plugin-tsdoc": "^0.2.17",
         "husky": "^8.0.3",
+        "graphql": "^16.8.1",
         "prettier": "^3.1.0",
+        "rollup": "^4.6.0",
+        "rollup-plugin-dts": "^6.1.0",
         "sync-request": "^6.1.0",
         "typescript": "^5.2.2"
     }
