@@ -1,3 +1,3 @@
 # General Docs
 
--   [API reference](../api_docs/index.html)
+-   [API reference](./api/index.html)
