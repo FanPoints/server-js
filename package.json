@@ -11,6 +11,7 @@
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint src --ext .js,.ts; tsc --noemit;",
+        "docs": "npx typedoc",
         "build": "rollup -c",
         "generate-graphql": "doppler run --mount ./src/queries/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen"
     },
