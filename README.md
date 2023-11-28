@@ -1,5 +1,3 @@
-<!-- @format -->
-
 # server-js
 
 A javascript SDK to integrate FanPoints into your server.
