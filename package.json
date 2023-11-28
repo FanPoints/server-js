@@ -3,6 +3,11 @@
     "version": "0.0.1",
     "type": "module",
     "description": "The SDK that allows to integrate FanPoints on the server-side.",
+    "files": [
+        "dist"
+    ],
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint src --ext .js,.ts; tsc --noemit;",
@@ -33,10 +38,10 @@
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-eslint-comments": "^3.2.0",
         "eslint-plugin-import": "^2.29.0",
-        "eslint-plugin-unused-imports": "^3.0.0",
         "eslint-plugin-tsdoc": "^0.2.17",
-        "husky": "^8.0.3",
+        "eslint-plugin-unused-imports": "^3.0.0",
         "graphql": "^16.8.1",
+        "husky": "^8.0.3",
         "prettier": "^3.1.0",
         "rollup": "^4.6.0",
         "rollup-plugin-dts": "^6.1.0",
