@@ -1,2 +1,4 @@
 .eslintrc.cjs
 docs
+scripts/fetchGraphQLSchema.cjs
+src/queries/generated

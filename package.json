@@ -13,7 +13,7 @@
         "lint": "eslint src --ext .js,.ts; tsc --noemit;",
         "docs": "npx typedoc",
         "build": "rollup -c",
-        "generate-graphql": "doppler run --mount ./src/queries/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen"
+        "generate-graphql": "doppler run --mount ./scripts/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen --config ./scripts/codegen.ts"
     },
     "repository": {
         "type": "git",
@@ -27,10 +27,8 @@
     "homepage": "https://github.com/FanPoints/server-js#readme",
     "devDependencies": {
         "@graphql-codegen/cli": "5.0.0",
-        "@graphql-codegen/near-operation-file-preset": "^3.0.0",
         "@graphql-codegen/typescript": "4.0.1",
-        "@graphql-codegen/typescript-generic-sdk": "^4.0.0",
-        "@graphql-codegen/typescript-operations": "^4.0.1",
+        "@graphql-codegen/client-preset": "^4.1.0",
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
         "@rollup/plugin-typescript": "^11.1.5",
         "@typescript-eslint/eslint-plugin": "^6.12.0",
