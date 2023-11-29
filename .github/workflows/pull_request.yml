@@ -1,0 +1,36 @@
+# @format
+
+name: Pull Request Checks
+
+on: pull_request
+
+env:
+    DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_DEV }}
+
+jobs:
+    pull_request_checks:
+        runs-on: ubuntu-latest
+        steps:
+            - name: init workflow
+              uses: actions/checkout@v2
+
+            - name: install packages
+              run: npm ci
+
+            - name: Install Doppler CLI
+              uses: dopplerhq/cli-action@v2
+
+            - name: generate GraphQL boilerplate
+              run: npm run generate-graphql
+
+            - name: run formatter
+              run: npm run format
+
+            - name: run linter
+              run: npm run lint
+            
+            - name: run type checks
+              run: npm run check-types
+
+            - name: run tests
+              run: npm test

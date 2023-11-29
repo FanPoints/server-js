@@ -10,7 +10,8 @@
     "typings": "dist/index.d.ts",
     "scripts": {
         "format": "prettier --write .",
-        "lint": "eslint src --ext .js,.ts; tsc --noemit;",
+        "lint": "eslint src --ext .js,.ts",
+        "check-types": "tsc --noemit",
         "docs": "npx typedoc",
         "build": "rollup -c",
         "generate-graphql": "doppler run --mount ./scripts/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen --config ./scripts/codegen.ts"
