@@ -4,6 +4,7 @@ import {
     RequestMiddleware,
     ResponseMiddleware,
 } from 'graphql-request';
+import config from './backendConfig';
 import { getSdk, Sdk } from './queries/generated/sdk';
 import { AuthSession } from './utils/fetchToken';
 
@@ -69,3 +70,30 @@ export default class FanPointsClient {
         return await this.graphqlSDK.get_fan_skins({ fan_id: fanId });
     }
 }
+
+/**
+ * This is the configuration object for the FanPointsClient.
+ */
+export type ClientConfig = {
+    /** The clientId you want to connect to. */
+    clientId: string;
+    /** The secret belonging to the clientId. It can be received from the FanPoints team. */
+    secret: string;
+};
+
+/**
+ * This method creates a new FanPointsClient instance.
+ *
+ * The client ID and secret are required to authenticate with the
+ * FanPoints API. They can be received from the FanPoints team.
+ */
+export const createClient = ({
+    clientId,
+    secret,
+}: ClientConfig): FanPointsClient =>
+    new FanPointsClient(
+        clientId,
+        secret,
+        config.apiEndpoint,
+        config.oAuthDomain,
+    );
