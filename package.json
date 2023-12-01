@@ -13,6 +13,8 @@
         "lint": "eslint src --ext .js,.ts",
         "check-types": "tsc --noemit",
         "docs": "npx typedoc",
+        "fetch-secrets": ". ./scripts/fetch-secrets.sh",
+        "fetch-secrets-test": ". ./scripts/fetch-secrets.sh stg",
         "build": "rollup -c",
         "generate-graphql": "doppler run --mount ./scripts/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen --config ./scripts/codegen.ts"
     },
@@ -28,8 +30,9 @@
     "homepage": "https://github.com/FanPoints/server-js#readme",
     "devDependencies": {
         "@graphql-codegen/cli": "5.0.0",
-        "@graphql-codegen/typescript": "4.0.1",
         "@graphql-codegen/client-preset": "^4.1.0",
+        "@graphql-codegen/typescript": "4.0.1",
+        "@graphql-codegen/typescript-graphql-request": "^6.0.1",
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
         "@rollup/plugin-typescript": "^11.1.5",
         "@typescript-eslint/eslint-plugin": "^6.12.0",
@@ -49,5 +52,9 @@
         "typedoc": "^0.25.4",
         "typedoc-material-theme": "^1.0.1",
         "typescript": "^5.2.2"
+    },
+    "dependencies": {
+        "@aws-sdk/client-appsync": "^3.462.0",
+        "graphql-request": "^6.1.0"
     }
 }
