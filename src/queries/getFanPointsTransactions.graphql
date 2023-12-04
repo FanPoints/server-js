@@ -1,0 +1,31 @@
+query get_fan_points_transactions(
+    $club_id: String!
+    $fan_id: String!
+    $limit: Int
+    $last_returned_transaction: TransactionIdentifierInput
+) {
+    get_fan_points_transactions(
+        club_id: $club_id
+        fan_id: $fan_id
+        limit: $limit
+        last_returned_transaction: $last_returned_transaction
+    ) {
+        owner_id
+        old_owner_id
+
+        group_id
+        group_size
+        nr
+
+        reward {
+            ... on FanPointsReward {
+                amount
+            }
+        }
+
+        details {
+            transaction_type
+        }
+        claimed_date
+    }
+}

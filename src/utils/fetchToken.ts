@@ -55,10 +55,12 @@ export class AuthSession {
      * @returns A JWT token (Base64 encoded).
      */
     public async getToken() {
-        if (this.currentToken) {
-            return this.currentToken;
+        if (!this.currentToken) {
+            this.currentToken = await this.fetchToken(
+                this.clientId,
+                this.secret,
+            );
         }
-        this.currentToken = await this.fetchToken(this.clientId, this.secret);
         return this.currentToken;
     }
 

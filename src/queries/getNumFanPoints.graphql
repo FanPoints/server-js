@@ -1,0 +1,3 @@
+query get_num_fan_points($club_id: String!, $fan_id: String!) {
+    get_num_fan_points(club_id: $club_id, fan_id: $fan_id)
+}

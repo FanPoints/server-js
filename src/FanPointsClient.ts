@@ -5,6 +5,7 @@ import {
     ResponseMiddleware,
 } from 'graphql-request';
 import config from './backendConfig';
+import FanPointsModule from './FanPointsModule';
 import { getSdk, Sdk } from './queries/generated/sdk';
 import { AuthSession } from './utils/fetchToken';
 
@@ -16,6 +17,8 @@ export default class FanPointsClient {
     private authSession: AuthSession;
     private graphQLClient: GraphQLClient;
     private graphqlSDK: Sdk;
+
+    public fanPoints: FanPointsModule;
 
     /**
      * This middleware adds the JWT token to the request headers.
@@ -55,6 +58,7 @@ export default class FanPointsClient {
     constructor(
         clientId: string,
         secret: string,
+        private clubId: string,
         apiEndpoint: string,
         oAuthDomain: string,
     ) {
@@ -64,10 +68,7 @@ export default class FanPointsClient {
             responseMiddleware: this.responseMiddleware.bind(this),
         });
         this.graphqlSDK = getSdk(this.graphQLClient);
-    }
-
-    public async getFanSkins(fanId: string) {
-        return await this.graphqlSDK.get_fan_skins({ fan_id: fanId });
+        this.fanPoints = new FanPointsModule(this.clubId, this.graphqlSDK);
     }
 }
 
@@ -79,6 +80,8 @@ export type ClientConfig = {
     clientId: string;
     /** The secret belonging to the clientId. It can be received from the FanPoints team. */
     secret: string;
+    /** The id of the club. */
+    clubId: string;
 };
 
 /**
@@ -90,10 +93,12 @@ export type ClientConfig = {
 export const createClient = ({
     clientId,
     secret,
+    clubId,
 }: ClientConfig): FanPointsClient =>
     new FanPointsClient(
         clientId,
         secret,
+        clubId,
         config.apiEndpoint,
         config.oAuthDomain,
     );
