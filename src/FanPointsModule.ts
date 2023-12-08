@@ -2,12 +2,21 @@ import config from './backendConfig';
 import FanPointsClient from './FanPointsClient';
 import { Sdk, TransactionIdentifierInput } from './queries/generated/sdk';
 
+/**
+ * This class allows you to interact with the FanPoints module.
+ */
 export default class FanPointsModule {
     constructor(
         private projectId: string,
         private graphqlSDK: Sdk,
     ) {}
 
+    /**
+     * Returns the total amount of fan points the user has collected.
+     *
+     * @param userId - the id of the user
+     * @returns an object containing the total amount of fan points the user has collected.
+     */
     public async getNumFanPoints(userId: string) {
         const result = await this.graphqlSDK.get_num_fan_points({
             project_id: this.projectId,
