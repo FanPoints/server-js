@@ -1,0 +1,22 @@
+mutation undo_fan_points_transaction(
+    $project_id: String = ""
+    $group_id: String = ""
+) {
+    undo_fan_points_transaction(group_id: $group_id, project_id: $project_id) {
+        invalid_reward_amount_error {
+            _empty
+        }
+        too_few_available_error {
+            _empty
+        }
+        transaction_not_found_error {
+            _empty
+        }
+        transactions {
+            claimed_date
+        }
+        unknown_user_error {
+            _empty
+        }
+    }
+}

@@ -1,0 +1,37 @@
+query get_fan_points_transaction_history(
+    $group_id: String!
+    $nr: Int!
+    $project_id: String!
+) {
+    get_fan_points_transaction_history(
+        group_id: $group_id
+        nr: $nr
+        project_id: $project_id
+    ) {
+        history {
+            reward {
+                ... on FanPointsReward {
+                    __typename
+                    amount
+                }
+            }
+            reservation_date
+            owner_id
+            only_reserved
+            old_owner_id
+            group_size
+            group_id
+            details {
+                transaction_type
+            }
+            nr
+            claimed_date
+        }
+        transaction_not_found_error {
+            _empty
+        }
+        unknown_user_error {
+            _empty
+        }
+    }
+}

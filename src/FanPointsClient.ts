@@ -58,7 +58,7 @@ export default class FanPointsClient {
     constructor(
         clientId: string,
         secret: string,
-        private clubId: string,
+        private projectId: string,
         apiEndpoint: string,
         oAuthDomain: string,
     ) {
@@ -68,7 +68,7 @@ export default class FanPointsClient {
             responseMiddleware: this.responseMiddleware.bind(this),
         });
         this.graphqlSDK = getSdk(this.graphQLClient);
-        this.fanPoints = new FanPointsModule(this.clubId, this.graphqlSDK);
+        this.fanPoints = new FanPointsModule(this.projectId, this.graphqlSDK);
     }
 }
 
@@ -81,7 +81,7 @@ export type ClientConfig = {
     /** The secret belonging to the clientId. It can be received from the FanPoints team. */
     secret: string;
     /** The id of the club. */
-    clubId: string;
+    projectId: string;
 };
 
 /**
@@ -93,12 +93,12 @@ export type ClientConfig = {
 export const createClient = ({
     clientId,
     secret,
-    clubId,
+    projectId,
 }: ClientConfig): FanPointsClient =>
     new FanPointsClient(
         clientId,
         secret,
-        clubId,
+        projectId,
         config.apiEndpoint,
         config.oAuthDomain,
     );

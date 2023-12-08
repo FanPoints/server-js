@@ -1,0 +1,8 @@
+query get_num_fan_points($project_id: String!, $user_id: String!) {
+    get_num_fan_points(project_id: $project_id, user_id: $user_id) {
+        num_fan_points
+        unknown_user_error {
+            _empty
+        }
+    }
+}
