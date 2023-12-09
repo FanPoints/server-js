@@ -1,5 +1,3 @@
-import config from './backendConfig';
-import FanPointsClient from './FanPointsClient';
 import { Sdk, TransactionIdentifierInput } from './queries/generated/sdk';
 
 /**
@@ -98,34 +96,3 @@ export default class FanPointsModule {
         return result.data.undo_fan_points_transaction;
     }
 }
-
-/**
- * This is the configuration object for the FanPointsClient.
- */
-export type ClientConfig = {
-    /** The clientId you want to connect to. */
-    clientId: string;
-    /** The secret belonging to the clientId. It can be received from the FanPoints team. */
-    secret: string;
-    /** The id of the club. */
-    projectId: string;
-};
-
-/**
- * This method creates a new FanPointsClient instance.
- *
- * The client ID and secret are required to authenticate with the
- * FanPoints API. They can be received from the FanPoints team.
- */
-export const createClient = ({
-    clientId,
-    secret,
-    projectId,
-}: ClientConfig): FanPointsClient =>
-    new FanPointsClient(
-        clientId,
-        secret,
-        projectId,
-        config.apiEndpoint,
-        config.oAuthDomain,
-    );

@@ -7,11 +7,11 @@ import {
 import config from './backendConfig';
 import FanPointsModule from './FanPointsModule';
 import { getSdk, Sdk } from './queries/generated/sdk';
+import UserModule from './UserModule';
 import { AuthSession } from './utils/fetchToken';
 
 /**
- * This client wraps the FanPoints API to allow convenient
- * access.
+ * This client wraps the FanPoints API to allow convenient access.
  */
 export default class FanPointsClient {
     private authSession: AuthSession;
@@ -19,6 +19,7 @@ export default class FanPointsClient {
     private graphqlSDK: Sdk;
 
     public fanPoints: FanPointsModule;
+    public users: UserModule;
 
     /**
      * This middleware adds the JWT token to the request headers.
@@ -68,7 +69,9 @@ export default class FanPointsClient {
             responseMiddleware: this.responseMiddleware.bind(this),
         });
         this.graphqlSDK = getSdk(this.graphQLClient);
+
         this.fanPoints = new FanPointsModule(this.projectId, this.graphqlSDK);
+        this.users = new UserModule(this.projectId, this.graphqlSDK);
     }
 }
 
