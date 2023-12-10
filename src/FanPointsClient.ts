@@ -5,17 +5,20 @@ import {
     ResponseMiddleware,
 } from 'graphql-request';
 import config from './backendConfig';
-import FanPointsModule from './FanPointsModule';
+import { FanPointsModule } from './FanPointsModule';
 import { getSdk, Sdk } from './queries/generated/sdk';
-import UserModule from './UserModule';
+import { UserModule } from './UserModule';
 import { AuthSession } from './utils/fetchToken';
 
 /**
  * This client wraps the FanPoints API to allow convenient access.
  */
 export default class FanPointsClient {
+    /** @hidden */
     private authSession: AuthSession;
+    /** @hidden */
     private graphQLClient: GraphQLClient;
+    /** @hidden */
     private graphqlSDK: Sdk;
 
     public fanPoints: FanPointsModule;
@@ -23,6 +26,7 @@ export default class FanPointsClient {
 
     /**
      * This middleware adds the JWT token to the request headers.
+     * @hidden
      */
     private async requestMiddleware(request: Parameters<RequestMiddleware>[0]) {
         return {
@@ -39,6 +43,8 @@ export default class FanPointsClient {
      *
      * If the response is a 401 error, the JWT token is refreshed and
      * the request is sent again.
+     *
+     * @hidden
      */
     private async responseMiddleware(
         response: Parameters<ResponseMiddleware>[0],
@@ -56,6 +62,7 @@ export default class FanPointsClient {
         return response;
     }
 
+    /** @hidden */
     constructor(
         clientId: string,
         secret: string,
