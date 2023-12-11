@@ -105,6 +105,31 @@ export class StatusPointsModule {
     }
 
     /**
+     * Returns the amount of Status Points the user would receive for the given
+     * action.
+     *
+     * @remarks
+     * This allows you to check how many Status Points a user would receive for
+     * a given action. It does not actually distribute the Status Points. Use
+     * {@link distributeStatusPoints} to distribute Status Points.
+     *
+     * @param action - the action to check
+     *
+     * @returns an object containing the amount of Status Points the user would receive.
+     */
+    public async getStatusPointsForAction(
+        action: StatusPointsAction,
+        partnerId: string,
+    ) {
+        const result = await this.graphqlSDK.getStatusPointsForAction({
+            projectId: this.projectId,
+            partnerId,
+            action,
+        });
+        return result.data.getStatusPointsForAction;
+    }
+
+    /**
      * Distributes Status Points to a user. Every distribution is connected to an
      * action and a partner. The actual number of Status Points the user receives
      * depends on the action and the partner and can be accessed using the
@@ -118,7 +143,9 @@ export class StatusPointsModule {
      * on the transaction that could be used to display to the user.
      *
      * A custom group id can be given in order to link the transaction to a
-     * specific event on your side.
+     * specific event on your side. This operation is idempotent w.r.t. the
+     * custom group id. This means that if you call this method twice with the
+     * same custom group id, the second call will not have any effect.
      *
      * @param userId - the id of the user
      * @param partnerId - the id of the partner

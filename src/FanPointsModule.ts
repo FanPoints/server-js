@@ -120,7 +120,9 @@ export class FanPointsModule {
      * on the transaction that could be used to display to the user.
      *
      * A custom group id can be given in order to link the transaction to a
-     * specific event on your side.
+     * specific event on your side. This operation is idempotent w.r.t. the
+     * custom group id. This means that if you call this method twice with the
+     * same custom group id, the second call will not have any effect.
      *
      * @param userId - the id of the user
      * @param partnerId - the id of the partner
@@ -166,7 +168,9 @@ export class FanPointsModule {
      * on the transaction that could be used to display to the user.
      *
      * A custom group id can be given in order to link the transaction to a
-     * specific event on your side.
+     * specific event on your side. This operation is idempotent w.r.t. the
+     * custom group id. This means that if you call this method twice with the
+     * same custom group id, the second call will not have any effect.
      *
      * @param userId - the id of the user
      * @param partnerId - the id of the partner
@@ -212,6 +216,10 @@ export class FanPointsModule {
      * Undoing a transaction corresponds to creating a new undo transaction.
      * The method {@link getTransactionHistory} can be used to retrieve
      * the history of a transaction.
+     *
+     * This operation is idempotent w.r.t. the group id. This means that if
+     * you call this method twice with the same group id, the second call
+     * will not have any effect.
      *
      * @param groupId - the id of the group to undo
      *
