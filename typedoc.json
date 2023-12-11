@@ -7,5 +7,6 @@
     "themeColor": "#2087cb",
     "sidebarLinks": {
         "Home": "https://fanpoints.github.io/server-js/"
-    }
+    },
+    "readme": "./docs/apiReadme.md"
 }

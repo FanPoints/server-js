@@ -9,7 +9,7 @@ On this page, we explain the core concepts of the FanPoints system.
 
 # Users
 
-Users are people participating in a FanPoints loyalty system.
+**Users** are people participating in a FanPoints loyalty system.
 
 # FanPoints Projects
 

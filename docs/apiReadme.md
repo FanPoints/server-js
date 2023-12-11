@@ -1,16 +1,18 @@
-import { createClient } from './FanPointsClient';
+# SDK API Specifications
 
-export type { ClientConfig } from './FanPointsClient';
-export { default as FanPointsClient, createClient } from './FanPointsClient';
+## Overview
 
-export * from './UserModule';
-export * from './FanPointsModule';
-export * from './StatusPointsModule';
+This documentation contains the API specifications for the **client-js** SDK.
+
+## General Usage
+
+```typescript
+import { createClient } from '@fanpoints/client-js'
 
 const client = createClient({
     projectId: 'projectId',
     clientId: 'clientId',
-    secret: 'clientSecret',
+    secret: 'secret',
 });
 
 const usersModule = client.users;
@@ -20,3 +22,4 @@ usersModule.addUser('new_user_id', 'new_user_email');
 fanPointsModule.getFanPointsBalance('user_id').then(({ result, errors }) => {
     console.log(result, errors);
 });
+``````
