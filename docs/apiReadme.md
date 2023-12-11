@@ -2,12 +2,12 @@
 
 ## Overview
 
-This documentation contains the API specifications for the **client-js** SDK.
+This documentation contains the API specifications for the **server-js** SDK.
 
 ## General Usage
 
 ```typescript
-import { createClient } from '@fanpoints/client-js'
+import { createClient } from '@fanpoints/server-js'
 
 const client = createClient({
     projectId: 'projectId',
@@ -18,8 +18,8 @@ const client = createClient({
 const usersModule = client.users;
 const fanPointsModule = client.fanPoints;
 
-usersModule.addUser('new_user_id', 'new_user_email');
-fanPointsModule.getFanPointsBalance('user_id').then(({ result, errors }) => {
-    console.log(result, errors);
-});
+await usersModule.addUser('new_user_id', 'new_user@gmail.com');
+
+const { result, errors } = await fanPointsModule.getFanPointsBalance('new_user_id');
+console.log(result, errors);
 ``````
