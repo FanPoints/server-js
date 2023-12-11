@@ -1,0 +1,23 @@
+mutation changeUserId(
+    $newUserId: String!
+    $oldUserId: String!
+    $projectId: String!
+) {
+    changeUserId: change_user_id(
+        new_user_id: $newUserId
+        old_user_id: $oldUserId
+        project_id: $projectId
+    ) {
+        errors {
+            invalidUserIdError: invalid_user_id_error {
+                reason
+            }
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+            userAlreadyExistsError: user_already_exists_error {
+                _empty
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+query getFanPointsBalance($projectId: String!, $userId: String!) {
+    getFanPointsBalance: get_fan_points_balance(
+        project_id: $projectId
+        user_id: $userId
+    ) {
+        result
+        errors {
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}

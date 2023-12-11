@@ -1,0 +1,40 @@
+mutation undoStatusPointsTransaction(
+    $projectId: String = ""
+    $groupId: String = ""
+) {
+    undoStatusPointsTransaction: undo_status_points_transaction(
+        group_id: $groupId
+        project_id: $projectId
+    ) {
+        result {
+            reward {
+                ... on StatusPointsReward {
+                    __typename
+                    amount
+                }
+            }
+            ownerId: owner_id
+            oldOwnerId: old_owner_id
+            groupId: group_id
+            nr
+            details {
+                transactionType: transaction_type
+            }
+            claimedDate: claimed_date
+        }
+        errors {
+            unkownUserError: unknown_user_error {
+                _empty
+            }
+            invalidRewardAmountError: invalid_reward_amount_error {
+                _empty
+            }
+            tooFewAvailableError: too_few_available_error {
+                _empty
+            }
+            transactionNotFoundError: transaction_not_found_error {
+                _empty
+            }
+        }
+    }
+}

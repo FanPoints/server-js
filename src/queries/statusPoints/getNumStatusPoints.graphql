@@ -1,0 +1,13 @@
+query getStatusPointsBalance($projectId: String!, $userId: String!) {
+    getStatusPointsBalance: get_status_points_balance(
+        project_id: $projectId
+        user_id: $userId
+    ) {
+        result
+        errors {
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+query getFanPointsTransactions(
+    $projectId: String!
+    $userId: String!
+    $limit: Int
+    $lastReturnedTransaction: TransactionIdentifierInput
+) {
+    getFanPointsTransactions: get_fan_points_transactions(
+        project_id: $projectId
+        user_id: $userId
+        last_returned_transaction: $lastReturnedTransaction
+        limit: $limit
+    ) {
+        result {
+            reward {
+                ... on FanPointsReward {
+                    __typename
+                    amount
+                }
+            }
+            ownerId: owner_id
+            oldOwnerId: old_owner_id
+            groupId: group_id
+            nr
+            details {
+                transactionType: transaction_type
+            }
+            claimedDate: claimed_date
+        }
+        errors {
+            unkownUserError: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}

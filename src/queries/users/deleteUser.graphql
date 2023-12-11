@@ -1,0 +1,9 @@
+mutation deleteUser($projectId: String!, $userId: String!) {
+    deleteUser: delete_user(project_id: $projectId, user_id: $userId) {
+        errors {
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}

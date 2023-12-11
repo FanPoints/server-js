@@ -1,0 +1,36 @@
+query getStatusPointsTransactionHistory(
+    $groupId: String!
+    $nr: Int!
+    $projectId: String!
+) {
+    getStatusPointsTransactionHistory: get_status_points_transaction_history(
+        group_id: $groupId
+        nr: $nr
+        project_id: $projectId
+    ) {
+        result {
+            reward {
+                ... on StatusPointsReward {
+                    __typename
+                    amount
+                }
+            }
+            ownerId: owner_id
+            oldOwnerId: old_owner_id
+            groupId: group_id
+            nr
+            details {
+                transactionType: transaction_type
+            }
+            claimedDate: claimed_date
+        }
+        errors {
+            transactionNotFoundError: transaction_not_found_error {
+                _empty
+            }
+            unkownUserError: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}

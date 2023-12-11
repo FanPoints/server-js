@@ -1,0 +1,13 @@
+query getUserById($projectId: String!, $userId: String!) {
+    getUserById: get_user_by_id(project_id: $projectId, user_id: $userId) {
+        errors {
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+        result {
+            mailAddress: mail_address
+            userId: user_id
+        }
+    }
+}

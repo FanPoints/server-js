@@ -13,6 +13,11 @@ const config: CodegenConfig = {
             ],
             config: {
                 rawRequest: true,
+                avoidOptionals: true,
+                maybeValue: 'T | undefined',
+                skipTypename: true,
+                printFieldsOnNewLines: true,
+                enumsAsTypes: true,
             },
         },
     },

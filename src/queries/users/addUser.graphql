@@ -1,0 +1,19 @@
+mutation addUser($projectId: String!, $userId: String!, $mailAddress: String!) {
+    addUser: add_user(
+        mail_address: $mailAddress
+        project_id: $projectId
+        user_id: $userId
+    ) {
+        errors {
+            invalidMailAddressError: invalid_mail_address_error {
+                _empty
+            }
+            invalidUserIdError: invalid_user_id_error {
+                reason
+            }
+            userAlreadyExistsError: user_already_exists_error {
+                _empty
+            }
+        }
+    }
+}

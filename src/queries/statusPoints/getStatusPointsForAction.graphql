@@ -1,0 +1,13 @@
+query getStatusPointsForAction(
+    $projectId: String!
+    $partnerId: String!
+    $action: StatusPointsAction!
+) {
+    getStatusPointsForAction: get_status_points_for_action(
+        project_id: $projectId
+        partner_id: $partnerId
+        action: $action
+    ) {
+        result
+    }
+}

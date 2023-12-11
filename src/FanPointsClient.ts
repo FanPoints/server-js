@@ -5,20 +5,30 @@ import {
     ResponseMiddleware,
 } from 'graphql-request';
 import config from './backendConfig';
+import { FanPointsModule } from './FanPointsModule';
 import { getSdk, Sdk } from './queries/generated/sdk';
+import { StatusPointsModule } from './StatusPointsModule';
+import { UserModule } from './UserModule';
 import { AuthSession } from './utils/fetchToken';
 
 /**
- * This client wraps the FanPoints API to allow convenient
- * access.
+ * This client wraps the FanPoints API to allow convenient access.
  */
 export default class FanPointsClient {
+    /** @hidden */
     private authSession: AuthSession;
+    /** @hidden */
     private graphQLClient: GraphQLClient;
+    /** @hidden */
     private graphqlSDK: Sdk;
+
+    public fanPoints: FanPointsModule;
+    public statusPoints: StatusPointsModule;
+    public users: UserModule;
 
     /**
      * This middleware adds the JWT token to the request headers.
+     * @hidden
      */
     private async requestMiddleware(request: Parameters<RequestMiddleware>[0]) {
         return {
@@ -35,6 +45,8 @@ export default class FanPointsClient {
      *
      * If the response is a 401 error, the JWT token is refreshed and
      * the request is sent again.
+     *
+     * @hidden
      */
     private async responseMiddleware(
         response: Parameters<ResponseMiddleware>[0],
@@ -52,9 +64,11 @@ export default class FanPointsClient {
         return response;
     }
 
+    /** @hidden */
     constructor(
         clientId: string,
         secret: string,
+        private projectId: string,
         apiEndpoint: string,
         oAuthDomain: string,
     ) {
@@ -64,10 +78,13 @@ export default class FanPointsClient {
             responseMiddleware: this.responseMiddleware.bind(this),
         });
         this.graphqlSDK = getSdk(this.graphQLClient);
-    }
 
-    public async getFanSkins(fanId: string) {
-        return await this.graphqlSDK.get_fan_skins({ fan_id: fanId });
+        this.users = new UserModule(this.projectId, this.graphqlSDK);
+        this.fanPoints = new FanPointsModule(this.projectId, this.graphqlSDK);
+        this.statusPoints = new StatusPointsModule(
+            this.projectId,
+            this.graphqlSDK,
+        );
     }
 }
 
@@ -79,6 +96,8 @@ export type ClientConfig = {
     clientId: string;
     /** The secret belonging to the clientId. It can be received from the FanPoints team. */
     secret: string;
+    /** The id of the club. */
+    projectId: string;
 };
 
 /**
@@ -90,10 +109,12 @@ export type ClientConfig = {
 export const createClient = ({
     clientId,
     secret,
+    projectId,
 }: ClientConfig): FanPointsClient =>
     new FanPointsClient(
         clientId,
         secret,
+        projectId,
         config.apiEndpoint,
         config.oAuthDomain,
     );

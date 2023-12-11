@@ -1,0 +1,47 @@
+mutation collectFanPoints(
+    $amount: Int!
+    $customGroupId: String
+    $description: String!
+    $partnerId: String!
+    $projectId: String!
+    $title: String!
+    $userId: String!
+) {
+    collectFanPoints: collect_fan_points(
+        amount: $amount
+        description: $description
+        partner_id: $partnerId
+        project_id: $projectId
+        title: $title
+        user_id: $userId
+        custom_group_id: $customGroupId
+    ) {
+        errors {
+            unkownUserError: unknown_user_error {
+                _empty
+            }
+            invalidRewardAmountError: invalid_reward_amount_error {
+                _empty
+            }
+            tooFewAvailableError: too_few_available_error {
+                _empty
+            }
+        }
+        result {
+            reward {
+                ... on FanPointsReward {
+                    __typename
+                    amount
+                }
+            }
+            ownerId: owner_id
+            oldOwnerId: old_owner_id
+            groupId: group_id
+            nr
+            details {
+                transactionType: transaction_type
+            }
+            claimedDate: claimed_date
+        }
+    }
+}
