@@ -1,16 +1,18 @@
-query getFanPointsTransactionHistory(
-    $groupId: String!
-    $nr: Int!
+query getStatusPointsTransactions(
     $projectId: String!
+    $userId: String!
+    $limit: Int
+    $lastReturnedTransaction: TransactionIdentifierInput
 ) {
-    getFanPointsTransactionHistory: get_fan_points_transaction_history(
-        group_id: $groupId
-        nr: $nr
+    getStatusPointsTransactions: get_status_points_transactions(
         project_id: $projectId
+        user_id: $userId
+        last_returned_transaction: $lastReturnedTransaction
+        limit: $limit
     ) {
         result {
             reward {
-                ... on FanPointsReward {
+                ... on StatusPointsReward {
                     __typename
                     amount
                 }
@@ -25,9 +27,6 @@ query getFanPointsTransactionHistory(
             claimedDate: claimed_date
         }
         errors {
-            transactionNotFoundError: transaction_not_found_error {
-                _empty
-            }
             unkownUserError: unknown_user_error {
                 _empty
             }

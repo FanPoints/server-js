@@ -1,51 +1,47 @@
-mutation collect_fan_points(
+mutation collectFanPoints(
     $amount: Int!
-    $custom_group_id: String
+    $customGroupId: String
     $description: String!
-    $partner_id: String!
-    $project_id: String!
+    $partnerId: String!
+    $projectId: String!
     $title: String!
-    $user_id: String!
+    $userId: String!
 ) {
-    collect_fan_points(
+    collectFanPoints: collect_fan_points(
         amount: $amount
         description: $description
-        partner_id: $partner_id
-        project_id: $project_id
+        partner_id: $partnerId
+        project_id: $projectId
         title: $title
-        user_id: $user_id
-        custom_group_id: $custom_group_id
+        user_id: $userId
+        custom_group_id: $customGroupId
     ) {
-        invalid_reward_amount_error {
-            _empty
+        errors {
+            unkownUserError: unknown_user_error {
+                _empty
+            }
+            invalidRewardAmountError: invalid_reward_amount_error {
+                _empty
+            }
+            tooFewAvailableError: too_few_available_error {
+                _empty
+            }
         }
-        too_few_available_error {
-            _empty
-        }
-        transaction_not_found_error {
-            _empty
-        }
-        transactions {
+        result {
             reward {
                 ... on FanPointsReward {
                     __typename
                     amount
                 }
             }
-            reservation_date
-            owner_id
-            only_reserved
-            old_owner_id
-            group_size
-            group_id
-            details {
-                transaction_type
-            }
+            ownerId: owner_id
+            oldOwnerId: old_owner_id
+            groupId: group_id
             nr
-            claimed_date
-        }
-        unknown_user_error {
-            _empty
+            details {
+                transactionType: transaction_type
+            }
+            claimedDate: claimed_date
         }
     }
 }

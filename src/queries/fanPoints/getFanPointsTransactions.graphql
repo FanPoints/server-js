@@ -1,36 +1,35 @@
-query get_fan_points_transactions(
-    $project_id: String!
-    $user_id: String!
+query getFanPointsTransactions(
+    $projectId: String!
+    $userId: String!
     $limit: Int
-    $last_returned_transaction: TransactionIdentifierInput
+    $lastReturnedTransaction: TransactionIdentifierInput
 ) {
-    get_fan_points_transactions(
-        project_id: $project_id
-        user_id: $user_id
-        last_returned_transaction: $last_returned_transaction
+    getFanPointsTransactions: get_fan_points_transactions(
+        project_id: $projectId
+        user_id: $userId
+        last_returned_transaction: $lastReturnedTransaction
         limit: $limit
     ) {
-        transactions {
+        result {
             reward {
                 ... on FanPointsReward {
                     __typename
                     amount
                 }
             }
-            reservation_date
-            owner_id
-            only_reserved
-            old_owner_id
-            group_size
-            group_id
-            details {
-                transaction_type
-            }
+            ownerId: owner_id
+            oldOwnerId: old_owner_id
+            groupId: group_id
             nr
-            claimed_date
+            details {
+                transactionType: transaction_type
+            }
+            claimedDate: claimed_date
         }
-        unknown_user_error {
-            _empty
+        errors {
+            unkownUserError: unknown_user_error {
+                _empty
+            }
         }
     }
 }

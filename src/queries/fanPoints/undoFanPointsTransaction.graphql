@@ -1,22 +1,40 @@
-mutation undo_fan_points_transaction(
-    $project_id: String = ""
-    $group_id: String = ""
+mutation undoFanPointsTransaction(
+    $projectId: String = ""
+    $groupId: String = ""
 ) {
-    undo_fan_points_transaction(group_id: $group_id, project_id: $project_id) {
-        invalid_reward_amount_error {
-            _empty
+    undoFanPointsTransaction: undo_fan_points_transaction(
+        group_id: $groupId
+        project_id: $projectId
+    ) {
+        result {
+            reward {
+                ... on FanPointsReward {
+                    __typename
+                    amount
+                }
+            }
+            ownerId: owner_id
+            oldOwnerId: old_owner_id
+            groupId: group_id
+            nr
+            details {
+                transactionType: transaction_type
+            }
+            claimedDate: claimed_date
         }
-        too_few_available_error {
-            _empty
-        }
-        transaction_not_found_error {
-            _empty
-        }
-        transactions {
-            claimed_date
-        }
-        unknown_user_error {
-            _empty
+        errors {
+            unkownUserError: unknown_user_error {
+                _empty
+            }
+            invalidRewardAmountError: invalid_reward_amount_error {
+                _empty
+            }
+            tooFewAvailableError: too_few_available_error {
+                _empty
+            }
+            transactionNotFoundError: transaction_not_found_error {
+                _empty
+            }
         }
     }
 }

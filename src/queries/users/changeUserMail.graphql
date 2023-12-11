@@ -1,18 +1,20 @@
-mutation change_user_mail_address(
-    $new_mail_address: String!
-    $project_id: String!
-    $user_id: String!
+mutation changeUserMailAddress(
+    $newMailAddress: String!
+    $projectId: String!
+    $userId: String!
 ) {
-    change_user_mail_address(
-        new_mail_address: $new_mail_address
-        project_id: $project_id
-        user_id: $user_id
+    changeUserMailAddress: change_user_mail_address(
+        new_mail_address: $newMailAddress
+        project_id: $projectId
+        user_id: $userId
     ) {
-        invalid_mail_address_error {
-            _empty
-        }
-        unknown_user_error {
-            _empty
+        errors {
+            invalidMailAdressError: invalid_mail_address_error {
+                _empty
+            }
+            unknownUserError: unknown_user_error {
+                _empty
+            }
         }
     }
 }

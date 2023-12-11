@@ -7,9 +7,12 @@ import {
 import config from './backendConfig';
 import { FanPointsModule } from './FanPointsModule';
 import { getSdk, Sdk } from './queries/generated/sdk';
+import { StatusPointsModule } from './StatusPointsModule';
 import { UserModule } from './UserModule';
 import { AuthSession } from './utils/fetchToken';
 
+// client.fanPoints.getTransactions('1234').then(console.log);
+// client.statusPoints.getTransactions('1234').then(console.log);
 /**
  * This client wraps the FanPoints API to allow convenient access.
  */
@@ -22,6 +25,7 @@ export default class FanPointsClient {
     private graphqlSDK: Sdk;
 
     public fanPoints: FanPointsModule;
+    public statusPoints: StatusPointsModule;
     public users: UserModule;
 
     /**
@@ -77,8 +81,12 @@ export default class FanPointsClient {
         });
         this.graphqlSDK = getSdk(this.graphQLClient);
 
-        this.fanPoints = new FanPointsModule(this.projectId, this.graphqlSDK);
         this.users = new UserModule(this.projectId, this.graphqlSDK);
+        this.fanPoints = new FanPointsModule(this.projectId, this.graphqlSDK);
+        this.statusPoints = new StatusPointsModule(
+            this.projectId,
+            this.graphqlSDK,
+        );
     }
 }
 

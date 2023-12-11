@@ -1,16 +1,16 @@
-query getFanPointsTransactionHistory(
+query getStatusPointsTransactionHistory(
     $groupId: String!
     $nr: Int!
     $projectId: String!
 ) {
-    getFanPointsTransactionHistory: get_fan_points_transaction_history(
+    getStatusPointsTransactionHistory: get_status_points_transaction_history(
         group_id: $groupId
         nr: $nr
         project_id: $projectId
     ) {
         result {
             reward {
-                ... on FanPointsReward {
+                ... on StatusPointsReward {
                     __typename
                     amount
                 }

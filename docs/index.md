@@ -3,4 +3,7 @@ title: FanPoints
 layout: home
 ---
 
-Hey there! Welcome to the FanPoints documentation. Here you can find all the information you need to get started with FanPoints.
+# Overview
+
+This documentation explains the core concepts of the FanPoints system and contains a reference for the server-js SDK.
+

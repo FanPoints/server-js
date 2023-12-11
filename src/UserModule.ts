@@ -1,19 +1,4 @@
-import {
-    AddUserResult,
-    ChangeUserIdResult,
-    ChangeUserMailAddressResult,
-    DeleteUserResult,
-    GetUserResult,
-    Sdk,
-} from './queries/generated/sdk';
-
-export {
-    AddUserResult,
-    ChangeUserIdResult,
-    GetUserResult,
-    ChangeUserMailAddressResult,
-    DeleteUserResult,
-} from './queries/generated/sdk';
+import { Sdk } from './queries/generated/sdk';
 
 /**
  * This class allows you manage users in your FanPoints project. A user corresponds to
@@ -41,16 +26,13 @@ export class UserModule {
      * @param userId - The ID associated to the user in your system.
      * @param mailAddress - The email address of the user.
      */
-    public async addUser(
-        userId: string,
-        mailAddress: string,
-    ): Promise<AddUserResult> {
-        const result = await this.graphqlSDK.add_user({
-            project_id: this.projectId,
-            user_id: userId,
-            mail_address: mailAddress,
+    public async addUser(userId: string, mailAddress: string) {
+        const result = await this.graphqlSDK.addUser({
+            projectId: this.projectId,
+            userId,
+            mailAddress,
         });
-        return result.data.add_user;
+        return result.data.addUser;
     }
 
     /**
@@ -64,16 +46,13 @@ export class UserModule {
      * @param oldUserId - The current user ID of the user.
      * @param newUserId - The new user ID of the user.
      */
-    public async changeUserId(
-        oldUserId: string,
-        newUserId: string,
-    ): Promise<ChangeUserIdResult> {
-        const result = await this.graphqlSDK.change_user_id({
-            project_id: this.projectId,
-            old_user_id: oldUserId,
-            new_user_id: newUserId,
+    public async changeUserId(oldUserId: string, newUserId: string) {
+        const result = await this.graphqlSDK.changeUserId({
+            projectId: this.projectId,
+            oldUserId,
+            newUserId,
         });
-        return result.data.change_user_id;
+        return result.data.changeUserId;
     }
 
     /**
@@ -82,16 +61,13 @@ export class UserModule {
      * @param userId - The user ID of the user.
      * @param mailAddress - The new email address of the user.
      */
-    public async changeMailAddress(
-        userId: string,
-        mailAddress: string,
-    ): Promise<ChangeUserMailAddressResult> {
-        const result = await this.graphqlSDK.change_user_mail_address({
-            project_id: this.projectId,
-            user_id: userId,
-            new_mail_address: mailAddress,
+    public async changeMailAddress(userId: string, newMailAddress: string) {
+        const result = await this.graphqlSDK.changeUserMailAddress({
+            projectId: this.projectId,
+            userId,
+            newMailAddress,
         });
-        return result.data.change_user_mail_address;
+        return result.data.changeUserMailAddress;
     }
 
     /**
@@ -99,12 +75,12 @@ export class UserModule {
      *
      * @param userId - The user ID of the user.
      */
-    public async deleteUser(userId: string): Promise<DeleteUserResult> {
-        const result = await this.graphqlSDK.delete_user({
-            project_id: this.projectId,
-            user_id: userId,
+    public async deleteUser(userId: string) {
+        const result = await this.graphqlSDK.deleteUser({
+            projectId: this.projectId,
+            userId,
         });
-        return result.data.delete_user;
+        return result.data.deleteUser;
     }
 
     /**
@@ -112,11 +88,11 @@ export class UserModule {
      *
      * @param userId - The user ID of the user.
      */
-    public async getUser(userId: string): Promise<GetUserResult> {
-        const result = await this.graphqlSDK.get_user_by_id({
-            project_id: this.projectId,
-            user_id: userId,
+    public async getUser(userId: string) {
+        const result = await this.graphqlSDK.getUserById({
+            projectId: this.projectId,
+            userId,
         });
-        return result.data.get_user_by_id;
+        return result.data.getUserById;
     }
 }
