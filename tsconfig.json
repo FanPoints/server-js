@@ -4,6 +4,6 @@
         "skipLibCheck": true,
         "moduleResolution": "node",
         "strict": true,
-        "noErrorTruncation": true,
+        "noErrorTruncation": true
     }
 }

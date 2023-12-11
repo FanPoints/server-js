@@ -11,8 +11,6 @@ import { StatusPointsModule } from './StatusPointsModule';
 import { UserModule } from './UserModule';
 import { AuthSession } from './utils/fetchToken';
 
-// client.fanPoints.getTransactions('1234').then(console.log);
-// client.statusPoints.getTransactions('1234').then(console.log);
 /**
  * This client wraps the FanPoints API to allow convenient access.
  */
