@@ -1,15 +1,26 @@
-import { Sdk, TransactionIdentifierInput } from './queries/generated/sdk';
+import {
+    Sdk,
+    TransactionIdentifierInput,
+    TransactionType,
+} from './queries/generated/sdk';
+import { Expand } from './utils/expandType';
 
-const isFanPointsReward = <T extends { reward: object }>(
-    reward: T,
-): reward is T & {
-    reward: { __typename: 'FanPointsReward' };
-} => {
-    return (
-        '__typename' in reward.reward &&
-        reward.reward.__typename === 'FanPointsReward'
-    );
-};
+type FanPointsReward =
+    | undefined
+    | {
+          claimedDate: undefined | string;
+          details: {
+              transactionType: TransactionType;
+          };
+          groupId: string;
+          nr: number;
+          oldOwnerId: string;
+          ownerId: string;
+          reward: {
+              __typename: 'FanPointsReward';
+              amount: number;
+          };
+      };
 
 /**
  *
@@ -69,8 +80,7 @@ export class FanPointsModule {
                 lastReturnedTransaction,
             })
         ).data.getFanPointsTransactions;
-        const filteredResult = result?.filter(isFanPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<FanPointsReward[]>, errors };
     }
 
     /**
@@ -93,8 +103,7 @@ export class FanPointsModule {
                 nr,
             })
         ).data.getFanPointsTransactionHistory;
-        const filteredResult = result?.filter(isFanPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<FanPointsReward[]>, errors };
     }
 
     /**
@@ -141,8 +150,7 @@ export class FanPointsModule {
                 customGroupId,
             })
         ).data.collectFanPoints;
-        const filteredResult = result?.filter(isFanPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<FanPointsReward[]>, errors };
     }
 
     /**
@@ -188,8 +196,7 @@ export class FanPointsModule {
                 customGroupId,
             })
         ).data.distributeFanPoints;
-        const filteredResult = result?.filter(isFanPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<FanPointsReward[]>, errors };
     }
 
     /**
@@ -217,7 +224,6 @@ export class FanPointsModule {
                 groupId: groupId,
             })
         ).data.undoFanPointsTransaction;
-        const filteredResult = result?.filter(isFanPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<FanPointsReward[]>, errors };
     }
 }

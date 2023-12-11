@@ -2,19 +2,26 @@ import {
     Sdk,
     StatusPointsAction,
     TransactionIdentifierInput,
+    TransactionType,
 } from './queries/generated/sdk';
+import { Expand } from './utils/expandType';
 
-const isStatusPointsReward = <T extends { reward: object }>(
-    reward: T,
-): reward is T & {
-    reward: { __typename: 'StatusPointsReward' };
-} => {
-    return (
-        '__typename' in reward.reward &&
-        reward.reward.__typename === 'StatusPointsReward'
-    );
-};
-
+type StatusPointsReward =
+    | undefined
+    | {
+          claimedDate: undefined | string;
+          details: {
+              transactionType: TransactionType;
+          };
+          groupId: string;
+          nr: number;
+          oldOwnerId: string;
+          ownerId: string;
+          reward: {
+              __typename: 'StatusPointsReward';
+              amount: number;
+          };
+      };
 /**
  * This class allows you to interact with the StatusPoints module. The StatusPoints
  * module allows to distribute Status Points to users to reward engagement.
@@ -71,8 +78,7 @@ export class StatusPointsModule {
                 lastReturnedTransaction,
             })
         ).data.getStatusPointsTransactions;
-        const filteredResult = result?.filter(isStatusPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<StatusPointsReward[]>, errors };
     }
 
     /**
@@ -95,8 +101,7 @@ export class StatusPointsModule {
                 nr,
             })
         ).data.getStatusPointsTransactionHistory;
-        const filteredResult = result?.filter(isStatusPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<StatusPointsReward[]>, errors };
     }
 
     /**
@@ -143,8 +148,7 @@ export class StatusPointsModule {
                 customGroupId,
             })
         ).data.distributeStatusPoints;
-        const filteredResult = result?.filter(isStatusPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<StatusPointsReward[]>, errors };
     }
 
     /**
@@ -172,7 +176,6 @@ export class StatusPointsModule {
                 groupId,
             })
         ).data.undoStatusPointsTransaction;
-        const filteredResult = result?.filter(isStatusPointsReward);
-        return { result: filteredResult, errors };
+        return { result: result as Expand<StatusPointsReward[]>, errors };
     }
 }
