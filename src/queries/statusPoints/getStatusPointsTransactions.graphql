@@ -2,12 +2,12 @@ query getStatusPointsTransactions(
     $projectId: String!
     $userId: String!
     $limit: Int
-    $lastReturnedTransaction: TransactionIdentifierInput
+    $earlierThan: String
 ) {
     getStatusPointsTransactions: get_status_points_transactions(
         project_id: $projectId
         user_id: $userId
-        last_returned_transaction: $lastReturnedTransaction
+        earlier_than: $earlierThan
         limit: $limit
     ) {
         result {
@@ -24,6 +24,7 @@ query getStatusPointsTransactions(
             details {
                 transactionType: transaction_type
             }
+            transactionDate: transaction_date
             claimedDate: claimed_date
         }
         errors {

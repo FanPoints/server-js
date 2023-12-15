@@ -36,7 +36,7 @@ export class AuthSession {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Authorization: `Basic ${bearerToken}`,
             },
-            body: 'grant_type=client_credentials&scope=test/do',
+            body: 'grant_type=client_credentials&scope=resource-server/api',
         });
         const json = await response.json();
 

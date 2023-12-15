@@ -1,3 +1,4 @@
+import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import dts from 'rollup-plugin-dts';
 
@@ -7,11 +8,12 @@ export default [
         output: [
             {
                 dir: 'dist',
-                format: 'cjs',
+                format: 'esm',
                 sourcemap: true,
             },
         ],
-        plugins: [typescript()],
+        plugins: [resolve(), typescript()],
+        external: ['graphql-request'],
     },
     {
         input: 'src/index.ts',
