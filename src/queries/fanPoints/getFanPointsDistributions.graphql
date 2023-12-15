@@ -1,10 +1,10 @@
-query getStatusPointsTransactions(
+query getFanPointsDistributions(
     $projectId: String!
     $userId: String!
     $limit: Int
     $lastReturnedTransaction: TransactionIdentifierInput
 ) {
-    getStatusPointsTransactions: get_status_points_transactions(
+    getFanPointsDistributions: get_fan_points_distributions(
         project_id: $projectId
         user_id: $userId
         last_returned_transaction: $lastReturnedTransaction
@@ -12,7 +12,7 @@ query getStatusPointsTransactions(
     ) {
         result {
             reward {
-                ... on StatusPointsReward {
+                ... on FanPointsReward {
                     __typename
                     amount
                 }

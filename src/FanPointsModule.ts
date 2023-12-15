@@ -50,7 +50,8 @@ export class FanPointsModule {
     }
 
     /**
-     * Returns all FanPoints transactions connected to the given user.
+     * Returns all FanPoints transactions that represent Fan Points distributed
+     * to the user.
      *
      * @remarks
      * The parameters limit and lastReturnedTransaction can be used
@@ -67,19 +68,54 @@ export class FanPointsModule {
      *
      * @returns an object containing the relevant transactions.
      */
-    public async getTransactions(
+    public async getDistributionTransactions(
         userId: string,
         limit?: number,
         lastReturnedTransaction?: TransactionIdentifierInput,
     ) {
         const { result, errors } = (
-            await this.graphqlSDK.getFanPointsTransactions({
+            await this.graphqlSDK.getFanPointsDistributions({
                 projectId: this.projectId,
                 userId,
                 limit,
                 lastReturnedTransaction,
             })
-        ).data.getFanPointsTransactions;
+        ).data.getFanPointsDistributions;
+        return { result: result as Expand<FanPointsReward[]>, errors };
+    }
+
+    /**
+     * Returns all FanPoints transactions that represent Fan Points collected
+     * from the user.
+     *
+     * @remarks
+     * The parameters limit and lastReturnedTransaction can be used
+     * to paginate the results.
+     *
+     * If limit is given, at most limit transactions
+     * will be returned. If lastReturnedTransaction is given, only transactions
+     * after this transaction will be returned. Combine both parameters to
+     * paginate the results.
+     *
+     * @param userId - the id of the user
+     * @param limit - the maximum number of transactions to return
+     * @param lastReturnedTransaction - if given, transactions after this transaction will be returned
+     *
+     * @returns an object containing the relevant transactions.
+     */
+    public async getCollectionTransactions(
+        userId: string,
+        limit?: number,
+        lastReturnedTransaction?: TransactionIdentifierInput,
+    ) {
+        const { result, errors } = (
+            await this.graphqlSDK.getFanPointsCollections({
+                projectId: this.projectId,
+                userId,
+                limit,
+                lastReturnedTransaction,
+            })
+        ).data.getFanPointsCollections;
         return { result: result as Expand<FanPointsReward[]>, errors };
     }
 

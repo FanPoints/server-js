@@ -71,13 +71,13 @@ export class StatusPointsModule {
         lastReturnedTransaction?: TransactionIdentifierInput,
     ) {
         const { result, errors } = (
-            await this.graphqlSDK.getStatusPointsTransactions({
+            await this.graphqlSDK.getStatusPointsDistributions({
                 projectId: this.projectId,
                 userId,
                 limit,
                 lastReturnedTransaction,
             })
-        ).data.getStatusPointsTransactions;
+        ).data.getStatusPointsDistributions;
         return { result: result as Expand<StatusPointsReward[]>, errors };
     }
 

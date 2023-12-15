@@ -1,13 +1,13 @@
 {
     "name": "@fanpoints/server-js",
-    "version": "0.0.1",
+    "version": "0.0.10",
     "type": "module",
     "description": "The SDK that allows to integrate FanPoints on the server-side.",
     "files": [
         "dist"
     ],
     "main": "dist/index.js",
-    "typings": "dist/index.d.ts",
+    "types": "dist/types.d.ts",
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint src --ext .js,.ts",
@@ -15,25 +15,20 @@
         "docs": "npx typedoc",
         "fetch-secrets": ". ./scripts/fetch-secrets.sh",
         "fetch-secrets-test": ". ./scripts/fetch-secrets.sh stg",
-        "build": "rollup -c",
+        "build": "rm -rf build && rollup -c",
+        "publish": "npm run build && npm publish --access public",
         "generate-graphql": "doppler run --mount ./scripts/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen --config ./scripts/codegen.ts"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/FanPoints/server-js.git"
-    },
-    "author": "Marc Padrutt & Tobia Ochsner",
+    "author": "FanPoints",
     "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/FanPoints/server-js/issues"
-    },
-    "homepage": "https://github.com/FanPoints/server-js#readme",
+    "homepage": "https://fanpoints.github.io/server-js/",
     "devDependencies": {
         "@graphql-codegen/cli": "5.0.0",
         "@graphql-codegen/client-preset": "^4.1.0",
         "@graphql-codegen/typescript": "4.0.1",
         "@graphql-codegen/typescript-graphql-request": "^6.0.1",
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+        "@rollup/plugin-commonjs": "^25.0.7",
         "@rollup/plugin-typescript": "^11.1.5",
         "@typescript-eslint/eslint-plugin": "^6.12.0",
         "@typescript-eslint/parser": "^6.12.0",
@@ -51,7 +46,8 @@
         "sync-request": "^6.1.0",
         "typedoc": "^0.25.4",
         "typedoc-material-theme": "^1.0.1",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "@rollup/plugin-node-resolve": "^15.2.3"
     },
     "dependencies": {
         "@aws-sdk/client-appsync": "^3.462.0",

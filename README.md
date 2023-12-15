@@ -1,6 +1,27 @@
-# server-js
+# @fanpoints/server-js
 
 A javascript SDK to integrate FanPoints into your server.
+
+## Usage
+
+```typescript
+import { createClient } from '@fanpoints/server-js';
+
+const client = createClient({
+    projectId: 'projectId',
+    clientId: 'clientId',
+    secret: 'secret',
+});
+
+const usersModule = client.users;
+const fanPointsModule = client.fanPoints;
+
+await usersModule.addUser('new_user_id', 'new_user@gmail.com');
+
+const { result, errors } =
+    await fanPointsModule.getFanPointsBalance('new_user_id');
+console.log(result, errors);
+```
 
 ## Development
 

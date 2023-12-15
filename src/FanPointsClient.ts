@@ -31,6 +31,7 @@ export default class FanPointsClient {
      * @hidden
      */
     private async requestMiddleware(request: Parameters<RequestMiddleware>[0]) {
+        console.log(await this.authSession.getToken());
         return {
             ...request,
             headers: {
