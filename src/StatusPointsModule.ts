@@ -1,7 +1,6 @@
 import {
     Sdk,
     StatusPointsAction,
-    TransactionIdentifierInput,
     TransactionType,
 } from './queries/generated/sdk';
 import { Expand } from './utils/expandType';
@@ -9,6 +8,7 @@ import { Expand } from './utils/expandType';
 type StatusPointsReward =
     | undefined
     | {
+          transactionDate: string;
           claimedDate: undefined | string;
           details: {
               transactionType: TransactionType;
@@ -39,7 +39,7 @@ export class StatusPointsModule {
      * @param userId - the id of the user
      * @returns an object containing the total amount of Status Points the user has collected.
      */
-    public async getStatusPointsBalance(userId: string) {
+    public async getBalance(userId: string) {
         const result = await this.graphqlSDK.getStatusPointsBalance({
             projectId: this.projectId,
             userId,
@@ -51,33 +51,36 @@ export class StatusPointsModule {
      * Returns all Status Points transactions connected to the given user.
      *
      * @remarks
+     * The returned transactions are sorted by date, with the most recent
+     * transaction being first.
+     *
      * The parameters limit and lastReturnedTransaction can be used
      * to paginate the results.
      *
      * If limit is given, at most limit transactions
-     * will be returned. If lastReturnedTransaction is given, only transactions
-     * after this transaction will be returned. Combine both parameters to
-     * paginate the results.
+     * will be returned. If earlierThan is given, only transactions
+     * thah happened before this transaction will be returned. Combine
+     * both parameters to paginate the results.
      *
      * @param userId - the id of the user
      * @param limit - the maximum number of transactions to return
-     * @param lastReturnedTransaction - if given, transactions after this transaction will be returned
+     * @param earlierThan - if given, transactions after this date will be returned
      *
      * @returns an object containing the relevant transactions.
      */
     public async getTransactions(
         userId: string,
         limit?: number,
-        lastReturnedTransaction?: TransactionIdentifierInput,
+        earlierThan?: string,
     ) {
         const { result, errors } = (
-            await this.graphqlSDK.getStatusPointsDistributions({
+            await this.graphqlSDK.getStatusPointsTransactions({
                 projectId: this.projectId,
                 userId,
                 limit,
-                lastReturnedTransaction,
+                earlierThan,
             })
-        ).data.getStatusPointsDistributions;
+        ).data.getStatusPointsTransactions;
         return { result: result as Expand<StatusPointsReward[]>, errors };
     }
 
@@ -156,7 +159,7 @@ export class StatusPointsModule {
      *
      * @returns an object containing the performed transaction.
      */
-    public async distributeStatusPoints(
+    public async distribute(
         userId: string,
         partnerId: string,
         action: StatusPointsAction,

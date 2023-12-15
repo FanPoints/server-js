@@ -41,6 +41,7 @@ mutation distributeFanPoints(
             details {
                 transactionType: transaction_type
             }
+            transactionDate: transaction_date
             claimedDate: claimed_date
         }
     }

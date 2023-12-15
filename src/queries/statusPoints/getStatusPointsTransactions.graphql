@@ -1,18 +1,18 @@
-query getFanPointsCollections(
+query getStatusPointsTransactions(
     $projectId: String!
     $userId: String!
     $limit: Int
-    $lastReturnedTransaction: TransactionIdentifierInput
+    $earlierThan: String
 ) {
-    getFanPointsCollections: get_fan_points_collections(
+    getStatusPointsTransactions: get_status_points_transactions(
         project_id: $projectId
         user_id: $userId
-        last_returned_transaction: $lastReturnedTransaction
+        earlier_than: $earlierThan
         limit: $limit
     ) {
         result {
             reward {
-                ... on FanPointsReward {
+                ... on StatusPointsReward {
                     __typename
                     amount
                 }
@@ -24,6 +24,7 @@ query getFanPointsCollections(
             details {
                 transactionType: transaction_type
             }
+            transactionDate: transaction_date
             claimedDate: claimed_date
         }
         errors {
