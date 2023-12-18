@@ -36,6 +36,12 @@ mutation undoStatusPointsTransaction(
             transactionNotFoundError: transaction_not_found_error {
                 _empty
             }
+            invalidGroupIdError: invalid_group_id_error {
+                _empty
+            }
+            alreadyExecutedError: already_executed_error {
+                _empty
+            }
         }
     }
 }
