@@ -13,3 +13,7 @@ dist
 # generated code
 
 src/queries/generated
+
+# secrets
+
+src/backendConfig.ts
