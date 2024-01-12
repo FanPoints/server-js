@@ -1,6 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
-import dts from 'rollup-plugin-dts';
+
+const dts = require('rollup-plugin-dts');
 
 export default [
     {
@@ -31,7 +32,7 @@ export default [
                 format: 'es',
             },
         ],
-        plugins: [dts()],
+        plugins: [dts.default()],
         external: ['graphql-request', 'graphql', 'graphql-tag'],
     },
 ];
