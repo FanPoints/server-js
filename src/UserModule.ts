@@ -1,3 +1,4 @@
+import FanPointsClient from './FanPointsClient';
 import { Sdk } from './queries/generated/sdk';
 
 /**
@@ -6,11 +7,14 @@ import { Sdk } from './queries/generated/sdk';
  * points).
  */
 export class UserModule {
+    private sdk: Sdk;
+    private loyaltyProgramId: string;
+
     /** @hidden */
-    constructor(
-        private projectId: string,
-        private graphqlSDK: Sdk,
-    ) {}
+    constructor(client: FanPointsClient) {
+        this.sdk = client.loyaltyProgramSdk();
+        this.loyaltyProgramId = client.loyaltyProgramId();
+    }
 
     /**
      * Adds a user to your FanPoints project. A user corresponds to a person
@@ -27,8 +31,8 @@ export class UserModule {
      * @param mailAddress - The email address of the user.
      */
     public async addUser(userId: string, mailAddress: string) {
-        const result = await this.graphqlSDK.addUser({
-            projectId: this.projectId,
+        const result = await this.sdk.addUser({
+            projectId: this.loyaltyProgramId,
             userId,
             mailAddress,
         });
@@ -47,8 +51,8 @@ export class UserModule {
      * @param newUserId - The new user ID of the user.
      */
     public async changeUserId(oldUserId: string, newUserId: string) {
-        const result = await this.graphqlSDK.changeUserId({
-            projectId: this.projectId,
+        const result = await this.sdk.changeUserId({
+            projectId: this.loyaltyProgramId,
             oldUserId,
             newUserId,
         });
@@ -62,8 +66,8 @@ export class UserModule {
      * @param mailAddress - The new email address of the user.
      */
     public async changeMailAddress(userId: string, newMailAddress: string) {
-        const result = await this.graphqlSDK.changeUserMailAddress({
-            projectId: this.projectId,
+        const result = await this.sdk.changeUserMailAddress({
+            projectId: this.loyaltyProgramId,
             userId,
             newMailAddress,
         });
@@ -76,8 +80,8 @@ export class UserModule {
      * @param userId - The user ID of the user.
      */
     public async deleteUser(userId: string) {
-        const result = await this.graphqlSDK.deleteUser({
-            projectId: this.projectId,
+        const result = await this.sdk.deleteUser({
+            projectId: this.loyaltyProgramId,
             userId,
         });
         return result.data.deleteUser;
@@ -89,8 +93,8 @@ export class UserModule {
      * @param userId - The user ID of the user.
      */
     public async getUser(userId: string) {
-        const result = await this.graphqlSDK.getUserById({
-            projectId: this.projectId,
+        const result = await this.sdk.getUserById({
+            projectId: this.loyaltyProgramId,
             userId,
         });
         return result.data.getUserById;

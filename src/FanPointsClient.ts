@@ -16,11 +16,11 @@ import { AuthSession } from './utils/fetchToken';
  */
 export default class FanPointsClient {
     /** @hidden */
-    private authSession: AuthSession;
+    private authSessions: Record<string, AuthSession>;
     /** @hidden */
-    private graphQLClient: GraphQLClient;
+    private graphQLClients: Record<string, GraphQLClient>;
     /** @hidden */
-    private graphqlSDK: Sdk;
+    private SDKs: Record<string, Sdk>;
 
     public fanPoints: FanPointsModule;
     public statusPoints: StatusPointsModule;
@@ -30,15 +30,17 @@ export default class FanPointsClient {
      * This middleware adds the JWT token to the request headers.
      * @hidden
      */
-    private async requestMiddleware(request: Parameters<RequestMiddleware>[0]) {
-        return {
-            ...request,
-            headers: {
-                ...request.headers,
-                authorization: await this.authSession.getToken(),
-            },
+    private getRequestMiddleware =
+        (authSession: AuthSession) =>
+        async (request: Parameters<RequestMiddleware>[0]) => {
+            return {
+                ...request,
+                headers: {
+                    ...request.headers,
+                    authorization: await authSession.getToken(),
+                },
+            };
         };
-    }
 
     /**
      * This middleware handles the response from the GraphQL API.
@@ -48,56 +50,149 @@ export default class FanPointsClient {
      *
      * @hidden
      */
-    private async responseMiddleware(
-        response: Parameters<ResponseMiddleware>[0],
-    ) {
-        if (
-            response instanceof ClientError &&
-            response.response.status === 401
-        ) {
-            await this.authSession.refreshToken();
-            return this.graphQLClient.rawRequest(
-                response.request.query[0],
-                response.request.variables,
+    private getResponseMiddleware =
+        (authSession: AuthSession, graphQLClient: GraphQLClient) =>
+        async (response: Parameters<ResponseMiddleware>[0]) => {
+            if (
+                response instanceof ClientError &&
+                response.response.status === 401
+            ) {
+                await authSession.refreshToken();
+                return graphQLClient.rawRequest(
+                    response.request.query[0],
+                    response.request.variables,
+                );
+            }
+            return response;
+        };
+
+    private addSDK(id: string, clientId: string, secret: string) {
+        this.authSessions[id] = new AuthSession(
+            clientId,
+            secret,
+            this.oAuthDomain,
+        );
+
+        this.graphQLClients[id] = new GraphQLClient(this.apiEndpoint);
+        this.graphQLClients[id].requestConfig.requestMiddleware =
+            this.getRequestMiddleware(this.authSessions[id]).bind(this);
+        this.graphQLClients[id].requestConfig.responseMiddleware =
+            this.getResponseMiddleware(
+                this.authSessions[id],
+                this.graphQLClients[id],
+            ).bind(this);
+
+        this.SDKs[id] = getSdk(this.graphQLClients[id]);
+    }
+
+    public loyaltyProgramId(): string {
+        if (!this.clientConfig.loyaltyProgramConfig) {
+            throw new Error(
+                'No loyalty program config was provided to the client.',
             );
         }
-        return response;
+        return this.clientConfig.loyaltyProgramConfig.loyaltyProgramId;
+    }
+    public partnerId(partnerId?: string): string {
+        if (partnerId) return partnerId;
+        if (!this.clientConfig.partnerConfig) {
+            throw new Error('No partner config was provided to the client.');
+        }
+        return this.clientConfig.partnerConfig.projectId;
+    }
+
+    public loyaltyProgramSdk(): Sdk {
+        const sdk = this.SDKs[this.loyaltyProgramId()];
+
+        if (!sdk) {
+            throw new Error(
+                'No loyalty program config was provided to the client.',
+            );
+        }
+
+        return sdk;
+    }
+
+    public partnerSDK(partnerId?: string): Sdk {
+        const sdk = this.SDKs[this.partnerId(partnerId)];
+
+        if (!sdk) {
+            throw new Error('No partner config was provided to the client.');
+        }
+
+        return sdk;
     }
 
     /** @hidden */
     constructor(
-        clientId: string,
-        secret: string,
-        private projectId: string,
-        apiEndpoint: string,
-        oAuthDomain: string,
+        private clientConfig: ClientConfig,
+        private apiEndpoint: string,
+        private oAuthDomain: string,
     ) {
-        this.authSession = new AuthSession(clientId, secret, oAuthDomain);
-        this.graphQLClient = new GraphQLClient(apiEndpoint, {
-            requestMiddleware: this.requestMiddleware.bind(this),
-            responseMiddleware: this.responseMiddleware.bind(this),
-        });
-        this.graphqlSDK = getSdk(this.graphQLClient);
+        this.authSessions = {};
+        this.graphQLClients = {};
+        this.SDKs = {};
 
-        this.users = new UserModule(this.projectId, this.graphqlSDK);
-        this.fanPoints = new FanPointsModule(this.projectId, this.graphqlSDK);
-        this.statusPoints = new StatusPointsModule(
-            this.projectId,
-            this.graphqlSDK,
-        );
+        const { loyaltyProgramConfig, partnerConfig, partnerConfigs } =
+            clientConfig;
+
+        if (loyaltyProgramConfig) {
+            this.addSDK(
+                loyaltyProgramConfig.loyaltyProgramId,
+                loyaltyProgramConfig.clientId,
+                loyaltyProgramConfig.secret,
+            );
+        }
+        if (partnerConfig) {
+            this.addSDK(
+                partnerConfig.projectId,
+                partnerConfig.clientId,
+                partnerConfig.secret,
+            );
+        }
+        if (partnerConfigs) {
+            partnerConfigs.forEach((config) => {
+                this.addSDK(config.projectId, config.clientId, config.secret);
+            });
+        }
+
+        this.users = new UserModule(this);
+        this.fanPoints = new FanPointsModule(this);
+        this.statusPoints = new StatusPointsModule(this);
     }
 }
 
 /**
  * This is the configuration object for the FanPointsClient.
  */
-export type ClientConfig = {
+export type Token = {
     /** The clientId you want to connect to. */
     clientId: string;
     /** The secret belonging to the clientId. It can be received from the FanPoints team. */
     secret: string;
-    /** The id of the club. */
+};
+
+export type LoyaltyProgramConfig = {
+    /** The ID of the loyaltiy program you want to connect to. */
+    loyaltyProgramId: string;
+    /** The clientId you want to connect to. */
+    clientId: string;
+    /** The secret belonging to the clientId. */
+    secret: string;
+};
+
+export type PartnerConfig = {
+    /** The ID of the project you want to connect to. */
     projectId: string;
+    /** The clientId you want to connect to. */
+    clientId: string;
+    /** The secret belonging to the clientId. */
+    secret: string;
+};
+export type ClientConfig = {
+    loyaltyProgramConfig?: LoyaltyProgramConfig;
+    partnerConfig?: PartnerConfig;
+    partnerConfigs?: PartnerConfig[];
 };
 
 /**
@@ -106,15 +201,5 @@ export type ClientConfig = {
  * The client ID and secret are required to authenticate with the
  * FanPoints API. They can be received from the FanPoints team.
  */
-export const createClient = ({
-    clientId,
-    secret,
-    projectId,
-}: ClientConfig): FanPointsClient =>
-    new FanPointsClient(
-        clientId,
-        secret,
-        projectId,
-        config.apiEndpoint,
-        config.oAuthDomain,
-    );
+export const createClient = (clientConfig: ClientConfig): FanPointsClient =>
+    new FanPointsClient(clientConfig, config.apiEndpoint, config.oAuthDomain);

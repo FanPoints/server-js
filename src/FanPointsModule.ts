@@ -1,22 +1,24 @@
-import { Sdk, TransactionType } from './queries/generated/sdk';
+import FanPointsClient from './FanPointsClient';
+import { TransactionType } from './queries/generated/sdk';
 import { Expand } from './utils/expandType';
 
-type FanPointsReward =
+type FanPointsTransaction =
     | undefined
     | {
-          transactionDate: string;
-          claimedDate: undefined | string;
-          details: {
-              transactionType: TransactionType;
-          };
-          groupId: string;
-          nr: number;
-          oldOwnerId: string;
-          ownerId: string;
-          reward: {
-              __typename: 'FanPointsReward';
+          purchaseId?: string;
+          userId: string;
+          type: 'distributed_on_purchase' | 'purchased_with_fanpoints';
+          purchaseItems: {
+              purchaseItemId?: string;
+              partnerId: string;
+              title: string;
+              description: string;
+              price: number;
+              currency: string;
               amount: number;
-          };
+              tags: string[];
+              date: string;
+          }[];
       };
 
 /**
@@ -27,10 +29,7 @@ type FanPointsReward =
  */
 export class FanPointsModule {
     /** @hidden */
-    constructor(
-        private projectId: string,
-        private graphqlSDK: Sdk,
-    ) {}
+    constructor(private client: FanPointsClient) {}
 
     /**
      * Returns the total amount FanPoints the user has collected.
@@ -39,10 +38,12 @@ export class FanPointsModule {
      * @returns an object containing the total amount of fan points the user has collected.
      */
     public async getBalance(userId: string) {
-        const result = await this.graphqlSDK.getFanPointsBalance({
-            projectId: this.projectId,
-            userId,
-        });
+        const result = await this.client
+            .loyaltyProgramSdk()
+            .getFanPointsBalance({
+                projectId: this.client.loyaltyProgramId(),
+                userId,
+            });
         return result.data.getFanPointsBalance;
     }
 
@@ -73,134 +74,56 @@ export class FanPointsModule {
         earlierThan?: string,
     ) {
         const { result, errors } = (
-            await this.graphqlSDK.getFanPointsTransactions({
-                projectId: this.projectId,
+            await this.client.loyaltyProgramSdk().getFanPointsTransactions({
+                projectId: this.client.loyaltyProgramId(),
                 userId,
                 limit,
                 earlierThan,
             })
         ).data.getFanPointsTransactions;
-        return { result: result as Expand<FanPointsReward[]>, errors };
+        return { result: result as Expand<FanPointsTransaction[]>, errors };
     }
 
-    /**
-     * Returns all transactions connected to the given transaction.
-     *
-     * @remarks
-     * A transaction A can be connected to another transactions B if A is the
-     * undo transaction of B or B is the undo transaction of A.
-     *
-     * @param groupId - the id of the transaction group
-     * @param nr - the nr of the transaction within the group
-     *
-     *  @returns an object containing all connected transactions.
-     */
-    public async getTransactionHistory(groupId: string, nr: number) {
-        const { result, errors } = (
-            await this.graphqlSDK.getFanPointsTransactionHistory({
-                projectId: this.projectId,
-                groupId,
-                nr,
-            })
-        ).data.getFanPointsTransactionHistory;
-        return { result: result as Expand<FanPointsReward[]>, errors };
-    }
-
-    /**
-     * Collects FanPoints from a user.
-     *
-     * @remarks
-     * Collecting FanPoints from a user is a method of payment and leads to
-     * fanpoints being deducted from the user's account.
-     *
-     * The given partner is then granted the corresponding monetary value
-     * from FanPoints.
-     *
-     * The title and description can be used to add human readable information
-     * on the transaction that could be used to display to the user.
-     *
-     * A custom group id can be given in order to link the transaction to a
-     * specific event on your side. This operation is idempotent w.r.t. the
-     * custom group id. This means that if you call this method twice with the
-     * same custom group id, the second call will not have any effect.
-     *
-     * @param userId - the id of the user
-     * @param partnerId - the id of the partner
-     * @param amount - the amount of FanPoints to collect
-     * @param title - the title of the transaction
-     * @param description - the description of the transaction
-     * @param customGroupId - the id of the custom group¨
-     *
-     * @returns an object containing the performed transaction.
-     */
-    public async collect(
+    public async giveFanPointsOnPurchase(
         userId: string,
-        partnerId: string,
-        amount: number,
-        title: string,
-        description: string,
-        customGroupId?: string,
+        purchaseItems: {
+            partnerId?: string;
+            title: string;
+            description: string;
+            price: number;
+            currency: string;
+            tags?: string[];
+        }[],
+        customPurchaseId?: string,
     ) {
         const { result, errors } = (
-            await this.graphqlSDK.collectFanPoints({
-                projectId: this.projectId,
+            await this.client.loyaltyProgramSdk().distributeFanPoints({
+                projectId: this.client.loyaltyProgramId(),
                 userId,
-                partnerId,
-                amount,
-                title,
-                description,
-                customGroupId,
             })
-        ).data.collectFanPoints;
-        return { result: result as Expand<FanPointsReward[]>, errors };
+        ).data.getFanPointsTransactions;
+        return { result: result as Expand<FanPointsTransaction[]>, errors };
     }
 
-    /**
-     * Distributes FanPoints to a user.
-     *
-     * @remarks
-     * This allows users to earn FanPoints.
-     *
-     * Distributing FanPoints to a user leads to the given partner being
-     * charged the corresponding monetary value from FanPoints.
-     *
-     * The title and description can be used to add human readable information
-     * on the transaction that could be used to display to the user.
-     *
-     * A custom group id can be given in order to link the transaction to a
-     * specific event on your side. This operation is idempotent w.r.t. the
-     * custom group id. This means that if you call this method twice with the
-     * same custom group id, the second call will not have any effect.
-     *
-     * @param userId - the id of the user
-     * @param partnerId - the id of the partner
-     * @param amount - the amount of FanPoints to collect
-     * @param title - the title of the transaction
-     * @param description - the description of the transaction
-     * @param customGroupId - the id of the custom group¨
-     *
-     * @returns an object containing the performed transaction.
-     */
-    public async distribute(
+    public async payPurchaseWithFanPoints(
         userId: string,
-        partnerId: string,
-        amount: number,
-        title: string,
-        description: string,
-        customGroupId?: string,
+        purchaseItems: {
+            partnerId?: string;
+            title: string;
+            description: string;
+            price: number;
+            currency: string;
+            tags?: string[];
+        }[],
+        customPurchaseId?: string,
     ) {
         const { result, errors } = (
-            await this.graphqlSDK.distributeFanPoints({
-                projectId: this.projectId,
+            await this.client.loyaltyProgramSdk().collectFanPoints({
+                projectId: this.client.loyaltyProgramId(),
                 userId,
-                partnerId,
-                amount,
-                title,
-                description,
-                customGroupId,
             })
-        ).data.distributeFanPoints;
-        return { result: result as Expand<FanPointsReward[]>, errors };
+        ).data.getFanPointsTransactions;
+        return { result: result as Expand<FanPointsTransaction[]>, errors };
     }
 
     /**
@@ -225,13 +148,13 @@ export class FanPointsModule {
      *
      * @returns an object containing the performed transaction.
      */
-    public async undoTransactionGroup(groupId: string) {
+    public async undoPurchase(purchaseId: string, purchaseItemId?: string) {
         const { result, errors } = (
             await this.graphqlSDK.undoFanPointsTransaction({
                 projectId: this.projectId,
                 groupId: groupId,
             })
         ).data.undoFanPointsTransaction;
-        return { result: result as Expand<FanPointsReward[]>, errors };
+        return { result: result as Expand<FanPointsTransaction[]>, errors };
     }
 }
