@@ -5,22 +5,17 @@ import {
 } from './queries/generated/sdk';
 import { Expand } from './utils/expandType';
 
-type StatusPointsReward =
+type StatusPointsTransaction =
     | undefined
     | {
-          transactionDate: string;
-          claimedDate: undefined | string;
-          details: {
-              transactionType: TransactionType;
-          };
-          groupId: string;
-          nr: number;
-          oldOwnerId: string;
-          ownerId: string;
-          reward: {
-              __typename: 'StatusPointsReward';
-              amount: number;
-          };
+          actionId?: string;
+          userId: string;
+          partnerId: string;
+          title: string;
+          description: string;
+          amount: number;
+          tags: string[];
+          date: string;
       };
 /**
  * This class allows you to interact with the StatusPoints module. The StatusPoints
@@ -81,30 +76,7 @@ export class StatusPointsModule {
                 earlierThan,
             })
         ).data.getStatusPointsTransactions;
-        return { result: result as Expand<StatusPointsReward[]>, errors };
-    }
-
-    /**
-     * Returns all transactions connected to the given transaction.
-     *
-     * @remarks
-     * A transaction A can be connected to another transactions B if A is the
-     * undo transaction of B or B is the undo transaction of A.
-     *
-     * @param groupId - the id of the transaction group
-     * @param nr - the nr of the transaction within the group
-     *
-     *  @returns an object containing all connected transactions.
-     */
-    public async getTransactionHistory(groupId: string, nr: number) {
-        const { result, errors } = (
-            await this.graphqlSDK.getStatusPointsTransactionHistory({
-                projectId: this.projectId,
-                groupId,
-                nr,
-            })
-        ).data.getStatusPointsTransactionHistory;
-        return { result: result as Expand<StatusPointsReward[]>, errors };
+        return { result: result as Expand<StatusPointsTransaction[]>, errors };
     }
 
     /**
@@ -155,17 +127,17 @@ export class StatusPointsModule {
      * @param amount - the amount of FanPoints to collect
      * @param title - the title of the transaction
      * @param description - the description of the transaction
-     * @param customGroupId - the id of the custom group¨
+     * @param customActionId - the id of the custom group¨
      *
      * @returns an object containing the performed transaction.
      */
-    public async distribute(
+    public async distributeStatusPointsOnAction(
         userId: string,
         partnerId: string,
-        action: StatusPointsAction,
+        tags: string[],
         title: string,
         description: string,
-        customGroupId?: string,
+        customActionId?: string,
     ) {
         const { result, errors } = (
             await this.graphqlSDK.distributeStatusPoints({
@@ -175,10 +147,10 @@ export class StatusPointsModule {
                 action,
                 title,
                 description,
-                customGroupId,
+                customGroupId: customActionId,
             })
         ).data.distributeStatusPoints;
-        return { result: result as Expand<StatusPointsReward[]>, errors };
+        return { result: result as Expand<StatusPointsTransaction[]>, errors };
     }
 
     /**
@@ -199,13 +171,13 @@ export class StatusPointsModule {
      *
      * @returns an object containing the performed transaction.
      */
-    public async undoTransactionGroup(groupId: string) {
+    public async undoAction(actionId: string) {
         const { result, errors } = (
             await this.graphqlSDK.undoStatusPointsTransaction({
                 projectId: this.projectId,
-                groupId,
+                groupId: actionId,
             })
         ).data.undoStatusPointsTransaction;
-        return { result: result as Expand<StatusPointsReward[]>, errors };
+        return { result: result as Expand<StatusPointsTransaction[]>, errors };
     }
 }
