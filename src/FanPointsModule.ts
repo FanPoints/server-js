@@ -126,28 +126,6 @@ export class FanPointsModule {
         return { result: result as Expand<FanPointsTransaction[]>, errors };
     }
 
-    /**
-     * Undoes a transaction group.
-     *
-     * @remarks
-     * This allows you to undo a transaction group. This will reverse
-     * the effect of e.g. a distribution or collection of FanPoints.
-     *
-     * Note that this might not be possible, e.g. if the FanPoints have
-     * already been spent by the user.
-     *
-     * Undoing a transaction corresponds to creating a new undo transaction.
-     * The method {@link getTransactionHistory} can be used to retrieve
-     * the history of a transaction.
-     *
-     * This operation is idempotent w.r.t. the group id. This means that if
-     * you call this method twice with the same group id, the second call
-     * will not have any effect.
-     *
-     * @param groupId - the id of the group to undo
-     *
-     * @returns an object containing the performed transaction.
-     */
     public async undoPurchase(purchaseId: string, purchaseItemId?: string) {
         const { result, errors } = (
             await this.graphqlSDK.undoFanPointsTransaction({
