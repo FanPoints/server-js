@@ -79,7 +79,6 @@ export class StatusPointsModule {
      * Returns the amount of Status Points the user would receive for the given
      * action.
      *
-     * @remarks
      * This allows you to check how many Status Points a user would receive for
      * a given action. It does not actually distribute the Status Points. Use
      * {@link distributeStatusPoints} to distribute Status Points.
