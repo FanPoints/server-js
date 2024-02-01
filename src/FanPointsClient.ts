@@ -231,19 +231,19 @@ export type PartnerConfig = {
     secret: string;
 };
 export type ClientConfig = {
-    /** An optional config if you are a loyalty program owner. */
+    /** Set this config if you are a loyalty program owner and want to manage it using the SDK. */
     loyaltyProgramConfig?: LoyaltyProgramConfig;
-    /** An optional config of the default partner. */
+    /** Set this config if you are a partner and want to manage it with this partner using the SDk. */
     defaultPartnerConfig?: PartnerConfig;
-    /** An optional config of multiple partners if you want to manage different partners. */
+    /** Set this config if you want to manage multiple partners using the SDK. */
     otherPartnerConfigs?: PartnerConfig[];
 };
 
 /**
  * This method creates a new FanPointsClient instance.
  *
- * The client ID and secret are required to authenticate with the
- * FanPoints API. They can be received from the FanPoints team.
+ * @returns a single client instance that can be used to manage one or more partners and / or a
+ * loyalty program.
  */
 export const createClient = (clientConfig: ClientConfig): FanPointsClient =>
     new FanPointsClient(clientConfig, config.apiEndpoint, config.oAuthDomain);
