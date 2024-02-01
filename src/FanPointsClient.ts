@@ -16,6 +16,13 @@ import { AuthSession } from './utils/fetchToken';
  */
 export default class FanPointsClient {
     /** @hidden */
+    public loyaltyProgramId: string | undefined;
+    /** @hidden */
+    public defaultPartnerId: string | undefined;
+    /** @hidden */
+    private partnerIds: string[];
+
+    /** @hidden */
     private authSessions: Record<string, AuthSession>;
     /** @hidden */
     private graphQLClients: Record<string, GraphQLClient>;
@@ -66,7 +73,11 @@ export default class FanPointsClient {
             return response;
         };
 
-    private addSDK(id: string, clientId: string, secret: string) {
+    /**
+     * Registers a new access token (client id + secret) for the given loyalty
+     * program id or partner id.
+     * @hidden */
+    private addAccessToken(id: string, clientId: string, secret: string) {
         this.authSessions[id] = new AuthSession(
             clientId,
             secret,
@@ -85,47 +96,62 @@ export default class FanPointsClient {
         this.SDKs[id] = getSdk(this.graphQLClients[id]);
     }
 
-    public loyaltyProgramId(): string {
-        if (!this.clientConfig.loyaltyProgramConfig) {
+    /**
+     * @returns the loyalty program id and sdk for the set loyalty program.
+     * @throws {@link Error} if no loyalty program was set.
+     * @hidden
+     */
+    public getLoyaltyProgram(): { sdk: Sdk; loyaltyProgramId: string } {
+        const loyaltyProgramId = this.loyaltyProgramId;
+        if (!loyaltyProgramId) {
             throw new Error(
                 'No loyalty program config was provided to the client.',
             );
         }
-        return this.clientConfig.loyaltyProgramConfig.loyaltyProgramId;
-    }
-    public partnerId(partnerId?: string): string {
-        if (partnerId) return partnerId;
-        if (!this.clientConfig.partnerConfig) {
-            throw new Error('No partner config was provided to the client.');
-        }
-        return this.clientConfig.partnerConfig.projectId;
-    }
 
-    public loyaltyProgramSdk(): Sdk {
-        const sdk = this.SDKs[this.loyaltyProgramId()];
-
+        const sdk = this.SDKs[loyaltyProgramId];
         if (!sdk) {
             throw new Error(
                 'No loyalty program config was provided to the client.',
             );
         }
 
-        return sdk;
+        return { loyaltyProgramId, sdk };
     }
 
-    public partnerSDK(partnerId?: string): Sdk {
-        const sdk = this.SDKs[this.partnerId(partnerId)];
+    /**
+     * @returns the partner id and sdk for the given partner id. If no partner id is set,
+     * returns the default partner.
+     * @throws {@link Error} if the partner id was not registered or no default partner is set.
+     * @hidden
+     */
+    public getPartner(partnerId?: string): { sdk: Sdk; partnerId: string } {
+        if (!partnerId || !this.defaultPartnerId) {
+            throw new Error('No partner config was provided to the client.');
+        }
 
+        const sdk = this.SDKs[partnerId || this.defaultPartnerId];
         if (!sdk) {
             throw new Error('No partner config was provided to the client.');
         }
 
-        return sdk;
+        return { partnerId: partnerId || this.defaultPartnerId, sdk };
+    }
+
+    /**
+     * @returns a map of partner ids and sdks for the configured partners.
+     * @hidden
+     */
+    public getPartners(): { sdk: Sdk; partnerId: string }[] {
+        return this.partnerIds.map((partnerId) => ({
+            sdk: this.SDKs[partnerId],
+            partnerId,
+        }));
     }
 
     /** @hidden */
     constructor(
-        private clientConfig: ClientConfig,
+        clientConfig: ClientConfig,
         private apiEndpoint: string,
         private oAuthDomain: string,
     ) {
@@ -133,18 +159,21 @@ export default class FanPointsClient {
         this.graphQLClients = {};
         this.SDKs = {};
 
-        const { loyaltyProgramConfig, partnerConfig, partnerConfigs } =
-            clientConfig;
+        const {
+            loyaltyProgramConfig,
+            defaultPartnerConfig: partnerConfig,
+            otherPartnerConfigs: partnerConfigs,
+        } = clientConfig;
 
         if (loyaltyProgramConfig) {
-            this.addSDK(
+            this.addAccessToken(
                 loyaltyProgramConfig.loyaltyProgramId,
                 loyaltyProgramConfig.clientId,
                 loyaltyProgramConfig.secret,
             );
         }
         if (partnerConfig) {
-            this.addSDK(
+            this.addAccessToken(
                 partnerConfig.projectId,
                 partnerConfig.clientId,
                 partnerConfig.secret,
@@ -152,8 +181,20 @@ export default class FanPointsClient {
         }
         if (partnerConfigs) {
             partnerConfigs.forEach((config) => {
-                this.addSDK(config.projectId, config.clientId, config.secret);
+                this.addAccessToken(
+                    config.projectId,
+                    config.clientId,
+                    config.secret,
+                );
             });
+        }
+
+        this.loyaltyProgramId = loyaltyProgramConfig?.loyaltyProgramId;
+        this.defaultPartnerId = partnerConfig?.projectId;
+        this.partnerIds =
+            partnerConfigs?.map((config) => config.projectId) || [];
+        if (partnerConfig) {
+            this.partnerIds.push(partnerConfig.projectId);
         }
 
         this.users = new UserModule(this);
@@ -190,9 +231,12 @@ export type PartnerConfig = {
     secret: string;
 };
 export type ClientConfig = {
+    /** An optional config if you are a loyalty program owner. */
     loyaltyProgramConfig?: LoyaltyProgramConfig;
-    partnerConfig?: PartnerConfig;
-    partnerConfigs?: PartnerConfig[];
+    /** An optional config of the default partner. */
+    defaultPartnerConfig?: PartnerConfig;
+    /** An optional config of multiple partners if you want to manage different partners. */
+    otherPartnerConfigs?: PartnerConfig[];
 };
 
 /**

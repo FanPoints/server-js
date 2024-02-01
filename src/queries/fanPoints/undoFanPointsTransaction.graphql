@@ -1,27 +1,28 @@
-mutation undoFanPointsTransaction(
-    $projectId: String = ""
-    $groupId: String = ""
+mutation undoFanPointsPurchase(
+    $partnerId: String!
+    $purchaseId: String!
+    $purchaseItemId: String
 ) {
-    undoFanPointsTransaction: undo_fan_points_transaction(
-        group_id: $groupId
-        project_id: $projectId
+    undoFanPointsPurchase: undo_fan_points_purchase(
+        partner_id: $partnerId
+        purchase_id: $purchaseId
+        purchase_item_id: $purchaseItemId
     ) {
         result {
-            reward {
-                ... on FanPointsReward {
-                    __typename
-                    amount
-                }
+            purchaseId: purchase_id
+            userId: user_id
+            type
+            purchaseItems: purchase_items {
+                purchaseItemId: purchase_item_id
+                partnerId: partner_id
+                title
+                description
+                price
+                currency
+                amount
+                tags
+                date
             }
-            ownerId: owner_id
-            oldOwnerId: old_owner_id
-            groupId: group_id
-            nr
-            details {
-                transactionType: transaction_type
-            }
-            transactionDate: transaction_date
-            claimedDate: claimed_date
         }
         errors {
             unkownUserError: unknown_user_error {

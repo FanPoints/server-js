@@ -12,6 +12,7 @@
         "@returns": true,
         "@remarks": true,
         "@example": true,
-        "@link": true
+        "@link": true,
+        "@throws": true
     }
 }

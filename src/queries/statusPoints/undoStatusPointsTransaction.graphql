@@ -1,27 +1,17 @@
-mutation undoStatusPointsTransaction(
-    $projectId: String = ""
-    $groupId: String = ""
-) {
+mutation undoStatusPointsTransaction($partnerId: String!, $actionId: String!) {
     undoStatusPointsTransaction: undo_status_points_transaction(
-        group_id: $groupId
-        project_id: $projectId
+        partner_id: $partnerId
+        action_id: $actionId
     ) {
         result {
-            reward {
-                ... on StatusPointsReward {
-                    __typename
-                    amount
-                }
-            }
-            ownerId: owner_id
-            oldOwnerId: old_owner_id
-            groupId: group_id
-            nr
-            details {
-                transactionType: transaction_type
-            }
-            transactionDate: transaction_date
-            claimedDate: claimed_date
+            actionId: action_id
+            userId: user_id
+            partnerId: partner_id
+            title
+            description
+            amount
+            tags
+            date
         }
         errors {
             unkownUserError: unknown_user_error {

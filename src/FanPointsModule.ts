@@ -1,25 +1,6 @@
 import FanPointsClient from './FanPointsClient';
-import { TransactionType } from './queries/generated/sdk';
-import { Expand } from './utils/expandType';
-
-type FanPointsTransaction =
-    | undefined
-    | {
-          purchaseId?: string;
-          userId: string;
-          type: 'distributed_on_purchase' | 'purchased_with_fanpoints';
-          purchaseItems: {
-              purchaseItemId?: string;
-              partnerId: string;
-              title: string;
-              description: string;
-              price: number;
-              currency: string;
-              amount: number;
-              tags: string[];
-              date: string;
-          }[];
-      };
+import { Currency } from './queries/generated/sdk';
+import { unwrap } from './utils/errors';
 
 /**
  *
@@ -38,13 +19,12 @@ export class FanPointsModule {
      * @returns an object containing the total amount of fan points the user has collected.
      */
     public async getBalance(userId: string) {
-        const result = await this.client
-            .loyaltyProgramSdk()
-            .getFanPointsBalance({
-                projectId: this.client.loyaltyProgramId(),
-                userId,
-            });
-        return result.data.getFanPointsBalance;
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.getFanPointsBalance({
+            projectId: loyaltyProgramId,
+            userId,
+        });
+        return unwrap(result.data.getFanPointsBalance);
     }
 
     /**
@@ -70,18 +50,28 @@ export class FanPointsModule {
      */
     public async getTransactions(
         userId: string,
+        partnerId?: string,
         limit?: number,
         earlierThan?: string,
     ) {
-        const { result, errors } = (
-            await this.client.loyaltyProgramSdk().getFanPointsTransactions({
-                projectId: this.client.loyaltyProgramId(),
+        const partnersToQuery = partnerId
+            ? [this.client.getPartner(partnerId)]
+            : this.client.getPartners();
+
+        const transactions = [];
+
+        for (const { sdk, partnerId } of partnersToQuery) {
+            const result = await sdk.getFanPointsTransactions({
+                projectId: this.client.loyaltyProgramId,
+                partnerId,
                 userId,
                 limit,
                 earlierThan,
-            })
-        ).data.getFanPointsTransactions;
-        return { result: result as Expand<FanPointsTransaction[]>, errors };
+            });
+            transactions.push(...unwrap(result.data.getFanPointsTransactions));
+        }
+
+        return transactions;
     }
 
     public async giveFanPointsOnPurchase(
@@ -91,18 +81,39 @@ export class FanPointsModule {
             title: string;
             description: string;
             price: number;
-            currency: string;
-            tags?: string[];
+            currency: Currency;
+            tags: string[];
         }[],
         customPurchaseId?: string,
     ) {
-        const { result, errors } = (
-            await this.client.loyaltyProgramSdk().distributeFanPoints({
-                projectId: this.client.loyaltyProgramId(),
-                userId,
-            })
-        ).data.getFanPointsTransactions;
-        return { result: result as Expand<FanPointsTransaction[]>, errors };
+        const purchaseItemsPerPartner = {} as Record<
+            string,
+            typeof purchaseItems
+        >;
+        purchaseItems.forEach((purchaseItem) => {
+            purchaseItemsPerPartner[
+                this.client.getPartner(purchaseItem.partnerId).partnerId
+            ].push(purchaseItem);
+        });
+
+        const resultingPurchaseItems = [];
+        for (const [partnerId, purchaseItems] of Object.entries(
+            purchaseItemsPerPartner,
+        )) {
+            const { sdk } = this.client.getPartner(partnerId);
+            const result = (
+                await sdk.giveFanPointsOnPurchase({
+                    projectId: this.client.loyaltyProgramId,
+                    userId,
+                    partnerId,
+                    purchaseItems,
+                    customPurchaseId,
+                })
+            ).data.giveFanPointsOnPurchase;
+            resultingPurchaseItems.push(...unwrap(result));
+        }
+
+        return resultingPurchaseItems;
     }
 
     public async payPurchaseWithFanPoints(
@@ -112,27 +123,54 @@ export class FanPointsModule {
             title: string;
             description: string;
             price: number;
-            currency: string;
-            tags?: string[];
+            currency: Currency;
+            tags: string[];
         }[],
         customPurchaseId?: string,
     ) {
-        const { result, errors } = (
-            await this.client.loyaltyProgramSdk().collectFanPoints({
-                projectId: this.client.loyaltyProgramId(),
-                userId,
-            })
-        ).data.getFanPointsTransactions;
-        return { result: result as Expand<FanPointsTransaction[]>, errors };
+        const purchaseItemsPerPartner = {} as Record<
+            string,
+            typeof purchaseItems
+        >;
+        purchaseItems.forEach((purchaseItem) => {
+            purchaseItemsPerPartner[
+                this.client.getPartner(purchaseItem.partnerId).partnerId
+            ].push(purchaseItem);
+        });
+
+        const resultingPurchaseItems = [];
+        for (const [partnerId, purchaseItems] of Object.entries(
+            purchaseItemsPerPartner,
+        )) {
+            const { sdk } = this.client.getPartner(partnerId);
+            const result = (
+                await sdk.payPurchaseWithFanPoints({
+                    projectId: this.client.loyaltyProgramId,
+                    userId,
+                    partnerId,
+                    purchaseItems,
+                    customPurchaseId,
+                })
+            ).data.payPurchaseWithFanPoints;
+            resultingPurchaseItems.push(...unwrap(result));
+        }
+
+        return resultingPurchaseItems;
     }
 
-    public async undoPurchase(purchaseId: string, purchaseItemId?: string) {
-        const { result, errors } = (
-            await this.graphqlSDK.undoFanPointsTransaction({
-                projectId: this.projectId,
-                groupId: groupId,
+    public async undoPurchase(
+        purchaseId: string,
+        purchaseItemId?: string,
+        specificPartnerId?: string,
+    ) {
+        const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
+        const result = (
+            await sdk.undoFanPointsPurchase({
+                partnerId,
+                purchaseId,
+                purchaseItemId,
             })
-        ).data.undoFanPointsTransaction;
-        return { result: result as Expand<FanPointsTransaction[]>, errors };
+        ).data.undoFanPointsPurchase;
+        return unwrap(result);
     }
 }
