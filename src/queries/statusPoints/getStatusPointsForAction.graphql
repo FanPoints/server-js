@@ -1,7 +1,7 @@
-query getStatusPointsForAction($partnerId: String!, $tags: [String!]!) {
+query getStatusPointsForAction($partnerId: String!, $actionCategory: String!) {
     getStatusPointsForAction: get_status_points_for_action(
         partner_id: $partnerId
-        tags: $tags
+        action_category: $actionCategory
     ) {
         result
     }

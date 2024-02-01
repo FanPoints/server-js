@@ -22,7 +22,10 @@ mutation giveFanPointsOnPurchase(
             tooFewAvailableError: too_few_available_error {
                 _empty
             }
-            invalidGroupIdError: invalid_group_id_error {
+            invalidTransactionIdError: invalid_transaction_id_error {
+                _empty
+            }
+            invalidRateCategoryError: invalid_rate_category_error {
                 _empty
             }
             alreadyExecutedError: already_executed_error {
@@ -41,7 +44,7 @@ mutation giveFanPointsOnPurchase(
                 price
                 currency
                 amount
-                tags
+                rateCategory: rate_category
                 date
             }
         }

@@ -1,6 +1,6 @@
 mutation giveStatusPoints(
     $projectId: String
-    $tags: [String!]!
+    $actionCategory: String!
     $customActionId: String
     $description: String!
     $partnerId: String!
@@ -8,7 +8,7 @@ mutation giveStatusPoints(
     $userId: String!
 ) {
     giveStatusPoints: distribute_status_points(
-        tags: $tags
+        action_category: $actionCategory
         description: $description
         partner_id: $partnerId
         project_id: $projectId
@@ -26,7 +26,10 @@ mutation giveStatusPoints(
             tooFewAvailableError: too_few_available_error {
                 _empty
             }
-            invalidGroupIdError: invalid_group_id_error {
+            invalidTransactionIdError: invalid_transaction_id_error {
+                _empty
+            }
+            invalidActionCategoryError: invalid_action_category_error {
                 _empty
             }
             alreadyExecutedError: already_executed_error {
@@ -40,7 +43,7 @@ mutation giveStatusPoints(
             title
             description
             amount
-            tags
+            actionCategory: action_category
             date
         }
     }

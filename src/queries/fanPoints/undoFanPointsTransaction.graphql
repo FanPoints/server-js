@@ -20,7 +20,7 @@ mutation undoFanPointsPurchase(
                 price
                 currency
                 amount
-                tags
+                rateCategory: rate_category
                 date
             }
         }
@@ -37,7 +37,7 @@ mutation undoFanPointsPurchase(
             transactionNotFoundError: transaction_not_found_error {
                 _empty
             }
-            invalidGroupIdError: invalid_group_id_error {
+            invalidTransactionIdError: invalid_transaction_id_error {
                 _empty
             }
             alreadyExecutedError: already_executed_error {
