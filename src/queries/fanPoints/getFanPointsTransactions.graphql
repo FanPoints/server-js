@@ -24,7 +24,7 @@ query getFanPointsTransactions(
                 price
                 currency
                 amount
-                tags
+                rateCategory: rate_category
                 date
             }
         }

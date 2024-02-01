@@ -19,7 +19,7 @@ query getStatusPointsTransactions(
             title
             description
             amount
-            tags
+            actionCategory: action_category
             date
         }
         errors {

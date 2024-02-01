@@ -12,8 +12,9 @@ export class StatusPointsModule {
     /**
      * Returns the total amount Status Points the user has collected.
      *
-     * @param userId - the id of the user
+     * @param userId - the id of the user.
      * @returns an object containing the total amount of Status Points the user has collected.
+     * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
     public async getBalance(userId: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
@@ -23,35 +24,37 @@ export class StatusPointsModule {
         });
         return unwrap(result.data.getStatusPointsBalance);
     }
+
     /**
-     * Returns all Status Points transactions connected to the given user.
+     * Returns all Status Points actions of the given user at partners.
      *
-     * @remarks
-     * The returned transactions are sorted by date, with the most recent
-     * transaction being first.
+     * If you configured multiple partners, you can use the `specificPartnerId`
+     * parameter to only query actions at the specific partner. If you configured
+     * multiple partners and don't provide a `specificPartnerId`, actions
+     * at all partners will be returned.
      *
-     * The parameters limit and lastReturnedTransaction can be used
-     * to paginate the results.
-     *
-     * If limit is given, at most limit transactions
-     * will be returned. If earlierThan is given, only transactions
-     * thah happened before this transaction will be returned. Combine
+     * If `limit` is given, at most `limit` actions
+     * will be returned. If `earlierThan` is given, only actions
+     * thah happened before this action will be returned. Combine
      * both parameters to paginate the results.
      *
      * @param userId - the id of the user
-     * @param limit - the maximum number of transactions to return
-     * @param earlierThan - if given, transactions after this date will be returned
+     * @param specificPartnerId - only return actions at this partner if multiple partners are configured
+     * @param limit - the maximum number of actions to return
+     * @param earlierThan - if given, actions before this date will be returned
      *
-     * @returns an object containing the relevant transactions.
+     * @returns an list of the actions.
+     *
+     * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
     public async getPerformedActions(
         userId: string,
-        partnerId?: string,
+        specificPartnerId?: string,
         limit?: number,
         earlierThan?: string,
     ) {
-        const partnersToQuery = partnerId
-            ? [this.client.getPartner(partnerId)]
+        const partnersToQuery = specificPartnerId
+            ? [this.client.getPartner(specificPartnerId)]
             : this.client.getPartners();
 
         const transactions = [];
@@ -71,6 +74,7 @@ export class StatusPointsModule {
 
         return transactions;
     }
+
     /**
      * Returns the amount of Status Points the user would receive for the given
      * action.
@@ -80,51 +84,59 @@ export class StatusPointsModule {
      * a given action. It does not actually distribute the Status Points. Use
      * {@link distributeStatusPoints} to distribute Status Points.
      *
-     * @param action - the action to check
+     * @param actionCategory - the action to check
+     * @param specificPartnerId - the id of the specific partner if multiple partners are configured
      *
      * @returns an object containing the amount of Status Points the user would receive.
      */
     public async getStatusPointsForAction(
-        tags: string[],
+        actionCategory: string,
         specificPartnerId?: string,
     ) {
         const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
         const result = await sdk.getStatusPointsForAction({
             partnerId,
-            tags,
+            actionCategory,
         });
         return unwrap(result.data.getStatusPointsForAction);
     }
+
     /**
      * Distributes Status Points to a user. Every distribution is connected to an
      * action and a partner. The actual number of Status Points the user receives
      * depends on the action and the partner and can be accessed using the
-     * {@link getStatusPointsForAction} method.
+     * {@link getStatusPointsForAction} method and can be set in the FanPoints
+     * backend.
      *
-     * @remarks
      * This allows users to earn Status Points to reward them for engaging with
      * the given partner.
      *
      * The title and description can be used to add human readable information
-     * on the transaction that could be used to display to the user.
+     * on the action that could be used to display to the user.
      *
-     * A custom group id can be given in order to link the transaction to a
+     * A custom action id can be given in order to link the action to a
      * specific event on your side. This operation is idempotent w.r.t. the
-     * custom group id. This means that if you call this method twice with the
-     * same custom group id, the second call will not have any effect.
+     * custom action id. This means that if you call this method twice with the
+     * same custom action id, the second call will not have any effect and an
+     * error will be thrown.
      *
      * @param userId - the id of the user
-     * @param partnerId - the id of the partner
-     * @param amount - the amount of FanPoints to collect
-     * @param title - the title of the transaction
-     * @param description - the description of the transaction
-     * @param customActionId - the id of the custom group¨
+     * @param actionCategory - the category of the action performed
+     * @param title - the title of the action
+     * @param description - the description of the action
+     * @param specificPartnerId - the id of the specific partner if multiple partners are configured
+     * @param customActionId - the id of the custom action to link it to an event on your side
      *
-     * @returns an object containing the performed transaction.
+     * @returns an list containing the performed Status Points transactions.
+     *
+     * @throws {@link RequestError} if the user does not exist (`unknownUserError`), if the
+     * custom action id is not valid (`invalidTransactionIdError`), if a transaction
+     * with the given custom action id already exists (`alreadyExecutedError`),
+     * or if the action category does not exist (`invalidActionCategoryError`).
      */
     public async giveStatusPointsOnAction(
         userId: string,
-        tags: string[],
+        actionCategory: string,
         title: string,
         description: string,
         specificPartnerId?: string,
@@ -136,7 +148,7 @@ export class StatusPointsModule {
                 projectId: this.client.loyaltyProgramId,
                 userId,
                 partnerId,
-                tags,
+                actionCategory,
                 title,
                 description,
                 customActionId,
@@ -144,23 +156,27 @@ export class StatusPointsModule {
         ).data.giveStatusPoints;
         return unwrap(result);
     }
+
     /**
-     * Undoes a transaction group.
+     * Undoes an action.
      *
-     * @remarks
-     * This allows you to undo a transaction group. This will reverse
-     * the effect of e.g. a distribution or collection of FanPoints.
+     * This will reverse the effect of giving Status Points to the user.
      *
-     * Note that this might not be possible, e.g. if the FanPoints have
-     * already been spent by the user.
+     * Undoing an action corresponds to creating a new action with a negative number of Status Points.
+     * This operation is idempotent w.r.t. the action id. This means that if you call this method twice
+     * with the same arguments, the second call will not have any effect and an error is thrown.
      *
-     * Undoing a transaction corresponds to creating a new undo transaction.
-     * The method {@link getTransactionHistory} can be used to retrieve
-     * the history of a transaction.
+     * If you configured multiple partners, you can use the `specificPartnerId` parameter
+     * to specify the partner where the action happened. If you configured multiple partners
+     * and don't provide a `specificPartnerId`, the default partner will be used.
      *
-     * @param groupId - the id of the group to undo
+     * @param actionId - the id of the action to undo
+     * @param specificPartnerId - the id of the partner where the action happened if multiple partners are configured
      *
-     * @returns an object containing the performed transaction.
+     * @returns an list of the performed undo actions.
+     *
+     * @throws {@link RequestError} if the action does not exist (`transactionNotFoundError`),
+     * or if the action has already been undone (`alreadyExecutedError`).
      */
     public async undoAction(actionId: string, specificPartnerId?: string) {
         const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
