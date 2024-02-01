@@ -1,20 +1,20 @@
-mutation distributeStatusPoints(
-    $action: StatusPointsAction!
-    $customGroupId: String
+mutation giveStatusPoints(
+    $projectId: String
+    $tags: [String!]!
+    $customActionId: String
     $description: String!
     $partnerId: String!
-    $projectId: String!
     $title: String!
     $userId: String!
 ) {
-    distributeStatusPoints: distribute_status_points(
-        action: $action
+    giveStatusPoints: distribute_status_points(
+        tags: $tags
         description: $description
         partner_id: $partnerId
         project_id: $projectId
         title: $title
         user_id: $userId
-        custom_group_id: $customGroupId
+        custom_action_id: $customActionId
     ) {
         errors {
             unkownUserError: unknown_user_error {
@@ -34,21 +34,14 @@ mutation distributeStatusPoints(
             }
         }
         result {
-            reward {
-                ... on StatusPointsReward {
-                    __typename
-                    amount
-                }
-            }
-            ownerId: owner_id
-            oldOwnerId: old_owner_id
-            groupId: group_id
-            nr
-            details {
-                transactionType: transaction_type
-            }
-            transactionDate: transaction_date
-            claimedDate: claimed_date
+            actionId: action_id
+            userId: user_id
+            partnerId: partner_id
+            title
+            description
+            amount
+            tags
+            date
         }
     }
 }

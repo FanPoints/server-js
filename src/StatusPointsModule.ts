@@ -1,32 +1,13 @@
-import {
-    Sdk,
-    StatusPointsAction,
-    TransactionType,
-} from './queries/generated/sdk';
-import { Expand } from './utils/expandType';
+import FanPointsClient from './FanPointsClient';
+import { unwrap } from './utils/errors';
 
-type StatusPointsTransaction =
-    | undefined
-    | {
-          actionId?: string;
-          userId: string;
-          partnerId: string;
-          title: string;
-          description: string;
-          amount: number;
-          tags: string[];
-          date: string;
-      };
 /**
  * This class allows you to interact with the StatusPoints module. The StatusPoints
  * module allows to distribute Status Points to users to reward engagement.
  */
 export class StatusPointsModule {
     /** @hidden */
-    constructor(
-        private projectId: string,
-        private graphqlSDK: Sdk,
-    ) {}
+    constructor(private client: FanPointsClient) {}
 
     /**
      * Returns the total amount Status Points the user has collected.
@@ -35,13 +16,13 @@ export class StatusPointsModule {
      * @returns an object containing the total amount of Status Points the user has collected.
      */
     public async getBalance(userId: string) {
-        const result = await this.graphqlSDK.getStatusPointsBalance({
-            projectId: this.projectId,
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.getStatusPointsBalance({
+            projectId: loyaltyProgramId,
             userId,
         });
-        return result.data.getStatusPointsBalance;
+        return unwrap(result.data.getStatusPointsBalance);
     }
-
     /**
      * Returns all Status Points transactions connected to the given user.
      *
@@ -63,22 +44,33 @@ export class StatusPointsModule {
      *
      * @returns an object containing the relevant transactions.
      */
-    public async getTransactions(
+    public async getPerformedActions(
         userId: string,
+        partnerId?: string,
         limit?: number,
         earlierThan?: string,
     ) {
-        const { result, errors } = (
-            await this.graphqlSDK.getStatusPointsTransactions({
-                projectId: this.projectId,
+        const partnersToQuery = partnerId
+            ? [this.client.getPartner(partnerId)]
+            : this.client.getPartners();
+
+        const transactions = [];
+
+        for (const { sdk, partnerId } of partnersToQuery) {
+            const result = await sdk.getStatusPointsTransactions({
+                projectId: this.client.loyaltyProgramId,
+                partnerId,
                 userId,
                 limit,
                 earlierThan,
-            })
-        ).data.getStatusPointsTransactions;
-        return { result: result as Expand<StatusPointsTransaction[]>, errors };
-    }
+            });
+            transactions.push(
+                ...unwrap(result.data.getStatusPointsTransactions),
+            );
+        }
 
+        return transactions;
+    }
     /**
      * Returns the amount of Status Points the user would receive for the given
      * action.
@@ -93,17 +85,16 @@ export class StatusPointsModule {
      * @returns an object containing the amount of Status Points the user would receive.
      */
     public async getStatusPointsForAction(
-        action: StatusPointsAction,
-        partnerId: string,
+        tags: string[],
+        specificPartnerId?: string,
     ) {
-        const result = await this.graphqlSDK.getStatusPointsForAction({
-            projectId: this.projectId,
+        const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
+        const result = await sdk.getStatusPointsForAction({
             partnerId,
-            action,
+            tags,
         });
-        return result.data.getStatusPointsForAction;
+        return unwrap(result.data.getStatusPointsForAction);
     }
-
     /**
      * Distributes Status Points to a user. Every distribution is connected to an
      * action and a partner. The actual number of Status Points the user receives
@@ -131,28 +122,28 @@ export class StatusPointsModule {
      *
      * @returns an object containing the performed transaction.
      */
-    public async distributeStatusPointsOnAction(
+    public async giveStatusPointsOnAction(
         userId: string,
-        partnerId: string,
         tags: string[],
         title: string,
         description: string,
+        specificPartnerId?: string,
         customActionId?: string,
     ) {
-        const { result, errors } = (
-            await this.graphqlSDK.distributeStatusPoints({
-                projectId: this.projectId,
+        const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
+        const result = (
+            await sdk.giveStatusPoints({
+                projectId: this.client.loyaltyProgramId,
                 userId,
                 partnerId,
-                action,
+                tags,
                 title,
                 description,
-                customGroupId: customActionId,
+                customActionId,
             })
-        ).data.distributeStatusPoints;
-        return { result: result as Expand<StatusPointsTransaction[]>, errors };
+        ).data.giveStatusPoints;
+        return unwrap(result);
     }
-
     /**
      * Undoes a transaction group.
      *
@@ -171,13 +162,14 @@ export class StatusPointsModule {
      *
      * @returns an object containing the performed transaction.
      */
-    public async undoAction(actionId: string) {
-        const { result, errors } = (
-            await this.graphqlSDK.undoStatusPointsTransaction({
-                projectId: this.projectId,
-                groupId: actionId,
+    public async undoAction(actionId: string, specificPartnerId?: string) {
+        const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
+        const result = (
+            await sdk.undoStatusPointsTransaction({
+                partnerId,
+                actionId,
             })
         ).data.undoStatusPointsTransaction;
-        return { result: result as Expand<StatusPointsTransaction[]>, errors };
+        return unwrap(result);
     }
 }

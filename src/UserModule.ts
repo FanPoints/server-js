@@ -1,5 +1,6 @@
 import FanPointsClient from './FanPointsClient';
 import { Sdk } from './queries/generated/sdk';
+import { unwrap } from './utils/errors';
 
 /**
  * This class allows you manage users in your FanPoints project. A user corresponds to
@@ -12,8 +13,9 @@ export class UserModule {
 
     /** @hidden */
     constructor(client: FanPointsClient) {
-        this.sdk = client.loyaltyProgramSdk();
-        this.loyaltyProgramId = client.loyaltyProgramId();
+        const { sdk, loyaltyProgramId } = client.getLoyaltyProgram();
+        this.sdk = sdk;
+        this.loyaltyProgramId = loyaltyProgramId;
     }
 
     /**
@@ -36,7 +38,7 @@ export class UserModule {
             userId,
             mailAddress,
         });
-        return result.data.addUser;
+        return unwrap(result.data.addUser);
     }
 
     /**
@@ -56,7 +58,7 @@ export class UserModule {
             oldUserId,
             newUserId,
         });
-        return result.data.changeUserId;
+        return unwrap(result.data.changeUserId);
     }
 
     /**
@@ -71,7 +73,7 @@ export class UserModule {
             userId,
             newMailAddress,
         });
-        return result.data.changeUserMailAddress;
+        return unwrap(result.data.changeUserMailAddress);
     }
 
     /**
@@ -84,7 +86,7 @@ export class UserModule {
             projectId: this.loyaltyProgramId,
             userId,
         });
-        return result.data.deleteUser;
+        return unwrap(result.data.deleteUser);
     }
 
     /**
@@ -97,6 +99,6 @@ export class UserModule {
             projectId: this.loyaltyProgramId,
             userId,
         });
-        return result.data.getUserById;
+        return unwrap(result.data.getUserById);
     }
 }

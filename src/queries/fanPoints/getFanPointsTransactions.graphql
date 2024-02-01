@@ -1,31 +1,32 @@
 query getFanPointsTransactions(
-    $projectId: String!
+    $projectId: String
+    $partnerId: String!
     $userId: String!
     $limit: Int
     $earlierThan: String
 ) {
     getFanPointsTransactions: get_fan_points_transactions(
         project_id: $projectId
+        partner_id: $partnerId
         user_id: $userId
         earlier_than: $earlierThan
         limit: $limit
     ) {
         result {
-            reward {
-                ... on FanPointsReward {
-                    __typename
-                    amount
-                }
+            purchaseId: purchase_id
+            userId: user_id
+            type
+            purchaseItems: purchase_items {
+                purchaseItemId: purchase_item_id
+                partnerId: partner_id
+                title
+                description
+                price
+                currency
+                amount
+                tags
+                date
             }
-            ownerId: owner_id
-            oldOwnerId: old_owner_id
-            groupId: group_id
-            nr
-            details {
-                transactionType: transaction_type
-            }
-            transactionDate: transaction_date
-            claimedDate: claimed_date
         }
         errors {
             unkownUserError: unknown_user_error {
