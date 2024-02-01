@@ -1,6 +1,11 @@
 class RequestError extends Error {
+    /** @hidden */
     constructor(
         message: string,
+        /** A list of the exact errors thrown by the request. The specific error codes
+         * can be found in the documentation of the different methods in the "Throws"
+         * section.
+         */
         public errors: string[],
     ) {
         super(message);
