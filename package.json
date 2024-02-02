@@ -1,13 +1,20 @@
 {
     "name": "@fanpoints/server-js",
-    "version": "0.1.1",
-    "type": "module",
+    "version": "0.1.8",
     "description": "The SDK that allows to integrate FanPoints on the server-side.",
     "files": [
         "dist"
     ],
-    "main": "dist/index.js",
-    "types": "dist/types.d.ts",
+    "module": "dist/esm/index.js",
+    "main": "dist/cjs/index.js",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "typings": "dist/index.d.ts",
     "scripts": {
         "format": "prettier --write .",
         "lint": "eslint src --ext .js,.ts",
@@ -15,8 +22,8 @@
         "docs": "npx typedoc",
         "fetch-secrets": ". ./scripts/fetch-secrets.sh",
         "fetch-secrets-exttest": ". ./scripts/fetch-secrets.sh exttest",
-        "build": "rm -rf build && rollup -c",
-        "publish": "npm run fetch-secrets-exttest && npm run docs && npm run build && npm publish --access public",
+        "build": "rm -rf dist && rollup -c --bundleConfigAsCjs",
+        "publish-to-npm": "npm run fetch-secrets-exttest && npm run docs && npm run build && npm publish --access public",
         "generate-graphql": "doppler run --mount ./scripts/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen --config ./scripts/codegen.ts"
     },
     "author": "FanPoints",
@@ -29,6 +36,7 @@
         "@graphql-codegen/typescript-graphql-request": "^6.0.1",
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
         "@rollup/plugin-commonjs": "^25.0.7",
+        "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-typescript": "^11.1.5",
         "@typescript-eslint/eslint-plugin": "^6.12.0",
         "@typescript-eslint/parser": "^6.12.0",
@@ -46,10 +54,13 @@
         "sync-request": "^6.1.0",
         "typedoc": "^0.25.4",
         "typedoc-material-theme": "^1.0.1",
-        "typescript": "^5.2.2",
-        "@rollup/plugin-node-resolve": "^15.2.3"
+        "typescript": "^5.2.2"
     },
     "dependencies": {
+        "@aws-sdk/client-appsync": "^3.462.0",
+        "graphql-request": "^6.1.0"
+    },
+    "peerDependencies": {
         "@aws-sdk/client-appsync": "^3.462.0",
         "graphql-request": "^6.1.0"
     }
