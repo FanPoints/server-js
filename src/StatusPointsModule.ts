@@ -51,7 +51,7 @@ export class StatusPointsModule {
         userId: string,
         specificPartnerId?: string,
         limit?: number,
-        earlierThan?: string,
+        earlierThan?: Date,
     ) {
         const partnersToQuery = specificPartnerId
             ? [this.client.getPartner(specificPartnerId)]
@@ -65,7 +65,7 @@ export class StatusPointsModule {
                 partnerId,
                 userId,
                 limit,
-                earlierThan,
+                earlierThan: earlierThan?.toISOString(),
             });
             transactions.push(
                 ...unwrap(result.data.getStatusPointsTransactions),
