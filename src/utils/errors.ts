@@ -27,7 +27,7 @@ function unwrap<T, E extends object>({
 }): T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function unwrap(args: any) {
-    if (args.result) return args.result;
+    if (args.result !== undefined && args.result !== null) return args.result;
 
     const errorStrings = [];
     for (const key in args.errors) {
@@ -35,6 +35,8 @@ function unwrap(args: any) {
             errorStrings.push(key);
         }
     }
+
+    console.log(JSON.stringify(args));
 
     throw new RequestError('Request failed.', errorStrings);
 }

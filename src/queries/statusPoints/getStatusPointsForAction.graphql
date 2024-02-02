@@ -4,5 +4,10 @@ query getStatusPointsForAction($partnerId: String!, $actionCategory: String!) {
         action_category: $actionCategory
     ) {
         result
+        errors {
+            invalidActionCategoryError: invalid_action_category_error {
+                _empty
+            }
+        }
     }
 }

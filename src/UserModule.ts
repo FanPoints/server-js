@@ -1,5 +1,4 @@
 import FanPointsClient from './FanPointsClient';
-import { Sdk } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
 
 /**
@@ -8,15 +7,8 @@ import { unwrap } from './utils/errors';
  * points).
  */
 export class UserModule {
-    private sdk: Sdk;
-    private loyaltyProgramId: string;
-
     /** @hidden */
-    constructor(client: FanPointsClient) {
-        const { sdk, loyaltyProgramId } = client.getLoyaltyProgram();
-        this.sdk = sdk;
-        this.loyaltyProgramId = loyaltyProgramId;
-    }
+    constructor(private client: FanPointsClient) {}
 
     /**
      * Adds a user to your loyalty program. A user corresponds to a person
@@ -37,8 +29,9 @@ export class UserModule {
      * (`invalidMailAddressError`).
      */
     public async addUser(userId: string, mailAddress: string) {
-        const result = await this.sdk.addUser({
-            projectId: this.loyaltyProgramId,
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.addUser({
+            projectId: loyaltyProgramId,
             userId,
             mailAddress,
         });
@@ -60,8 +53,9 @@ export class UserModule {
      * or the new user ID is already taken (`userAlreadyExistsError`).
      */
     public async changeUserId(oldUserId: string, newUserId: string) {
-        const result = await this.sdk.changeUserId({
-            projectId: this.loyaltyProgramId,
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.changeUserId({
+            projectId: loyaltyProgramId,
             oldUserId,
             newUserId,
         });
@@ -79,8 +73,9 @@ export class UserModule {
      * (`invalidMailAdressError`).
      */
     public async changeMailAddress(userId: string, newMailAddress: string) {
-        const result = await this.sdk.changeUserMailAddress({
-            projectId: this.loyaltyProgramId,
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.changeUserMailAddress({
+            projectId: loyaltyProgramId,
             userId,
             newMailAddress,
         });
@@ -95,8 +90,9 @@ export class UserModule {
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
     public async deleteUser(userId: string) {
-        const result = await this.sdk.deleteUser({
-            projectId: this.loyaltyProgramId,
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.deleteUser({
+            projectId: loyaltyProgramId,
             userId,
         });
         return unwrap(result.data.deleteUser);
@@ -111,8 +107,9 @@ export class UserModule {
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
     public async getUser(userId: string) {
-        const result = await this.sdk.getUserById({
-            projectId: this.loyaltyProgramId,
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.getUserById({
+            projectId: loyaltyProgramId,
             userId,
         });
         return unwrap(result.data.getUserById);

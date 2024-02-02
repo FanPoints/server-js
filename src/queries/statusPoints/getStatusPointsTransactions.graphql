@@ -23,7 +23,7 @@ query getStatusPointsTransactions(
             date
         }
         errors {
-            unkownUserError: unknown_user_error {
+            unknownUserError: unknown_user_error {
                 _empty
             }
         }

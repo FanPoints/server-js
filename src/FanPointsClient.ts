@@ -126,16 +126,18 @@ export default class FanPointsClient {
      * @hidden
      */
     public getPartner(partnerId?: string): { sdk: Sdk; partnerId: string } {
-        if (!partnerId || !this.defaultPartnerId) {
+        partnerId = partnerId || this.defaultPartnerId;
+
+        if (!partnerId) {
             throw new Error('No partner config was provided to the client.');
         }
 
-        const sdk = this.SDKs[partnerId || this.defaultPartnerId];
+        const sdk = this.SDKs[partnerId];
         if (!sdk) {
             throw new Error('No partner config was provided to the client.');
         }
 
-        return { partnerId: partnerId || this.defaultPartnerId, sdk };
+        return { partnerId, sdk };
     }
 
     /**
@@ -174,7 +176,7 @@ export default class FanPointsClient {
         }
         if (partnerConfig) {
             this.addAccessToken(
-                partnerConfig.projectId,
+                partnerConfig.partnerId,
                 partnerConfig.clientId,
                 partnerConfig.secret,
             );
@@ -182,7 +184,7 @@ export default class FanPointsClient {
         if (partnerConfigs) {
             partnerConfigs.forEach((config) => {
                 this.addAccessToken(
-                    config.projectId,
+                    config.partnerId,
                     config.clientId,
                     config.secret,
                 );
@@ -190,11 +192,11 @@ export default class FanPointsClient {
         }
 
         this.loyaltyProgramId = loyaltyProgramConfig?.loyaltyProgramId;
-        this.defaultPartnerId = partnerConfig?.projectId;
+        this.defaultPartnerId = partnerConfig?.partnerId;
         this.partnerIds =
-            partnerConfigs?.map((config) => config.projectId) || [];
+            partnerConfigs?.map((config) => config.partnerId) || [];
         if (partnerConfig) {
-            this.partnerIds.push(partnerConfig.projectId);
+            this.partnerIds.push(partnerConfig.partnerId);
         }
 
         this.users = new UserModule(this);
@@ -224,7 +226,7 @@ export type LoyaltyProgramConfig = {
 
 export type PartnerConfig = {
     /** The ID of the project you want to connect to. */
-    projectId: string;
+    partnerId: string;
     /** The clientId you want to connect to. */
     clientId: string;
     /** The secret belonging to the clientId. */
