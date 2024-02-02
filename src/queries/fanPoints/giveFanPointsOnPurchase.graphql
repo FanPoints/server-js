@@ -13,7 +13,7 @@ mutation giveFanPointsOnPurchase(
         custom_purchase_id: $customPurchaseId
     ) {
         errors {
-            unkownUserError: unknown_user_error {
+            unknownUserError: unknown_user_error {
                 _empty
             }
             invalidRewardAmountError: invalid_reward_amount_error {

@@ -1,9 +1,13 @@
 mutation undoFanPointsPurchase(
+    $projectId: String
+    $userId: String!
     $partnerId: String!
     $purchaseId: String!
     $purchaseItemId: String
 ) {
     undoFanPointsPurchase: undo_fan_points_purchase(
+        project_id: $projectId
+        user_id: $userId
         partner_id: $partnerId
         purchase_id: $purchaseId
         purchase_item_id: $purchaseItemId
@@ -25,7 +29,7 @@ mutation undoFanPointsPurchase(
             }
         }
         errors {
-            unkownUserError: unknown_user_error {
+            unknownUserError: unknown_user_error {
                 _empty
             }
             invalidRewardAmountError: invalid_reward_amount_error {

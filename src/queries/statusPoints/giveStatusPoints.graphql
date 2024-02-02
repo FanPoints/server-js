@@ -17,7 +17,7 @@ mutation giveStatusPoints(
         custom_action_id: $customActionId
     ) {
         errors {
-            unkownUserError: unknown_user_error {
+            unknownUserError: unknown_user_error {
                 _empty
             }
             invalidRewardAmountError: invalid_reward_amount_error {

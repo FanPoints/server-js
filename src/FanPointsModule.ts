@@ -242,6 +242,7 @@ export class FanPointsModule {
      * to specify the partner where the purchase happened. If you configured multiple partners
      * and don't provide a `specificPartnerId`, the default partner will be used.
      *
+     * @param userId - the id of the user that performed the purchase to undo
      * @param purchaseId - the id of the purchase to undo
      * @param purchaseItemId - the id of the purchase item to undo
      * @param specificPartnerId - the id of the partner where the purchase happened if multiple partners are configured
@@ -253,6 +254,7 @@ export class FanPointsModule {
      * has already been undone (`alreadyExecutedError`).
      */
     public async undoPurchase(
+        userId: string,
         purchaseId: string,
         purchaseItemId?: string,
         specificPartnerId?: string,
@@ -260,6 +262,8 @@ export class FanPointsModule {
         const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
         const result = (
             await sdk.undoFanPointsPurchase({
+                userId,
+                projectId: this.client.loyaltyProgramId,
                 partnerId,
                 purchaseId,
                 purchaseItemId,

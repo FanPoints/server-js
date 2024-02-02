@@ -1,5 +1,12 @@
-mutation undoStatusPointsTransaction($partnerId: String!, $actionId: String!) {
+mutation undoStatusPointsTransaction(
+    $projectId: String
+    $userId: String!
+    $partnerId: String!
+    $actionId: String!
+) {
     undoStatusPointsTransaction: undo_status_points_transaction(
+        project_id: $projectId
+        user_id: $userId
         partner_id: $partnerId
         action_id: $actionId
     ) {
@@ -14,7 +21,7 @@ mutation undoStatusPointsTransaction($partnerId: String!, $actionId: String!) {
             date
         }
         errors {
-            unkownUserError: unknown_user_error {
+            unknownUserError: unknown_user_error {
                 _empty
             }
             invalidRewardAmountError: invalid_reward_amount_error {
