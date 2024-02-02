@@ -57,7 +57,7 @@ export class FanPointsModule {
         userId: string,
         specificPartnerId?: string,
         limit?: number,
-        earlierThan?: string,
+        earlierThan?: Date,
     ) {
         const partnersToQuery = specificPartnerId
             ? [this.client.getPartner(specificPartnerId)]
@@ -71,7 +71,7 @@ export class FanPointsModule {
                 partnerId,
                 userId,
                 limit,
-                earlierThan,
+                earlierThan: earlierThan?.toISOString(),
             });
             transactions.push(...unwrap(result.data.getFanPointsTransactions));
         }
