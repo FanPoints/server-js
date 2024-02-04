@@ -1,5 +1,5 @@
 import FanPointsClient from './FanPointsClient';
-import { Currency } from './queries/generated/sdk';
+import { Currency, PurchaseItemInput } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
 
 /**
@@ -7,9 +7,9 @@ import { unwrap } from './utils/errors';
  * module allows to distribute FanPoints to users and collect FanPoints from a
  * user as a method of payment.
  */
-export class FanPointsModule {
+export class FanPointsModule<PartnerLabel extends string> {
     /** @hidden */
-    constructor(private client: FanPointsClient) {}
+    constructor(private client: FanPointsClient<PartnerLabel>) {}
 
     /**
      * Returns the total amount FanPoints the user has collected.
@@ -111,24 +111,31 @@ export class FanPointsModule {
     public async giveFanPointsOnPurchase(
         userId: string,
         purchaseItems: {
-            partnerId?: string;
             title: string;
             description: string;
             price: number;
             currency: Currency;
-            rate_category: string | undefined;
+            partnerId?: string;
+            partnerLabel?: PartnerLabel;
+            rateLabel?: string;
         }[],
         customPurchaseId?: string,
     ) {
         const purchaseItemsPerPartner = {} as Record<
             string,
-            typeof purchaseItems
+            PurchaseItemInput[]
         >;
         purchaseItems.forEach((purchaseItem) => {
             const partnerId = this.client.getPartner(
                 purchaseItem.partnerId,
+                purchaseItem.partnerLabel,
             ).partnerId;
-            purchaseItemsPerPartner[partnerId].push(purchaseItem);
+
+            const modfiedPurchaseItem = {
+                ...purchaseItem,
+                rate_category: purchaseItem.rateLabel,
+            };
+            purchaseItemsPerPartner[partnerId].push(modfiedPurchaseItem);
         });
 
         const resultingPurchaseItems = [];
@@ -141,7 +148,7 @@ export class FanPointsModule {
                     projectId: this.client.loyaltyProgramId,
                     userId,
                     partnerId,
-                    purchaseItems,
+                    purchaseItems: purchaseItems,
                     customPurchaseId,
                 })
             ).data.giveFanPointsOnPurchase;
@@ -189,18 +196,26 @@ export class FanPointsModule {
             description: string;
             price: number;
             currency: Currency;
-            rate_category: string | undefined;
+            partnerLabel: PartnerLabel;
+            rateLabel: string | undefined;
         }[],
         customPurchaseId?: string,
     ) {
         const purchaseItemsPerPartner = {} as Record<
             string,
-            typeof purchaseItems
+            PurchaseItemInput[]
         >;
         purchaseItems.forEach((purchaseItem) => {
+            const modfiedPurchaseItem = {
+                ...purchaseItem,
+                rate_category: purchaseItem.rateLabel,
+            };
             purchaseItemsPerPartner[
-                this.client.getPartner(purchaseItem.partnerId).partnerId
-            ].push(purchaseItem);
+                this.client.getPartner(
+                    purchaseItem.partnerId,
+                    purchaseItem.partnerLabel,
+                ).partnerId
+            ].push(modfiedPurchaseItem);
         });
 
         const resultingPurchaseItems = [];

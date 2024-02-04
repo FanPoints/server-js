@@ -77,10 +77,19 @@ const client = createClient({
         clientId: 'the client id',
         secret: 'the client secret',
     },
-    defaultPartnerConfig: {
-        partnerId: 'the partner id',
-        clientId: 'the client id',
-        secret: 'the client secret',
-    },
+    partnerConfigs: [
+        {
+            partnerId: 'the partner id',
+            clientId: 'the client id',
+            secret: 'the client secret'
+            puchaseLabels: ['tickets', 'gift_cards'],
+        },
+        {
+            partnerId: 'the partner id',
+            clientId: 'the client id',
+            secret: 'the client secret'
+            puchaseLabels: ['merchandise', 'sports_equipment'],
+        },
+    ],
 });
 ```
