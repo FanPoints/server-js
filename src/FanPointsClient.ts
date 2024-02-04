@@ -14,13 +14,15 @@ import { AuthSession } from './utils/fetchToken';
 /**
  * This client wraps the FanPoints API to allow convenient access.
  */
-export default class FanPointsClient {
+export default class FanPointsClient<PartnerLabel extends string = string> {
     /** @hidden */
     public loyaltyProgramId: string | undefined;
     /** @hidden */
     public defaultPartnerId: string | undefined;
     /** @hidden */
     private partnerIds: string[];
+    /** @hidden */
+    private partnerLabelToId: Record<PartnerLabel, string>;
 
     /** @hidden */
     private authSessions: Record<string, AuthSession>;
@@ -29,7 +31,7 @@ export default class FanPointsClient {
     /** @hidden */
     private SDKs: Record<string, Sdk>;
 
-    public fanPoints: FanPointsModule;
+    public fanPoints: FanPointsModule<PartnerLabel>;
     public statusPoints: StatusPointsModule;
     public users: UserModule;
 
@@ -120,13 +122,19 @@ export default class FanPointsClient {
     }
 
     /**
-     * @returns the partner id and sdk for the given partner id. If no partner id is set,
+     * @returns the partner id and sdk for the given partner id or label. If no partner id or label is set,
      * returns the default partner.
      * @throws {@link Error} if the partner id was not registered or no default partner is set.
      * @hidden
      */
-    public getPartner(partnerId?: string): { sdk: Sdk; partnerId: string } {
-        partnerId = partnerId || this.defaultPartnerId;
+    public getPartner(
+        partnerId?: string,
+        partnerLabel?: PartnerLabel,
+    ): { sdk: Sdk; partnerId: string } {
+        partnerId =
+            partnerId ||
+            (partnerLabel && this.partnerLabelToId[partnerLabel]) ||
+            this.defaultPartnerId;
 
         if (!partnerId) {
             throw new Error('No partner config was provided to the client.');
@@ -153,7 +161,7 @@ export default class FanPointsClient {
 
     /** @hidden */
     constructor(
-        clientConfig: ClientConfig,
+        clientConfig: ClientConfig<PartnerLabel>,
         private apiEndpoint: string,
         private oAuthDomain: string,
     ) {
@@ -174,12 +182,22 @@ export default class FanPointsClient {
                 loyaltyProgramConfig.secret,
             );
         }
+
+        this.partnerIds = [] as string[];
+        this.partnerLabelToId = {} as Record<PartnerLabel, string>;
+        this.loyaltyProgramId = loyaltyProgramConfig?.loyaltyProgramId;
+        this.defaultPartnerId = partnerConfig?.partnerId;
+
         if (partnerConfig) {
             this.addAccessToken(
                 partnerConfig.partnerId,
                 partnerConfig.clientId,
                 partnerConfig.secret,
             );
+            this.partnerIds.push(partnerConfig.partnerId);
+            partnerConfig.partnerLabels?.forEach((label) => {
+                this.partnerLabelToId[label] = partnerConfig.partnerId;
+            });
         }
         if (partnerConfigs) {
             partnerConfigs.forEach((config) => {
@@ -188,15 +206,11 @@ export default class FanPointsClient {
                     config.clientId,
                     config.secret,
                 );
+                this.partnerIds.push(config.partnerId);
+                config.partnerLabels?.forEach((label) => {
+                    this.partnerLabelToId[label] = config.partnerId;
+                });
             });
-        }
-
-        this.loyaltyProgramId = loyaltyProgramConfig?.loyaltyProgramId;
-        this.defaultPartnerId = partnerConfig?.partnerId;
-        this.partnerIds =
-            partnerConfigs?.map((config) => config.partnerId) || [];
-        if (partnerConfig) {
-            this.partnerIds.push(partnerConfig.partnerId);
         }
 
         this.users = new UserModule(this);
@@ -224,22 +238,24 @@ export type LoyaltyProgramConfig = {
     secret: string;
 };
 
-export type PartnerConfig = {
+export interface PartnerConfig<PartnerLabel extends string> {
     /** The ID of the project you want to connect to. */
     partnerId: string;
     /** The clientId you want to connect to. */
     clientId: string;
     /** The secret belonging to the clientId. */
     secret: string;
-};
-export type ClientConfig = {
+    /** Partner labels can be used to map purchase items to different partners when more than one partner is configured. */
+    partnerLabels?: PartnerLabel[];
+}
+export interface ClientConfig<PartnerLabel extends string> {
     /** Set this config if you are a loyalty program owner and want to manage it using the SDK. */
     loyaltyProgramConfig?: LoyaltyProgramConfig;
     /** Set this config if you are a partner and want to manage it with this partner using the SDk. */
-    defaultPartnerConfig?: PartnerConfig;
+    defaultPartnerConfig?: PartnerConfig<PartnerLabel>;
     /** Set this config if you want to manage multiple partners using the SDK. */
-    otherPartnerConfigs?: PartnerConfig[];
-};
+    otherPartnerConfigs?: PartnerConfig<PartnerLabel>[];
+}
 
 /**
  * This method creates a new FanPointsClient instance.
@@ -247,5 +263,7 @@ export type ClientConfig = {
  * @returns a single client instance that can be used to manage one or more partners and / or a
  * loyalty program.
  */
-export const createClient = (clientConfig: ClientConfig): FanPointsClient =>
+export const createClient = <PartnerLabel extends string = string>(
+    clientConfig: ClientConfig<PartnerLabel>,
+): FanPointsClient<PartnerLabel> =>
     new FanPointsClient(clientConfig, config.apiEndpoint, config.oAuthDomain);

@@ -87,13 +87,14 @@ client.fanPoints.giveFanPointsOnPurchase({
             description: 'Ticket Category B for FC Basel vs. FC Zürich',
             price: 65.0,
             currency: 'chf',
+            label: 'ticket'
         },
         {
             title: 'Shirt men',
             description: 'The current FC Basel shirt for men (size S)',
             price: 100.0,
             currency: 'chf',
-            rate_category: 'merchandise'
+            rate_category: 'default'
         },
     ],
 });
