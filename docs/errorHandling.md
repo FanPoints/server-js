@@ -5,7 +5,15 @@ layout: home
 
 # Error Handling
 
-Every operation on the `FanPointsClient` returns a promise with the result of the operation. If the operation fails, the promise is rejected with an `RequestError` error. The `RequestError` object contains an attribute `errors` that is an array of the specific error codes that occurred during the operation:
+Every operation on the `FanPointsClient` returns a promise with the result of the operation.
+
+## Missing Configuration
+
+If the client is not properly configured, the promise is rejected with an `Error` error.
+
+## Request Errors
+
+If an operation fails, the promise is rejected with an `RequestError` error. The `RequestError` object contains an attribute `errors` that is an array of the specific error codes that occurred during the operation:
 
 ```typescript
 import { createClient } from '@fanpoints/client-js';

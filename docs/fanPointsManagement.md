@@ -11,7 +11,7 @@ Here we look at how you can manage fan points for a user.
 
 ### Access the Number of Fan Points for a User
 
-As a loyalty program owner, you can access the number of fan points a user has collected using the following code:
+As a loyalty program owner, you can access the number of fan points a user has collected using the following function:
 
 ```typescript
 client.fanPoints.getBalance('user id').then((balance) => {
@@ -31,41 +31,26 @@ client.fanPoints.getTransactions('user id').then((transactions) => {
 });
 ```
 
-If you configured multiple partners, getTransactions returns the transactions at all configured partners by default. You can you the `specificPartnerId` attribute to get the transactions at a specific partner:
-
-```typescript
-client.fanPoints.getTransactions('user id', 'specific partner id').then((transactions) => {
-    console.log("The user has made the following transactions:", transactions);
-});
-```
-
 You can paginate the results:
 
 ```typescript
 // get only the last 10 transactions
 client.fanPoints
-    .getTransactions({
-        userId: 'user id',
-        limit: 10,
-    })
+    .getTransactions('user id', 10)
 
 // get only the last 10 transactions earlier than the given date
 client.fanPoints
-    .getTransactions({
-        userId: 'user id',
-        limit: 10,
-        earlierThan: new Date(),
-    })
+    .getTransactions('user id', 10, new Date())
 ```
 
 ### Give FanPoints to a User after a Purchase
 
-When a user makes a purchase and you want to give them fan points as a partner, you can use the following operation:
+When a user makes a purchase and you want to give them fan points as a partner, you can use the following operation. The first argument specifies the user id, the second argument is an array of purchase items.
 
 ```typescript
-client.fanPoints.giveFanPointsOnPurchase({
-    userId: 'user id',
-    purchaseItems: [
+client.fanPoints.giveFanPointsOnPurchase(
+    'user id',
+    [
         {
             title: 'Ticket',
             description: 'Ticket Category B for FC Basel vs. FC Zürich',
@@ -73,39 +58,39 @@ client.fanPoints.giveFanPointsOnPurchase({
             currency: 'chf',
         },
     ],
-});
+);
 ```
 
-For each purchase item, you can specify a rate category that determines how many fan points the user gets for every CHF on the purchase. If no rate category is given, the default rate is used. You can configure the different rate categories in the FanPoints backend.
+For each purchase item, you can specify a rate label that determines how many fan points the user gets for every CHF on the purchase. If no rate label is given, the default rate is used. You can configure the different rate categories in the FanPoints backend.
 
 ```typescript
-client.fanPoints.giveFanPointsOnPurchase({
-    userId: 'user id',
-    purchaseItems: [
+client.fanPoints.giveFanPointsOnPurchase(
+    'user id',
+    [
         {
             title: 'Ticket',
             description: 'Ticket Category B for FC Basel vs. FC Zürich',
             price: 65.0,
             currency: 'chf',
-            label: 'ticket'
+            rateLabel: 'ticket'
         },
         {
             title: 'Shirt men',
             description: 'The current FC Basel shirt for men (size S)',
             price: 100.0,
             currency: 'chf',
-            rate_category: 'default'
+            rateLabel: 'default'
         },
     ],
-});
+);
 ```
 
-Furthermore, you can assign each purchase item a specific partner. Note that the partners must be configured upon creation of the client:
+Furthermore, you can assign each purchase item a specific partner using the partner id or a partner label. Note that the partners must be configured upon creation of the client.
 
 ```typescript
-client.fanPoints.giveFanPointsOnPurchase({
-    userId: 'user id',
-    purchaseItems: [
+client.fanPoints.giveFanPointsOnPurchase(
+    'user id',
+    [
         {
             title: 'Ticket',
             description: 'Ticket Category B for FC Basel vs. FC Zürich',
@@ -118,60 +103,75 @@ client.fanPoints.giveFanPointsOnPurchase({
             description: 'The current FC Basel shirt for men (size S)',
             price: 100.0,
             currency: 'chf',
-            partnerId: 'the partner id B',
+            partnerLabel: 'partner label',
         },
     ],
-});
+);
 ```
 
 ### Pay with FanPoints
 
 When a user wants to pay a purchase with fan points, you can use the `payPurchaseWithFanPoints` operation. It has the exact same interface as the `giveFanPointsOnPurchase` operation:
 
+
 ```typescript
-client.fanPoints.payPurchaseWithFanPoints({
-    userId: 'user id',
-    purchaseItems: [
+client.fanPoints.payPurchaseWithFanPoints(
+    'user id',
+    [
         {
             title: 'Ticket',
             description: 'Ticket Category B for FC Basel vs. FC Zürich',
             price: 65.0,
             currency: 'chf',
+            partnerId: 'the partner id A',
+        },
+        {
+            title: 'Shirt men',
+            description: 'The current FC Basel shirt for men (size S)',
+            price: 100.0,
+            currency: 'chf',
+            partnerLabel: 'partner label',
         },
     ],
-});
+);
 ```
-
-You can also set different rates and assign different partners the same way as whon above.
 
 ### Undo a Purchase
 
-You can undo a purchase connected to a fan points transaction using the following code:
+You can undo purchase items connected to a fan points transaction using the following snippet:
 
 ```typescript
-client.fanPoints.undoPurchase({
-    userId: 'user id',
-    purchaseId: 'purchaseId'
-});
+client.fanPoints.undoPurchase(
+    'user id',
+    'purchaseId',
+    [
+        {
+            purchaseItemId: 'purchase item id A',
+        },
+        {
+            purchaseItemId: 'purchase item id A',
+        }
+    ]
+);
 ```
 
-It is also possible to only undo a single purchase item:
+You don't have to undo all purchase items of a purchase.
+
+If multiple partners are configured, you have to specify at which partner you want to undo the purchase using the partner id or one of the partner labels:
 
 ```typescript
-client.fanPoints.undoPurchase({
-    userId: 'user id',
-    purchaseId: 'purchase id'
-    purchaseItemId: 'purchaseItem id'
-});
-```
-
-If multiple partners are configured, you have to specify at which partner you want to undo the purchase:
-
-```typescript
-client.fanPoints.undoPurchase({
-    userId: 'user id',
-    specificPartnerId: 'partner id',
-    purchaseId: 'purchase id'
-    purchaseItemId: 'purchaseItem id'
-});
+client.fanPoints.undoPurchase(
+    'user id',
+    'purchaseId',
+    [
+        {
+            purchaseItemId: 'purchase item id A',
+            partnerId: 'partner id',
+        },
+        {
+            purchaseItemId: 'purchase item id A',
+            partnerLabel: 'partner label',
+        }
+    ]
+);
 ```
