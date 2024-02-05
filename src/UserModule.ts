@@ -17,7 +17,7 @@ export class UserModule {
      *
      * The user ID must be unique within your loyalty program.
      * Both the user ID and the email address can be changed later
-     * using the {@link changeUserid} and {@link changeMailAddress}
+     * using the {@link changeUserId} and {@link changeMailAddress}
      * methods.
      *
      * @param userId - The ID associated to the user in your system.
