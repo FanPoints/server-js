@@ -16,7 +16,7 @@ export class StatusPointsModule {
      * @returns an object containing the total amount of Status Points the user has collected.
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async getBalance({ userId }: { userId: string }) {
+    public async getBalance(userId: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getStatusPointsBalance({
             projectId: loyaltyProgramId,
@@ -41,15 +41,11 @@ export class StatusPointsModule {
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async getPerformedActions({
-        userId,
-        limit,
-        earlierThan,
-    }: {
-        userId: string;
-        limit?: number;
-        earlierThan?: Date;
-    }) {
+    public async getPerformedActions(
+        userId: string,
+        limit?: number,
+        earlierThan?: Date,
+    ) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getStatusPointsTransactions({
             projectId: loyaltyProgramId,
@@ -66,7 +62,7 @@ export class StatusPointsModule {
      *
      * This allows you to check how many Status Points a user would receive for
      * a given action. It does not actually distribute the Status Points. Use
-     * {@link giveStatusPointsOnAction} to distribute Status Points.
+     * {@link distributeStatusPoints} to distribute Status Points.
      *
      * @param actionCategory - the action to check
      * @param specificPartnerId - the id of the specific partner if multiple partners are configured
@@ -75,13 +71,10 @@ export class StatusPointsModule {
      *
      * @throws {@link RequestError} if the action category does not exist (`invalidActionCategoryError`).
      */
-    public async getStatusPointsForAction({
-        actionCategory,
-        specificPartnerId,
-    }: {
-        actionCategory: string;
-        specificPartnerId?: string;
-    }) {
+    public async getStatusPointsForAction(
+        actionCategory: string,
+        specificPartnerId?: string,
+    ) {
         const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
         const result = await sdk.getStatusPointsForAction({
             partnerId,
@@ -112,8 +105,8 @@ export class StatusPointsModule {
      * @param actionCategory - the category of the action performed
      * @param title - the title of the action
      * @param description - the description of the action
-     * @param specificPartnerId - the id of the specific partner if multiple partners are configured
      * @param customActionId - the id of the custom action to link it to an event on your side
+     * @param specificPartnerId - the id of the specific partner if multiple partners are configured
      *
      * @returns an list containing the performed Status Points transactions.
      *
@@ -122,21 +115,14 @@ export class StatusPointsModule {
      * with the given custom action id already exists (`alreadyExecutedError`),
      * or if the action category does not exist (`invalidActionCategoryError`).
      */
-    public async giveStatusPointsOnAction({
-        userId,
-        actionCategory,
-        title,
-        description,
-        specificPartnerId,
-        customActionId,
-    }: {
-        userId: string;
-        actionCategory: string;
-        title: string;
-        description: string;
-        specificPartnerId?: string;
-        customActionId?: string;
-    }) {
+    public async giveStatusPointsOnAction(
+        userId: string,
+        actionCategory: string,
+        title: string,
+        description: string,
+        customActionId?: string,
+        specificPartnerId?: string,
+    ) {
         const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
         const result = (
             await sdk.giveStatusPoints({
@@ -169,20 +155,16 @@ export class StatusPointsModule {
      * @param actionId - the id of the action to undo
      * @param specificPartnerId - the id of the partner where the action happened if multiple partners are configured
      *
-     * @returns the performed undo action.
+     * @returns the performed undo actions.
      *
      * @throws {@link RequestError} if the action does not exist (`transactionNotFoundError`),
      * or if the action has already been undone (`alreadyExecutedError`).
      */
-    public async undoAction({
-        userId,
-        actionId,
-        specificPartnerId,
-    }: {
-        userId: string;
-        actionId: string;
-        specificPartnerId?: string;
-    }) {
+    public async undoAction(
+        userId: string,
+        actionId: string,
+        specificPartnerId?: string,
+    ) {
         const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
         const result = (
             await sdk.undoStatusPointsTransaction({
