@@ -1,13 +1,11 @@
 query getFanPointsTransactions(
     $projectId: String
-    $partnerId: String!
     $userId: String!
     $limit: Int
     $earlierThan: String
 ) {
     getFanPointsTransactions: get_fan_points_transactions(
         project_id: $projectId
-        partner_id: $partnerId
         user_id: $userId
         earlier_than: $earlierThan
         limit: $limit
@@ -15,7 +13,7 @@ query getFanPointsTransactions(
         result {
             purchaseId: purchase_id
             userId: user_id
-            type
+            transactionType: transaction_type
             purchaseItems: purchase_items {
                 purchaseItemId: purchase_item_id
                 partnerId: partner_id

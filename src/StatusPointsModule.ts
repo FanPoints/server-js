@@ -10,7 +10,7 @@ export class StatusPointsModule {
     constructor(private client: FanPointsClient) {}
 
     /**
-     * Returns the total amount Status Points the user has collected.
+     * Returns the total number of Status Points the user has collected.
      *
      * @param userId - the id of the user.
      * @returns an object containing the total amount of Status Points the user has collected.

@@ -35,7 +35,7 @@ mutation payPurchaseWithFanPoints(
         result {
             purchaseId: purchase_id
             userId: user_id
-            type
+            transactionType: transaction_type
             purchaseItems: purchase_items {
                 purchaseItemId: purchase_item_id
                 partnerId: partner_id
