@@ -1,13 +1,11 @@
 query getStatusPointsTransactions(
     $projectId: String
-    $partnerId: String!
     $userId: String!
     $limit: Int
     $earlierThan: String
 ) {
     getStatusPointsTransactions: get_status_points_transactions(
         project_id: $projectId
-        partner_id: $partnerId
         user_id: $userId
         earlier_than: $earlierThan
         limit: $limit
