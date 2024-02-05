@@ -13,13 +13,13 @@ export class FanPointsModule<PartnerLabel extends string> {
     constructor(private client: FanPointsClient<PartnerLabel>) {}
 
     /**
-     * Returns the total amount FanPoints the user has collected.
+     * Returns the total number of Fan Points the user has collected.
      *
      * @param userId - the id of the user.
-     * @returns an object containing the total amount of fan points the user has collected.
+     * @returns an object containing the total amount of Fan Points the user has collected.
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async getBalance(userId: string) {
+    public async getBalance({ userId }: { userId: string }) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getFanPointsBalance({
             projectId: loyaltyProgramId,
@@ -35,21 +35,16 @@ export class FanPointsModule<PartnerLabel extends string> {
      * received FanPoints on a purchase and transactions where the user purchased
      * using FanPoints.
      *
-     * If you configured multiple partners, you can use the `specificPartnerId`
-     * parameter to only query transactions at the specific partner. If you configured
-     * multiple partners and don't provide a `specificPartnerId`, transactions
-     * at all partners will be returned.
-     *
      * If `limit` is given, at most `limit` transactions
      * will be returned. If `earlierThan` is given, only transactions
-     * thah happened before this transaction will be returned. Combine
+     * that happened before this transaction will be returned. Combine
      * both parameters to paginate the results.
      *
      * @param userId - the id of the user
      * @param limit - the maximum number of transactions to return
      * @param earlierThan - if given, transactions before this date will be returned
      *
-     * @returns an list of the transactions.
+     * @returns a list of the transactions.
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
@@ -69,16 +64,18 @@ export class FanPointsModule<PartnerLabel extends string> {
     }
 
     /**
-     * Gives FanPoints to the user for the given purchase.
+     * Gives Fan Points to the user for the given purchase and purchase items.
      *
-     * The title and description can be used to add human readable information on the
+     * The titles and descriptions can be used to add human readable information on the
      * transaction that could be used to display to the user.
      *
      * Each purchase item can correspond at a different partner. If no partner is given, the
-     * default partner will be used.
+     * default partner will be used. You can set the partner using the `partnerId` or the
+     * `partnerLabel` parameter. If both are given, the `partnerId` will be used.
      *
-     * Each purchase item can have a different rate category. If no rate category is given, the
-     * default rate category of the partner will be used.
+     * Each purchase item can have a different rate label in order to specify the conversion rate
+     * from the price to the number of Fan Points. If no rate label is given, the
+     * default rate of the partner will be used.
      *
      * A custom purchase id can be given in order to link the transaction to a specific event
      * on your side. This operation is idempotent w.r.t. the purchase group id. This means that
@@ -158,14 +155,16 @@ export class FanPointsModule<PartnerLabel extends string> {
     /**
      * Allows a user to pay a purchase using FanPoints.
      *
-     * The title and description can be used to add human readable information on the
+     * The titles and descriptions can be used to add human readable information on the
      * transaction that could be used to display to the user.
      *
      * Each purchase item can correspond at a different partner. If no partner is given, the
-     * default partner will be used.
+     * default partner will be used. You can set the partner using the `partnerId` or the
+     * `partnerLabel` parameter. If both are given, the `partnerId` will be used.
      *
-     * Each purchase item can have a different rate category. If no rate category is given, the
-     * default rate category of the partner will be used.
+     * Each purchase item can have a different rate label in order to specify the conversion rate
+     * from the price to the number of Fan Points. If no rate label is given, the
+     * default rate of the partner will be used.
      *
      * A custom purchase id can be given in order to link the transaction to a specific event
      * on your side. This operation is idempotent w.r.t. the purchase group id. This means that
@@ -246,11 +245,12 @@ export class FanPointsModule<PartnerLabel extends string> {
     /**
      * Undoes a purchase.
      *
-     * This will reverse the effect of e.g. giving FanPoints or paying with FanPoints.
+     * This will reverse the effect of giving out FanPoints or paying with FanPoints.
      *
-     * You can either undo a specific purchase item or the whole purchase.
+     * The `purchaseItems` parameter specifies what items of the given purchase (`purchaseId`)
+     * should be undone. You don't have to undo all items of a purchase.
      *
-     * Note that this might not be possible, e.g. if the FanPoints have already been
+     * Note that undoing a purchase might not be possible, e.g. if the FanPoints have already been
      * spent by the user.
      *
      * Undoing a purchase corresponds to creating a new purchase with a negative price.
@@ -273,15 +273,19 @@ export class FanPointsModule<PartnerLabel extends string> {
      * if the user does not have enough FanPoints (`tooFewAvailableError`), or if the purchase
      * has already been undone (`alreadyExecutedError`).
      */
-    public async undoPurchase(
-        userId: string,
-        purchaseId: string,
+    public async undoPurchase({
+        userId,
+        purchaseId,
+        purchaseItems,
+    }: {
+        userId: string;
+        purchaseId: string;
         purchaseItems: {
             purchaseItemId: string;
             partnerId?: string;
             partnerLabel?: PartnerLabel;
-        }[],
-    ) {
+        }[];
+    }) {
         const results = purchaseItems.map(async (purchaseItem) => {
             const { partnerId, sdk } = this.client.getPartner(
                 purchaseItem.partnerId,
