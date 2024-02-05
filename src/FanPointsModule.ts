@@ -189,7 +189,7 @@ export class FanPointsModule<PartnerLabel extends string> {
             price: number;
             currency: Currency;
             partnerLabel?: PartnerLabel;
-            rateLabel: string | undefined;
+            rateLabel?: string | undefined;
         }[],
         customPurchaseId?: string,
     ) {
