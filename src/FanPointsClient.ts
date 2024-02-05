@@ -136,8 +136,6 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
             (partnerLabel && this.partnerLabelToId[partnerLabel]) ||
             this.defaultPartnerId;
 
-        console.log(this.partnerLabelToId);
-
         if (!partnerId) {
             throw new Error('No partner config was provided to the client.');
         }
