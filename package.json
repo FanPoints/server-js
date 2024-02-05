@@ -60,9 +60,5 @@
         "@aws-sdk/client-appsync": "^3.462.0",
         "graphql-request": "^6.1.0",
         "uuid": "^9.0.1"
-    },
-    "peerDependencies": {
-        "@aws-sdk/client-appsync": "^3.462.0",
-        "graphql-request": "^6.1.0"
     }
 }

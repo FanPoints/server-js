@@ -1,4 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 
 const dts = require('rollup-plugin-dts');
@@ -12,7 +13,7 @@ export default [
                 format: 'esm',
             },
         ],
-        plugins: [typescript()],
+        plugins: [nodeResolve(), typescript()],
         external: ['graphql-request', 'graphql', 'graphql-tag'],
     },
     {
@@ -21,7 +22,7 @@ export default [
             dir: 'dist/cjs',
             format: 'cjs',
         },
-        plugins: [commonjs(), typescript()],
+        plugins: [nodeResolve(), commonjs(), typescript()],
         external: ['graphql-request', 'graphql', 'graphql-tag'],
     },
     {
@@ -32,7 +33,7 @@ export default [
                 format: 'es',
             },
         ],
-        plugins: [dts.default()],
+        plugins: [nodeResolve(), dts.default()],
         external: ['graphql-request', 'graphql', 'graphql-tag'],
     },
 ];
