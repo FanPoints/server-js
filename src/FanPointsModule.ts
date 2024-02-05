@@ -19,7 +19,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @returns an object containing the total amount of Fan Points the user has collected.
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async getBalance({ userId }: { userId: string }) {
+    public async getBalance(userId: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getFanPointsBalance({
             projectId: loyaltyProgramId,
@@ -94,12 +94,8 @@ export class FanPointsModule<PartnerLabel extends string> {
      * with the given custom purchase id already exists (`alreadyExecutedError`),
      * or if one of the rate categories does not exist (`invalidRateCategoryError`).
      */
-    public async giveFanPointsOnPurchase({
-        userId,
-        purchaseItems,
-        customPurchaseId,
-    }: {
-        userId: string;
+    public async giveFanPointsOnPurchase(
+        userId: string,
         purchaseItems: {
             title: string;
             description: string;
@@ -108,9 +104,9 @@ export class FanPointsModule<PartnerLabel extends string> {
             partnerId?: string;
             partnerLabel?: PartnerLabel;
             rateLabel?: string;
-        }[];
-        customPurchaseId?: string;
-    }) {
+        }[],
+        customPurchaseId?: string,
+    ) {
         const purchaseItemsPerPartner = {} as Record<
             string,
             PurchaseItemInput[]
@@ -184,12 +180,8 @@ export class FanPointsModule<PartnerLabel extends string> {
      * with the given custom purchase id already exists (`alreadyExecutedError`),
      * or if one of the rate categories does not exist (`invalidRateCategoryError`).
      */
-    public async payPurchaseWithFanPoints({
-        userId,
-        purchaseItems,
-        customPurchaseId,
-    }: {
-        userId: string;
+    public async payPurchaseWithFanPoints(
+        userId: string,
         purchaseItems: {
             partnerId?: string;
             title: string;
@@ -198,9 +190,9 @@ export class FanPointsModule<PartnerLabel extends string> {
             currency: Currency;
             partnerLabel?: PartnerLabel;
             rateLabel: string | undefined;
-        }[];
-        customPurchaseId?: string;
-    }) {
+        }[],
+        customPurchaseId?: string,
+    ) {
         const purchaseItemsPerPartner = {} as Record<
             string,
             PurchaseItemInput[]
@@ -259,13 +251,13 @@ export class FanPointsModule<PartnerLabel extends string> {
      * have any effect.
      *
      * If you configured multiple partners, you can use the `specificPartnerId` parameter
-     * to specify the partner where the purchase happened. If you configured multiple partners
-     * and don't provide a `specificPartnerId`, the default partner will be used.
+     * ot the `partnerLabel` parameter to specify the partner where the purchase happened.
+     * If you configured multiple partners and don't provide a `specificPartnerId`, the
+     * default partner will be used.
      *
      * @param userId - the id of the user that performed the purchase to undo
      * @param purchaseId - the id of the purchase to undo
      * @param purchaseItemId - the id of the purchase item to undo
-     * @param specificPartnerId - the id of the partner where the purchase happened if multiple partners are configured
      *
      * @returns an list of the performed undo purchases.
      *
@@ -273,22 +265,18 @@ export class FanPointsModule<PartnerLabel extends string> {
      * if the user does not have enough FanPoints (`tooFewAvailableError`), or if the purchase
      * has already been undone (`alreadyExecutedError`).
      */
-    public async undoPurchase({
-        userId,
-        purchaseId,
-        purchaseItems,
-    }: {
-        userId: string;
-        purchaseId: string;
+    public async undoPurchase(
+        userId: string,
+        purchaseId: string,
         purchaseItems: {
             purchaseItemId: string;
-            partnerId?: string;
+            specificPartnerId?: string;
             partnerLabel?: PartnerLabel;
-        }[];
-    }) {
+        }[],
+    ) {
         const results = purchaseItems.map(async (purchaseItem) => {
             const { partnerId, sdk } = this.client.getPartner(
-                purchaseItem.partnerId,
+                purchaseItem.specificPartnerId,
                 purchaseItem.partnerLabel,
             );
             const result = (
