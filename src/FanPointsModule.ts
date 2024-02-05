@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import FanPointsClient from './FanPointsClient';
 import { Currency, PurchaseItemInput } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
@@ -45,7 +46,6 @@ export class FanPointsModule<PartnerLabel extends string> {
      * both parameters to paginate the results.
      *
      * @param userId - the id of the user
-     * @param specificPartnerId - only return transactions at this partner if multiple partners are configured
      * @param limit - the maximum number of transactions to return
      * @param earlierThan - if given, transactions before this date will be returned
      *
@@ -55,28 +55,17 @@ export class FanPointsModule<PartnerLabel extends string> {
      */
     public async getTransactions(
         userId: string,
-        specificPartnerId?: string,
         limit?: number,
         earlierThan?: Date,
     ) {
-        const partnersToQuery = specificPartnerId
-            ? [this.client.getPartner(specificPartnerId)]
-            : this.client.getPartners();
-
-        const transactions = [];
-
-        for (const { sdk, partnerId } of partnersToQuery) {
-            const result = await sdk.getFanPointsTransactions({
-                projectId: this.client.loyaltyProgramId,
-                partnerId,
-                userId,
-                limit,
-                earlierThan: earlierThan?.toISOString(),
-            });
-            transactions.push(...unwrap(result.data.getFanPointsTransactions));
-        }
-
-        return transactions;
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.getFanPointsTransactions({
+            projectId: loyaltyProgramId,
+            userId,
+            limit,
+            earlierThan: earlierThan?.toISOString(),
+        });
+        return unwrap(result.data.getFanPointsTransactions);
     }
 
     /**
@@ -108,8 +97,12 @@ export class FanPointsModule<PartnerLabel extends string> {
      * with the given custom purchase id already exists (`alreadyExecutedError`),
      * or if one of the rate categories does not exist (`invalidRateCategoryError`).
      */
-    public async giveFanPointsOnPurchase(
-        userId: string,
+    public async giveFanPointsOnPurchase({
+        userId,
+        purchaseItems,
+        customPurchaseId,
+    }: {
+        userId: string;
         purchaseItems: {
             title: string;
             description: string;
@@ -118,44 +111,48 @@ export class FanPointsModule<PartnerLabel extends string> {
             partnerId?: string;
             partnerLabel?: PartnerLabel;
             rateLabel?: string;
-        }[],
-        customPurchaseId?: string,
-    ) {
+        }[];
+        customPurchaseId?: string;
+    }) {
         const purchaseItemsPerPartner = {} as Record<
             string,
             PurchaseItemInput[]
         >;
         purchaseItems.forEach((purchaseItem) => {
-            const partnerId = this.client.getPartner(
-                purchaseItem.partnerId,
-                purchaseItem.partnerLabel,
-            ).partnerId;
-
             const modfiedPurchaseItem = {
                 ...purchaseItem,
                 rate_category: purchaseItem.rateLabel,
             };
+            delete modfiedPurchaseItem.partnerLabel;
+
+            const partnerId = this.client.getPartner(
+                purchaseItem.partnerId,
+                purchaseItem.partnerLabel,
+            ).partnerId;
+            if (!purchaseItemsPerPartner[partnerId]) {
+                purchaseItemsPerPartner[partnerId] = [];
+            }
             purchaseItemsPerPartner[partnerId].push(modfiedPurchaseItem);
         });
 
-        const resultingPurchaseItems = [];
-        for (const [partnerId, purchaseItems] of Object.entries(
-            purchaseItemsPerPartner,
-        )) {
-            const { sdk } = this.client.getPartner(partnerId);
-            const result = (
-                await sdk.giveFanPointsOnPurchase({
-                    projectId: this.client.loyaltyProgramId,
-                    userId,
-                    partnerId,
-                    purchaseItems: purchaseItems,
-                    customPurchaseId,
-                })
-            ).data.giveFanPointsOnPurchase;
-            resultingPurchaseItems.push(...unwrap(result));
-        }
+        const purchaseId = customPurchaseId || uuidv4();
 
-        return resultingPurchaseItems;
+        const results = Object.entries(purchaseItemsPerPartner).map(
+            async ([partnerId, purchaseItems]) => {
+                const { sdk } = this.client.getPartner(partnerId);
+                const result = (
+                    await sdk.giveFanPointsOnPurchase({
+                        projectId: this.client.loyaltyProgramId,
+                        userId,
+                        partnerId,
+                        purchaseItems: purchaseItems,
+                        customPurchaseId: purchaseId,
+                    })
+                ).data.giveFanPointsOnPurchase;
+                return unwrap(result);
+            },
+        );
+        return Promise.all(results);
     }
 
     /**
@@ -188,19 +185,23 @@ export class FanPointsModule<PartnerLabel extends string> {
      * with the given custom purchase id already exists (`alreadyExecutedError`),
      * or if one of the rate categories does not exist (`invalidRateCategoryError`).
      */
-    public async payPurchaseWithFanPoints(
-        userId: string,
+    public async payPurchaseWithFanPoints({
+        userId,
+        purchaseItems,
+        customPurchaseId,
+    }: {
+        userId: string;
         purchaseItems: {
             partnerId?: string;
             title: string;
             description: string;
             price: number;
             currency: Currency;
-            partnerLabel: PartnerLabel;
+            partnerLabel?: PartnerLabel;
             rateLabel: string | undefined;
-        }[],
-        customPurchaseId?: string,
-    ) {
+        }[];
+        customPurchaseId?: string;
+    }) {
         const purchaseItemsPerPartner = {} as Record<
             string,
             PurchaseItemInput[]
@@ -210,32 +211,36 @@ export class FanPointsModule<PartnerLabel extends string> {
                 ...purchaseItem,
                 rate_category: purchaseItem.rateLabel,
             };
-            purchaseItemsPerPartner[
-                this.client.getPartner(
-                    purchaseItem.partnerId,
-                    purchaseItem.partnerLabel,
-                ).partnerId
-            ].push(modfiedPurchaseItem);
+            delete modfiedPurchaseItem.partnerLabel;
+
+            const partnerId = this.client.getPartner(
+                purchaseItem.partnerId,
+                purchaseItem.partnerLabel,
+            ).partnerId;
+            if (!purchaseItemsPerPartner[partnerId]) {
+                purchaseItemsPerPartner[partnerId] = [];
+            }
+            purchaseItemsPerPartner[partnerId].push(modfiedPurchaseItem);
         });
 
-        const resultingPurchaseItems = [];
-        for (const [partnerId, purchaseItems] of Object.entries(
-            purchaseItemsPerPartner,
-        )) {
-            const { sdk } = this.client.getPartner(partnerId);
-            const result = (
-                await sdk.payPurchaseWithFanPoints({
-                    projectId: this.client.loyaltyProgramId,
-                    userId,
-                    partnerId,
-                    purchaseItems,
-                    customPurchaseId,
-                })
-            ).data.payPurchaseWithFanPoints;
-            resultingPurchaseItems.push(...unwrap(result));
-        }
+        const purchaseId = customPurchaseId || uuidv4();
 
-        return resultingPurchaseItems;
+        const results = Object.entries(purchaseItemsPerPartner).map(
+            async ([partnerId, purchaseItems]) => {
+                const { sdk } = this.client.getPartner(partnerId);
+                const result = (
+                    await sdk.payPurchaseWithFanPoints({
+                        projectId: this.client.loyaltyProgramId,
+                        userId,
+                        partnerId,
+                        purchaseItems: purchaseItems,
+                        customPurchaseId: purchaseId,
+                    })
+                ).data.payPurchaseWithFanPoints;
+                return unwrap(result);
+            },
+        );
+        return Promise.all(results);
     }
 
     /**
@@ -271,19 +276,29 @@ export class FanPointsModule<PartnerLabel extends string> {
     public async undoPurchase(
         userId: string,
         purchaseId: string,
-        purchaseItemId?: string,
-        specificPartnerId?: string,
+        purchaseItems: {
+            purchaseItemId: string;
+            partnerId?: string;
+            partnerLabel?: PartnerLabel;
+        }[],
     ) {
-        const { sdk, partnerId } = this.client.getPartner(specificPartnerId);
-        const result = (
-            await sdk.undoFanPointsPurchase({
-                userId,
-                projectId: this.client.loyaltyProgramId,
-                partnerId,
-                purchaseId,
-                purchaseItemId,
-            })
-        ).data.undoFanPointsPurchase;
-        return unwrap(result);
+        const results = purchaseItems.map(async (purchaseItem) => {
+            const { partnerId, sdk } = this.client.getPartner(
+                purchaseItem.partnerId,
+                purchaseItem.partnerLabel,
+            );
+            const result = (
+                await sdk.undoFanPointsPurchase({
+                    userId,
+                    projectId: this.client.loyaltyProgramId,
+                    partnerId,
+                    purchaseId,
+                    purchaseItemId: purchaseItem.purchaseItemId,
+                })
+            ).data.undoFanPointsPurchase;
+            return unwrap(result);
+        });
+
+        return await Promise.all(results);
     }
 }
