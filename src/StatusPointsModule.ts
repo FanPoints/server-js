@@ -62,7 +62,7 @@ export class StatusPointsModule {
      *
      * This allows you to check how many Status Points a user would receive for
      * a given action. It does not actually distribute the Status Points. Use
-     * {@link distributeStatusPoints} to distribute Status Points.
+     * {@link giveStatusPointsOnAction} to distribute Status Points.
      *
      * @param actionCategory - the action to check
      * @param specificPartnerId - the id of the specific partner if multiple partners are configured

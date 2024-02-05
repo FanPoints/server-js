@@ -27,7 +27,7 @@ You can generate the `clientId` and `secret` in the FanPoints backend.
 
 ## Configuration for Partners
 
-You can specify the partner you want to manage by using the following code:
+You can specify the partner you want to manage by using the following snippet:
 
 ```typescript
 import { createClient } from '@fanpoints/client-js';
@@ -64,6 +64,31 @@ const client = createClient({
 
 Configuring multiple partners allows you to e.g. register a purchase with items bought at different shops.
 
+### Partner Labels
+
+You can also specify the purchase labels that are used by the partner. This allows you to assign purchase items to the partners without having to specify the partner id for each purchase item. You can specify the purchase labels in the partner configuration:
+
+```typescript
+import { createClient } from '@fanpoints/client-js';
+
+const client = createClient({
+    partnerConfigs: [
+        {
+            partnerId: 'the partner id',
+            clientId: 'the client id',
+            secret: 'the client secret'
+            partnerLabels: ['tickets', 'gift_cards'],
+        },
+        {
+            partnerId: 'the partner id',
+            clientId: 'the client id',
+            secret: 'the client secret'
+            partnerLabels: ['merchandise', 'sports_equipment'],
+        },
+    ],
+});
+```
+
 ## Configuration for Loyalty Program Owners and Partners
 
 You can also configure the client to interact with both loyalty programs and partners:
@@ -82,13 +107,13 @@ const client = createClient({
             partnerId: 'the partner id',
             clientId: 'the client id',
             secret: 'the client secret'
-            puchaseLabels: ['tickets', 'gift_cards'],
+            partnerLabels: ['tickets', 'gift_cards'],
         },
         {
             partnerId: 'the partner id',
             clientId: 'the client id',
             secret: 'the client secret'
-            puchaseLabels: ['merchandise', 'sports_equipment'],
+            partnerLabels: ['merchandise', 'sports_equipment'],
         },
     ],
 });
