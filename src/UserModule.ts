@@ -28,13 +28,7 @@ export class UserModule {
      * (`invalidUserIdError`) or the email address is invalid
      * (`invalidMailAddressError`).
      */
-    public async addUser({
-        userId,
-        mailAddress,
-    }: {
-        userId: string;
-        mailAddress: string;
-    }) {
+    public async addUser(userId: string, mailAddress: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.addUser({
             projectId: loyaltyProgramId,
@@ -58,13 +52,7 @@ export class UserModule {
      * (`unknownUserError`), the new user ID is invalid (`invalidUserIdError`)
      * or the new user ID is already taken (`userAlreadyExistsError`).
      */
-    public async changeUserId({
-        oldUserId,
-        newUserId,
-    }: {
-        oldUserId: string;
-        newUserId: string;
-    }) {
+    public async changeUserId(oldUserId: string, newUserId: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.changeUserId({
             projectId: loyaltyProgramId,
@@ -84,13 +72,7 @@ export class UserModule {
      * (`unknownUserError`) or the email address is invalid
      * (`invalidMailAdressError`).
      */
-    public async changeMailAddress({
-        userId,
-        newMailAddress,
-    }: {
-        userId: string;
-        newMailAddress: string;
-    }) {
+    public async changeMailAddress(userId: string, newMailAddress: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.changeUserMailAddress({
             projectId: loyaltyProgramId,
@@ -107,7 +89,7 @@ export class UserModule {
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async deleteUser({ userId }: { userId: string }) {
+    public async deleteUser(userId: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.deleteUser({
             projectId: loyaltyProgramId,
@@ -124,7 +106,7 @@ export class UserModule {
      * @returns an object containing the user's ID and email address.
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async getUser({ userId }: { userId: string }) {
+    public async getUser(userId: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getUserById({
             projectId: loyaltyProgramId,
