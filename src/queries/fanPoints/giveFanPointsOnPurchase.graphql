@@ -25,7 +25,7 @@ mutation giveFanPointsOnPurchase(
             invalidTransactionIdError: invalid_transaction_id_error {
                 _empty
             }
-            invalidRateCategoryError: invalid_rate_category_error {
+            invalidRateLabelError: invalid_rate_label_error {
                 _empty
             }
             alreadyExecutedError: already_executed_error {
@@ -44,7 +44,7 @@ mutation giveFanPointsOnPurchase(
                 price
                 currency
                 amount
-                rateCategory: rate_category
+                rateLabel: rate_label
                 date
             }
         }

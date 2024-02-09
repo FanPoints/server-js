@@ -22,7 +22,7 @@ query getFanPointsTransactions(
                 price
                 currency
                 amount
-                rateCategory: rate_category
+                rateLabel: rate_label
                 date
             }
         }

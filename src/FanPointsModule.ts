@@ -114,8 +114,9 @@ export class FanPointsModule<PartnerLabel extends string> {
         purchaseItems.forEach((purchaseItem) => {
             const modfiedPurchaseItem = {
                 ...purchaseItem,
-                rate_category: purchaseItem.rateLabel,
+                rate_label: purchaseItem.rateLabel,
             };
+            delete modfiedPurchaseItem.rateLabel;
             delete modfiedPurchaseItem.partnerLabel;
 
             const partnerId = this.client.getPartner(
@@ -189,7 +190,6 @@ export class FanPointsModule<PartnerLabel extends string> {
             price: number;
             currency: Currency;
             partnerLabel?: PartnerLabel;
-            rateLabel?: string | undefined;
         }[],
         customPurchaseId?: string,
     ) {
@@ -200,7 +200,7 @@ export class FanPointsModule<PartnerLabel extends string> {
         purchaseItems.forEach((purchaseItem) => {
             const modfiedPurchaseItem = {
                 ...purchaseItem,
-                rate_category: purchaseItem.rateLabel,
+                rate_label: undefined,
             };
             delete modfiedPurchaseItem.partnerLabel;
 
