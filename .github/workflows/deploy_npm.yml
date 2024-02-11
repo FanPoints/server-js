@@ -1,0 +1,57 @@
+# This workflow deploys the Jekyll site to GitHub Pages on push to the main branch
+
+name: Deploy Package to NPM
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_EXTTEST }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v2
+
+      - name: install packages
+        run: npm ci
+
+      - name: generate graphql
+        run: npm run generate-graphql
+
+      - name: run formatter
+        run: npm run format
+
+      - name: run linter
+        run: npm run lint
+
+      - name: get release version
+        run: |
+          echo "NEW_VERSION=$(npm --no-git-tag-version version patch)" >> $GITHUB_ENV
+
+      - name: publish to npm
+        run: npm run publish-to-npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - id: get-changelog
+        name: get version changelog
+        uses: superfaceai/release-changelog-action@v1
+        with:
+          path-to-changelog: changelog.md
+          version: ${{ env.NEW_VERSION }}
+          operation: read
+      
+      - name: add GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.NEW_VERSION }}
+          body: ${{ steps.get-changelog.outputs.changelog }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHA_EDIT_RELEASES_TOKEN }}
