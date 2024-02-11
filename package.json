@@ -62,5 +62,8 @@
         "graphql-request": "^6.1.0",
         "graphql-tag": "^2.12.6",
         "uuid": "^9.0.1"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "^4.9.6"
     }
 }
