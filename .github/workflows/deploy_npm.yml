@@ -22,9 +22,6 @@ jobs:
       - name: install packages
         run: npm ci
 
-      - name: generate graphql
-        run: npm run generate-graphql
-
       - name: run formatter
         run: npm run format
 
