@@ -159,10 +159,6 @@ export class FanPointsModule<PartnerLabel extends string> {
      * default partner will be used. You can set the partner using the `partnerId` or the
      * `partnerLabel` parameter. If both are given, the `partnerId` will be used.
      *
-     * Each purchase item can have a different rate label in order to specify the conversion rate
-     * from the price to the number of Fan Points. If no rate label is given, the
-     * default rate of the partner will be used.
-     *
      * A custom purchase id can be given in order to link the transaction to a specific event
      * on your side. This operation is idempotent w.r.t. the purchase group id. This means that
      * if you call this method twice with the same custom group id, the second call will not have
