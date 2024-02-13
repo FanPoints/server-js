@@ -196,6 +196,12 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
             );
             this.partnerIds.push(partnerConfig.partnerId);
             partnerConfig.partnerLabels?.forEach((label) => {
+                if (this.partnerLabelToId[label]) {
+                    throw new Error(
+                        `Label ${label} is used by multiple partners.`,
+                    );
+                }
+
                 this.partnerLabelToId[label] = partnerConfig.partnerId;
             });
         }

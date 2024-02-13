@@ -64,6 +64,37 @@ export class FanPointsModule<PartnerLabel extends string> {
     }
 
     /**
+     * Returns the Fan Points transactions of the given user, purchaseId and partner.
+     *
+     * This method can return both transactions where the user received FanPoints on a purchase
+     * and transactions where the user purchased using FanPoints.
+     *
+     * @param userId - the id of the user
+     * @param purchaseId - the id of the purchase to return
+     * @param partnerId - the id of the partner where the purchase happened
+     * @param partnerLabel - the label of the partner where the purchase happened
+     * @returns the transaction
+     */
+    public async getTransaction(
+        userId: string,
+        purchaseId: string,
+        partnerId?: string,
+        partnerLabel?: PartnerLabel,
+    ) {
+        const { sdk, partnerId: specificPartnerId } = this.client.getPartner(
+            partnerId,
+            partnerLabel,
+        );
+        const result = await sdk.getFanPointsTransaction({
+            projectId: this.client.loyaltyProgramId,
+            userId,
+            purchaseId,
+            partnerId: specificPartnerId,
+        });
+        return unwrap(result.data.getFanPointsTransaction);
+    }
+
+    /**
      * Gives Fan Points to the user for the given purchase and purchase items.
      *
      * The titles and descriptions can be used to add human readable information on the
@@ -104,6 +135,7 @@ export class FanPointsModule<PartnerLabel extends string> {
             partnerId?: string;
             partnerLabel?: PartnerLabel;
             rateLabel?: string;
+            customPurchaseItemId?: string;
         }[],
         customPurchaseId?: string,
     ) {
@@ -115,9 +147,11 @@ export class FanPointsModule<PartnerLabel extends string> {
             const modfiedPurchaseItem = {
                 ...purchaseItem,
                 rate_label: purchaseItem.rateLabel,
+                custom_purchase_item_id: purchaseItem.customPurchaseItemId,
             };
             delete modfiedPurchaseItem.rateLabel;
             delete modfiedPurchaseItem.partnerLabel;
+            delete modfiedPurchaseItem.customPurchaseItemId;
 
             const partnerId = this.client.getPartner(
                 purchaseItem.partnerId,
@@ -186,6 +220,7 @@ export class FanPointsModule<PartnerLabel extends string> {
             price: number;
             currency: Currency;
             partnerLabel?: PartnerLabel;
+            customPurchaseItemId?: string;
         }[],
         customPurchaseId?: string,
     ) {
@@ -197,8 +232,10 @@ export class FanPointsModule<PartnerLabel extends string> {
             const modfiedPurchaseItem = {
                 ...purchaseItem,
                 rate_label: undefined,
+                custom_purchase_item_id: purchaseItem.customPurchaseItemId,
             };
             delete modfiedPurchaseItem.partnerLabel;
+            delete modfiedPurchaseItem.customPurchaseItemId;
 
             const partnerId = this.client.getPartner(
                 purchaseItem.partnerId,

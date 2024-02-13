@@ -7,7 +7,7 @@
 
 const request = require('sync-request');
 const credentials = require('./backendRepoCredentials.json');
-const version = 'feat-rate-labels';
+const version = 'feat-custom-purchase-item-id';
 const url = `https://raw.githubusercontent.com/FanPoints/backend/${version}/api/generated/merged_schema_with_directives.graphql`;
 const token = credentials.githubApiRepoAccessToken;
 
