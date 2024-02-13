@@ -47,7 +47,7 @@ You can also specify multiple partners and use the same client to interact with 
 import { createClient } from '@fanpoints/client-js';
 
 const client = createClient({
-    partnerConfigs: [
+    otherPartnerConfigs: [
         {
             partnerId: 'the partner id',
             clientId: 'the client id',
@@ -72,7 +72,7 @@ You can also specify the purchase labels that are used by the partner. This allo
 import { createClient } from '@fanpoints/client-js';
 
 const client = createClient({
-    partnerConfigs: [
+    otherPartnerConfigs: [
         {
             partnerId: 'the partner id',
             clientId: 'the client id',
@@ -102,7 +102,7 @@ const client = createClient({
         clientId: 'the client id',
         secret: 'the client secret',
     },
-    partnerConfigs: [
+    otherPartnerConfigs: [
         {
             partnerId: 'the partner id',
             clientId: 'the client id',

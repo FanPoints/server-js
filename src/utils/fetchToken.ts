@@ -42,7 +42,7 @@ export class AuthSession {
 
         if (!json.access_token) {
             throw new Error(
-                'Error fetching JWT token to authenticate with the GraphQL API.',
+                'Authentification failed. Are your client ID and secret correct?',
             );
         }
 
