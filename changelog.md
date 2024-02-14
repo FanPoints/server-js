@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.22] - 2024-02-14
+
+### Added
+
+-   The `fanPoints.getPriceInFanPoints` method has been added and allows to query the price of a purchase in fan points.
+
+### Changed
+
+-   The `fanpoints.getBalance` method now returns an object that also contains the monetary amount the user can spend with their fan points.
+
 ## [0.1.21] - 2024-02-14
 
 ### Changed
