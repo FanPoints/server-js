@@ -298,7 +298,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @param purchaseId - the id of the purchase to undo
      * @param purchaseItemId - the id of the purchase item to undo
      *
-     * @returns an list of the performed undo purchases.
+     * @returns an list of the performed undo purchases
      *
      * @throws {@link RequestError} if the purchase does not exist (`transactionNotFoundError`),
      * if the user does not have enough FanPoints (`tooFewAvailableError`), or if the purchase
@@ -331,5 +331,39 @@ export class FanPointsModule<PartnerLabel extends string> {
         });
 
         return await Promise.all(results);
+    }
+
+    /**
+     * Returns the number of Fan Points that correspond to the given price.
+     *
+     * If multiple partners are configured, you can use the `partnerId` or the `partnerLabel`
+     * parameter to specify the partner where the purchase happens.
+     *
+     * @param price - the price in the default currency of the partner or the currency given in the `currency` parameter
+     * @param partnerId - the id of the partner where the purchase happens
+     * @param partnerLabel - the label of the partner where the purchase happens
+     * @param currency - the currency of the price
+     *
+     * @returns the number of Fan Points that correspond to the given price
+     *
+     * @throws {@link RequestError} if the given price is not valid (`InvalidRewardAmountError`).
+     */
+    public async getPriceInFanPoints(
+        price: number,
+        partnerId?: string,
+        partnerLabel?: PartnerLabel,
+        currency?: Currency,
+    ) {
+        const {
+            sdk,
+            partnerId: specificPartnerId,
+            defaultCurrency,
+        } = this.client.getPartner(partnerId, partnerLabel);
+        const result = await sdk.getPriceInFanPoints({
+            partnerId: specificPartnerId,
+            price,
+            currency: currency || defaultCurrency,
+        });
+        return unwrap(result.data.getPriceInFanPoints);
     }
 }

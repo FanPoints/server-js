@@ -93,6 +93,11 @@ export type BrandingUploadUrls = {
   logo_white_upload_url: Scalars['String']['output'];
 };
 
+export type CanPurchaseWithFanPointsResult = {
+  errors: Maybe<ExecuteTransactionErrors>;
+  result: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type Card = {
   amount: Scalars['Int']['output'];
   card_set_id: Scalars['String']['output'];
@@ -421,6 +426,15 @@ export type GetPartnershipsResult = {
 
 export type GetPotentialPartnershipsResult = {
   result: Array<PartnershipParty>;
+};
+
+export type GetPriceInFanPointsErrors = {
+  invalid_reward_amount_error: Maybe<InvalidRewardAmountError>;
+};
+
+export type GetPriceInFanPointsResult = {
+  errors: Maybe<GetPriceInFanPointsErrors>;
+  result: Maybe<Scalars['Int']['output']>;
 };
 
 export type GetProjectResult = {
@@ -1109,6 +1123,7 @@ export type PurchaseItemInput = {
 
 export type Query = {
   _empty: Maybe<Scalars['String']['output']>;
+  can_pay_purchase_with_fan_points: CanPurchaseWithFanPointsResult;
   get_fan_points_balance: GetFanPointsBalanceResult;
   get_fan_points_rates: GetFanPointsRatesResult;
   get_fan_points_transaction: GetFanPointsTransactionResult;
@@ -1126,6 +1141,7 @@ export type Query = {
   get_partners: GetPartnersResult;
   get_partnerships: GetPartnershipsResult;
   get_potential_partnerships: GetPotentialPartnershipsResult;
+  get_price_in_fan_points: GetPriceInFanPointsResult;
   get_project: GetProjectResult;
   get_project_tokens: GetTokensResult;
   get_project_user_invitations: GetBackendUserInvitationsResult;
@@ -1137,6 +1153,14 @@ export type Query = {
   get_status_points_transactions: GetStatusPointsTransactionsResult;
   get_user_by_id: GetUserResult;
   get_users: GetUsersResult;
+};
+
+
+export type QueryCan_Pay_Purchase_With_Fan_PointsArgs = {
+  partner_id: Scalars['String']['input'];
+  project_id: InputMaybe<Scalars['String']['input']>;
+  purchase_items: Array<PurchaseItemInput>;
+  user_id: Scalars['String']['input'];
 };
 
 
@@ -1242,6 +1266,13 @@ export type QueryGet_Potential_PartnershipsArgs = {
   limit: InputMaybe<Scalars['Int']['input']>;
   party_id: Scalars['String']['input'];
   party_type: PartyType;
+};
+
+
+export type QueryGet_Price_In_Fan_PointsArgs = {
+  currency: Currency;
+  partner_id: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
 };
 
 
@@ -1489,6 +1520,16 @@ export type UserAlreadyExistsError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type CanPayPurchaseWithFanPointsQueryVariables = Exact<{
+  projectId: InputMaybe<Scalars['String']['input']>;
+  userId: Scalars['String']['input'];
+  partnerId: Scalars['String']['input'];
+  purchaseItems: Array<PurchaseItemInput> | PurchaseItemInput;
+}>;
+
+
+export type CanPayPurchaseWithFanPointsQuery = { canPayPurchaseWithFanPoints: { result: boolean | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined } | undefined } };
+
 export type GetFanPointsTransactionQueryVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['String']['input'];
@@ -1516,6 +1557,15 @@ export type GetFanPointsBalanceQueryVariables = Exact<{
 
 
 export type GetFanPointsBalanceQuery = { getFanPointsBalance: { result: number | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+
+export type GetPriceInFanPointsQueryVariables = Exact<{
+  partnerId: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  currency: Currency;
+}>;
+
+
+export type GetPriceInFanPointsQuery = { getPriceInFanPoints: { result: number | undefined, errors: { InvalidRewardAmountError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GiveFanPointsOnPurchaseMutationVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
@@ -1643,6 +1693,26 @@ export type GetUserByIdQueryVariables = Exact<{
 export type GetUserByIdQuery = { getUserById: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { mailAddress: string, userId: string } | undefined } };
 
 
+export const CanPayPurchaseWithFanPointsDocument = gql`
+    query canPayPurchaseWithFanPoints($projectId: String, $userId: String!, $partnerId: String!, $purchaseItems: [PurchaseItemInput!]!) {
+  canPayPurchaseWithFanPoints: can_pay_purchase_with_fan_points(
+    project_id: $projectId
+    user_id: $userId
+    partner_id: $partnerId
+    purchase_items: $purchaseItems
+  ) {
+    errors {
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+      invalidRewardAmountError: invalid_reward_amount_error {
+        _empty
+      }
+    }
+    result
+  }
+}
+    `;
 export const GetFanPointsTransactionDocument = gql`
     query getFanPointsTransaction($projectId: String, $userId: String!, $purchaseId: String!, $partnerId: String!) {
   getFanPointsTransaction: get_fan_points_transaction(
@@ -1722,6 +1792,22 @@ export const GetFanPointsBalanceDocument = gql`
         _empty
       }
     }
+  }
+}
+    `;
+export const GetPriceInFanPointsDocument = gql`
+    query getPriceInFanPoints($partnerId: String!, $price: Float!, $currency: Currency!) {
+  getPriceInFanPoints: get_price_in_fan_points(
+    partner_id: $partnerId
+    price: $price
+    currency: $currency
+  ) {
+    errors {
+      InvalidRewardAmountError: invalid_reward_amount_error {
+        _empty
+      }
+    }
+    result
   }
 }
     `;
@@ -2110,9 +2196,11 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const CanPayPurchaseWithFanPointsDocumentString = print(CanPayPurchaseWithFanPointsDocument);
 const GetFanPointsTransactionDocumentString = print(GetFanPointsTransactionDocument);
 const GetFanPointsTransactionsDocumentString = print(GetFanPointsTransactionsDocument);
 const GetFanPointsBalanceDocumentString = print(GetFanPointsBalanceDocument);
+const GetPriceInFanPointsDocumentString = print(GetPriceInFanPointsDocument);
 const GiveFanPointsOnPurchaseDocumentString = print(GiveFanPointsOnPurchaseDocument);
 const PayPurchaseWithFanPointsDocumentString = print(PayPurchaseWithFanPointsDocument);
 const UndoFanPointsPurchaseDocumentString = print(UndoFanPointsPurchaseDocument);
@@ -2128,6 +2216,9 @@ const DeleteUserDocumentString = print(DeleteUserDocument);
 const GetUserByIdDocumentString = print(GetUserByIdDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    canPayPurchaseWithFanPoints(variables: CanPayPurchaseWithFanPointsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: CanPayPurchaseWithFanPointsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<CanPayPurchaseWithFanPointsQuery>(CanPayPurchaseWithFanPointsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'canPayPurchaseWithFanPoints', 'query');
+    },
     getFanPointsTransaction(variables: GetFanPointsTransactionQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetFanPointsTransactionQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetFanPointsTransactionQuery>(GetFanPointsTransactionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getFanPointsTransaction', 'query');
     },
@@ -2136,6 +2227,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getFanPointsBalance(variables: GetFanPointsBalanceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetFanPointsBalanceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetFanPointsBalanceQuery>(GetFanPointsBalanceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getFanPointsBalance', 'query');
+    },
+    getPriceInFanPoints(variables: GetPriceInFanPointsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPriceInFanPointsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPriceInFanPointsQuery>(GetPriceInFanPointsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPriceInFanPoints', 'query');
     },
     giveFanPointsOnPurchase(variables: GiveFanPointsOnPurchaseMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GiveFanPointsOnPurchaseMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GiveFanPointsOnPurchaseMutation>(GiveFanPointsOnPurchaseDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'giveFanPointsOnPurchase', 'mutation');
