@@ -16,7 +16,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * Returns the total number of Fan Points the user has collected.
      *
      * @param userId - the id of the user.
-     * @returns an object containing the total amount of Fan Points the user has collected.
+     * @returns an object containing the total amount of Fan Points the user has collected as well as the amount that can be purchased with these points.
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
     public async getBalance(userId: string) {

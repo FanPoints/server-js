@@ -93,11 +93,6 @@ export type BrandingUploadUrls = {
   logo_white_upload_url: Scalars['String']['output'];
 };
 
-export type CanPurchaseWithFanPointsResult = {
-  errors: Maybe<ExecuteTransactionErrors>;
-  result: Maybe<Scalars['Boolean']['output']>;
-};
-
 export type Card = {
   amount: Scalars['Int']['output'];
   card_set_id: Scalars['String']['output'];
@@ -287,6 +282,12 @@ export type ExecuteTransactionErrors = {
   unknown_user_error: Maybe<UnknownUserError>;
 };
 
+export type FanPointsBalance = {
+  currency: Currency;
+  fan_points: Scalars['Int']['output'];
+  value: Scalars['Float']['output'];
+};
+
 export type FanPointsRate = {
   currency: Currency;
   fan_points_rate: Scalars['Float']['output'];
@@ -346,7 +347,7 @@ export type GetFanPointsBalanceErrors = {
 
 export type GetFanPointsBalanceResult = {
   errors: Maybe<GetFanPointsBalanceErrors>;
-  result: Maybe<Scalars['Int']['output']>;
+  result: Maybe<FanPointsBalance>;
 };
 
 export type GetFanPointsRatesResult = {
@@ -1123,7 +1124,6 @@ export type PurchaseItemInput = {
 
 export type Query = {
   _empty: Maybe<Scalars['String']['output']>;
-  can_pay_purchase_with_fan_points: CanPurchaseWithFanPointsResult;
   get_fan_points_balance: GetFanPointsBalanceResult;
   get_fan_points_rates: GetFanPointsRatesResult;
   get_fan_points_transaction: GetFanPointsTransactionResult;
@@ -1153,14 +1153,6 @@ export type Query = {
   get_status_points_transactions: GetStatusPointsTransactionsResult;
   get_user_by_id: GetUserResult;
   get_users: GetUsersResult;
-};
-
-
-export type QueryCan_Pay_Purchase_With_Fan_PointsArgs = {
-  partner_id: Scalars['String']['input'];
-  project_id: InputMaybe<Scalars['String']['input']>;
-  purchase_items: Array<PurchaseItemInput>;
-  user_id: Scalars['String']['input'];
 };
 
 
@@ -1520,16 +1512,6 @@ export type UserAlreadyExistsError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
-export type CanPayPurchaseWithFanPointsQueryVariables = Exact<{
-  projectId: InputMaybe<Scalars['String']['input']>;
-  userId: Scalars['String']['input'];
-  partnerId: Scalars['String']['input'];
-  purchaseItems: Array<PurchaseItemInput> | PurchaseItemInput;
-}>;
-
-
-export type CanPayPurchaseWithFanPointsQuery = { canPayPurchaseWithFanPoints: { result: boolean | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined } | undefined } };
-
 export type GetFanPointsTransactionQueryVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['String']['input'];
@@ -1556,7 +1538,7 @@ export type GetFanPointsBalanceQueryVariables = Exact<{
 }>;
 
 
-export type GetFanPointsBalanceQuery = { getFanPointsBalance: { result: number | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetFanPointsBalanceQuery = { getFanPointsBalance: { result: { fan_points: number, value: number, currency: Currency } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetPriceInFanPointsQueryVariables = Exact<{
   partnerId: Scalars['String']['input'];
@@ -1693,26 +1675,6 @@ export type GetUserByIdQueryVariables = Exact<{
 export type GetUserByIdQuery = { getUserById: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { mailAddress: string, userId: string } | undefined } };
 
 
-export const CanPayPurchaseWithFanPointsDocument = gql`
-    query canPayPurchaseWithFanPoints($projectId: String, $userId: String!, $partnerId: String!, $purchaseItems: [PurchaseItemInput!]!) {
-  canPayPurchaseWithFanPoints: can_pay_purchase_with_fan_points(
-    project_id: $projectId
-    user_id: $userId
-    partner_id: $partnerId
-    purchase_items: $purchaseItems
-  ) {
-    errors {
-      unknownUserError: unknown_user_error {
-        _empty
-      }
-      invalidRewardAmountError: invalid_reward_amount_error {
-        _empty
-      }
-    }
-    result
-  }
-}
-    `;
 export const GetFanPointsTransactionDocument = gql`
     query getFanPointsTransaction($projectId: String, $userId: String!, $purchaseId: String!, $partnerId: String!) {
   getFanPointsTransaction: get_fan_points_transaction(
@@ -1786,7 +1748,11 @@ export const GetFanPointsBalanceDocument = gql`
     project_id: $projectId
     user_id: $userId
   ) {
-    result
+    result {
+      fan_points
+      value
+      currency
+    }
     errors {
       unknownUserError: unknown_user_error {
         _empty
@@ -2196,7 +2162,6 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
-const CanPayPurchaseWithFanPointsDocumentString = print(CanPayPurchaseWithFanPointsDocument);
 const GetFanPointsTransactionDocumentString = print(GetFanPointsTransactionDocument);
 const GetFanPointsTransactionsDocumentString = print(GetFanPointsTransactionsDocument);
 const GetFanPointsBalanceDocumentString = print(GetFanPointsBalanceDocument);
@@ -2216,9 +2181,6 @@ const DeleteUserDocumentString = print(DeleteUserDocument);
 const GetUserByIdDocumentString = print(GetUserByIdDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    canPayPurchaseWithFanPoints(variables: CanPayPurchaseWithFanPointsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: CanPayPurchaseWithFanPointsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<CanPayPurchaseWithFanPointsQuery>(CanPayPurchaseWithFanPointsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'canPayPurchaseWithFanPoints', 'query');
-    },
     getFanPointsTransaction(variables: GetFanPointsTransactionQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetFanPointsTransactionQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetFanPointsTransactionQuery>(GetFanPointsTransactionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getFanPointsTransaction', 'query');
     },
