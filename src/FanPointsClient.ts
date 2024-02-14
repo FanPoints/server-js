@@ -137,7 +137,9 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
             this.defaultPartnerId;
 
         if (!partnerId) {
-            throw new Error('No partner config was provided to the client.');
+            throw new Error(
+                'No partner config was provided to the client. If you have set up multiple partners, make sure to either set up a default partner on config or use the partnerId or a partnerLabel parameters to specify which partner you are interacting with.',
+            );
         }
 
         const sdk = this.SDKs[partnerId];
@@ -195,15 +197,6 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
                 partnerConfig.secret,
             );
             this.partnerIds.push(partnerConfig.partnerId);
-            partnerConfig.partnerLabels?.forEach((label) => {
-                if (this.partnerLabelToId[label]) {
-                    throw new Error(
-                        `Label ${label} is used by multiple partners.`,
-                    );
-                }
-
-                this.partnerLabelToId[label] = partnerConfig.partnerId;
-            });
         }
         if (partnerConfigs) {
             partnerConfigs.forEach((config) => {
@@ -214,6 +207,11 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
                 );
                 this.partnerIds.push(config.partnerId);
                 config.partnerLabels?.forEach((label) => {
+                    if (this.partnerLabelToId[label]) {
+                        throw new Error(
+                            `Label "${label}" is used by multiple partners.`,
+                        );
+                    }
                     this.partnerLabelToId[label] = config.partnerId;
                 });
             });
