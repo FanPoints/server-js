@@ -123,6 +123,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * if the given price is not valid (`invalidRewardAmountError`), if the custom
      * purchase id is not valid (`invalidTransactionIdError`), if a transaction
      * with the given custom purchase id already exists (`alreadyExecutedError`),
+     * if the given custom purchase item ids are not unique (`nonUniquePurchaseItemIdsError`),
      * or if one of the rate categories does not exist (`invalidRateCategoryError`).
      */
     public async giveFanPointsOnPurchase(
@@ -211,6 +212,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * if the given price is not valid (`invalidRewardAmountError`), if the custom
      * purchase id is not valid (`invalidTransactionIdError`), if a transaction
      * with the given custom purchase id already exists (`alreadyExecutedError`),
+     * if the given custom purchase item ids are not unique (`nonUniquePurchaseItemIdsError`),
      * or if one of the rate categories does not exist (`invalidRateCategoryError`).
      */
     public async payPurchaseWithFanPoints(
