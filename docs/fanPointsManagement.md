@@ -109,6 +109,31 @@ client.fanPoints.giveFanPointsOnPurchase(
 );
 ```
 
+You can set your own `purchaseId` and your own `purchaseItemId`'s:
+
+```typescript
+client.fanPoints.giveFanPointsOnPurchase(
+    'user id',
+    [
+        {
+            title: 'Ticket',
+            description: 'Ticket Category B for FC Basel vs. FC Zürich',
+            price: 65.0,
+            currency: 'chf',
+            customPurchaseItemId: 'your internal item id'
+        },
+        {
+            title: 'Shirt men',
+            description: 'The current FC Basel shirt for men (size S)',
+            price: 100.0,
+            currency: 'chf',
+            customPurchaseItemId: 'your internal item id'
+        },
+    ],
+    'your internal purchase id'
+);
+```
+
 ### Pay with FanPoints
 
 When a user wants to pay a purchase with fan points, you can use the `payPurchaseWithFanPoints` operation. It has the exact same interface as the `giveFanPointsOnPurchase` operation:
@@ -146,10 +171,10 @@ client.fanPoints.undoPurchase(
     'purchaseId',
     [
         {
-            purchaseItemId: 'purchase item id A',
+            purchaseItemId: 'purchase item id',
         },
         {
-            purchaseItemId: 'purchase item id A',
+            purchaseItemId: 'purchase item id',
         }
     ]
 );
@@ -165,11 +190,11 @@ client.fanPoints.undoPurchase(
     'purchaseId',
     [
         {
-            purchaseItemId: 'purchase item id A',
+            purchaseItemId: 'purchase item id',
             partnerId: 'partner id',
         },
         {
-            purchaseItemId: 'purchase item id A',
+            purchaseItemId: 'purchase item id',
             partnerLabel: 'partner label',
         }
     ]
