@@ -3,7 +3,11 @@ query getFanPointsBalance($projectId: String!, $userId: String!) {
         project_id: $projectId
         user_id: $userId
     ) {
-        result
+        result {
+            fan_points
+            value
+            currency
+        }
         errors {
             unknownUserError: unknown_user_error {
                 _empty
