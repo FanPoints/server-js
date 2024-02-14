@@ -4,7 +4,7 @@ query getFanPointsBalance($projectId: String!, $userId: String!) {
         user_id: $userId
     ) {
         result {
-            fan_points
+            fanPoints: fan_points
             monetaryValue: monetary_value
             currency
         }

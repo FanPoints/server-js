@@ -1538,7 +1538,7 @@ export type GetFanPointsBalanceQueryVariables = Exact<{
 }>;
 
 
-export type GetFanPointsBalanceQuery = { getFanPointsBalance: { result: { fan_points: number, currency: Currency, monetaryValue: number } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetFanPointsBalanceQuery = { getFanPointsBalance: { result: { currency: Currency, fanPoints: number, monetaryValue: number } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetPriceInFanPointsQueryVariables = Exact<{
   partnerId: Scalars['String']['input'];
@@ -1749,7 +1749,7 @@ export const GetFanPointsBalanceDocument = gql`
     user_id: $userId
   ) {
     result {
-      fan_points
+      fanPoints: fan_points
       monetaryValue: monetary_value
       currency
     }
