@@ -285,7 +285,7 @@ export type ExecuteTransactionErrors = {
 export type FanPointsBalance = {
   currency: Currency;
   fan_points: Scalars['Int']['output'];
-  value: Scalars['Float']['output'];
+  monetary_value: Scalars['Float']['output'];
 };
 
 export type FanPointsRate = {
@@ -1538,7 +1538,7 @@ export type GetFanPointsBalanceQueryVariables = Exact<{
 }>;
 
 
-export type GetFanPointsBalanceQuery = { getFanPointsBalance: { result: { fan_points: number, value: number, currency: Currency } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetFanPointsBalanceQuery = { getFanPointsBalance: { result: { fan_points: number, currency: Currency, monetaryValue: number } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetPriceInFanPointsQueryVariables = Exact<{
   partnerId: Scalars['String']['input'];
@@ -1750,7 +1750,7 @@ export const GetFanPointsBalanceDocument = gql`
   ) {
     result {
       fan_points
-      value
+      monetaryValue: monetary_value
       currency
     }
     errors {
