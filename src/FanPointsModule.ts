@@ -131,7 +131,7 @@ export class FanPointsModule<PartnerLabel extends string> {
             title: string;
             description: string;
             price: number;
-            currency: Currency;
+            currency?: Currency;
             partnerId?: string;
             partnerLabel?: PartnerLabel;
             rateLabel?: string;
@@ -144,19 +144,21 @@ export class FanPointsModule<PartnerLabel extends string> {
             PurchaseItemInput[]
         >;
         purchaseItems.forEach((purchaseItem) => {
+            const { partnerId, defaultCurrency } = this.client.getPartner(
+                purchaseItem.partnerId,
+                purchaseItem.partnerLabel,
+            );
+
             const modfiedPurchaseItem = {
                 ...purchaseItem,
                 rate_label: purchaseItem.rateLabel,
                 custom_purchase_item_id: purchaseItem.customPurchaseItemId,
+                currency: purchaseItem.currency || defaultCurrency,
             };
             delete modfiedPurchaseItem.rateLabel;
             delete modfiedPurchaseItem.partnerLabel;
             delete modfiedPurchaseItem.customPurchaseItemId;
 
-            const partnerId = this.client.getPartner(
-                purchaseItem.partnerId,
-                purchaseItem.partnerLabel,
-            ).partnerId;
             if (!purchaseItemsPerPartner[partnerId]) {
                 purchaseItemsPerPartner[partnerId] = [];
             }
@@ -218,7 +220,7 @@ export class FanPointsModule<PartnerLabel extends string> {
             title: string;
             description: string;
             price: number;
-            currency: Currency;
+            currency?: Currency;
             partnerLabel?: PartnerLabel;
             customPurchaseItemId?: string;
         }[],
@@ -229,18 +231,20 @@ export class FanPointsModule<PartnerLabel extends string> {
             PurchaseItemInput[]
         >;
         purchaseItems.forEach((purchaseItem) => {
+            const { partnerId, defaultCurrency } = this.client.getPartner(
+                purchaseItem.partnerId,
+                purchaseItem.partnerLabel,
+            );
+
             const modfiedPurchaseItem = {
                 ...purchaseItem,
                 rate_label: undefined,
                 custom_purchase_item_id: purchaseItem.customPurchaseItemId,
+                currency: purchaseItem.currency || defaultCurrency,
             };
             delete modfiedPurchaseItem.partnerLabel;
             delete modfiedPurchaseItem.customPurchaseItemId;
 
-            const partnerId = this.client.getPartner(
-                purchaseItem.partnerId,
-                purchaseItem.partnerLabel,
-            ).partnerId;
             if (!purchaseItemsPerPartner[partnerId]) {
                 purchaseItemsPerPartner[partnerId] = [];
             }

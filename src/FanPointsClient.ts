@@ -6,7 +6,7 @@ import {
 } from 'graphql-request';
 import config from './backendConfig';
 import { FanPointsModule } from './FanPointsModule';
-import { getSdk, Sdk } from './queries/generated/sdk';
+import { Currency, getSdk, Sdk } from './queries/generated/sdk';
 import { StatusPointsModule } from './StatusPointsModule';
 import { UserModule } from './UserModule';
 import { AuthSession } from './utils/fetchToken';
@@ -30,6 +30,8 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
     private graphQLClients: Record<string, GraphQLClient>;
     /** @hidden */
     private SDKs: Record<string, Sdk>;
+    /** @hidden */
+    private currencies: Record<string, Currency>;
 
     public fanPoints: FanPointsModule<PartnerLabel>;
     public statusPoints: StatusPointsModule;
@@ -130,7 +132,7 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
     public getPartner(
         partnerId?: string,
         partnerLabel?: PartnerLabel,
-    ): { sdk: Sdk; partnerId: string } {
+    ): { sdk: Sdk; partnerId: string; defaultCurrency: Currency } {
         partnerId =
             partnerId ||
             (partnerLabel && this.partnerLabelToId[partnerLabel]) ||
@@ -147,7 +149,9 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
             throw new Error('No partner config was provided to the client.');
         }
 
-        return { partnerId, sdk };
+        const defaultCurrency = this.currencies[partnerId];
+
+        return { partnerId, sdk, defaultCurrency };
     }
 
     /**
@@ -170,6 +174,7 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
         this.authSessions = {};
         this.graphQLClients = {};
         this.SDKs = {};
+        this.currencies = {};
 
         const {
             loyaltyProgramConfig,
@@ -197,6 +202,8 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
                 partnerConfig.secret,
             );
             this.partnerIds.push(partnerConfig.partnerId);
+            this.currencies[partnerConfig.partnerId] =
+                partnerConfig.defaultCurrency;
         }
         if (partnerConfigs) {
             partnerConfigs.forEach((config) => {
@@ -206,6 +213,7 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
                     config.secret,
                 );
                 this.partnerIds.push(config.partnerId);
+                this.currencies[config.partnerId] = config.defaultCurrency;
                 config.partnerLabels?.forEach((label) => {
                     if (this.partnerLabelToId[label]) {
                         throw new Error(
@@ -249,6 +257,8 @@ export interface PartnerConfig<PartnerLabel extends string> {
     clientId: string;
     /** The secret belonging to the clientId. */
     secret: string;
+    /** The default currency to be used for this partner. */
+    defaultCurrency: Currency;
     /** Partner labels can be used to map purchase items to different partners when more than one partner is configured. */
     partnerLabels?: PartnerLabel[];
 }

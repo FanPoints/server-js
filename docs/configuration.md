@@ -37,6 +37,7 @@ const client = createClient({
         partnerId: 'the partner id',
         clientId: 'the client id',
         secret: 'the client secret',
+        defaultCurrency: 'chf'
     },
 });
 ```
@@ -51,12 +52,14 @@ const client = createClient({
         {
             partnerId: 'the partner id',
             clientId: 'the client id',
-            secret: 'the client secret'
+            secret: 'the client secret',
+            defaultCurrency: 'chf'
         },
         {
             partnerId: 'the partner id',
             clientId: 'the client id',
-            secret: 'the client secret'
+            secret: 'the client secret',
+            defaultCurrency: 'chf'
         },
     ],
 });
@@ -78,12 +81,14 @@ const client = createClient({
             clientId: 'the client id',
             secret: 'the client secret'
             partnerLabels: ['tickets', 'gift_cards'],
+            defaultCurrency: 'chf'
         },
         {
             partnerId: 'the partner id',
             clientId: 'the client id',
             secret: 'the client secret'
             partnerLabels: ['merchandise', 'sports_equipment'],
+            defaultCurrency: 'chf'
         },
     ],
 });
@@ -108,12 +113,14 @@ const client = createClient({
             clientId: 'the client id',
             secret: 'the client secret'
             partnerLabels: ['tickets', 'gift_cards'],
+            defaultCurrency: 'chf'
         },
         {
             partnerId: 'the partner id',
             clientId: 'the client id',
             secret: 'the client secret'
             partnerLabels: ['merchandise', 'sports_equipment'],
+            defaultCurrency: 'chf'
         },
     ],
 });
