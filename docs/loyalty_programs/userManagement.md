@@ -1,6 +1,7 @@
 ---
 title: "client-js: User Management"
-layout: home
+layout: default
+parent: Loyalty Programs
 ---
 
 # User Management

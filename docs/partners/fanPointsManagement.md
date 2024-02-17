@@ -1,27 +1,14 @@
 ---
 title: "client-js: Fan Points Management"
-layout: home
+layout: default
+parent: Partners
 ---
 
 # Fan Points Management
 
 Here we look at how you can manage fan points for a user.
 
-## As a Loyalty Program Owner
-
-### Access the Number of Fan Points for a User
-
-As a loyalty program owner, you can access the number of fan points a user has collected using the following function:
-
-```typescript
-client.fanPoints.getBalance('user id').then(({ fanPoints }) => {
-    console.log("The user has", fanPoints, "fan points");
-});
-```
-
-## As a Partner
-
-### Access the Transactions of a User at a Partner
+## Access the Transactions of a User at a Partner
 
 As a partner, you can access the transactions of a user at your store using the following code. Every transaction represents a purchase where the user has been given fan points or a purchase that the user has payed with fan points.
 
@@ -43,7 +30,7 @@ client.fanPoints
     .getTransactions('user id', 10, new Date())
 ```
 
-### Give FanPoints to a User after a Purchase
+## Give FanPoints to a User after a Purchase
 
 When a user makes a purchase and you want to give them fan points as a partner, you can use the following operation. The first argument specifies the user id, the second argument is an array of purchase items.
 
@@ -55,7 +42,6 @@ client.fanPoints.giveFanPointsOnPurchase(
             title: 'Ticket',
             description: 'Ticket Category B for FC Basel vs. FC Zürich',
             price: 65.0,
-            currency: 'chf',
         },
     ],
 );
@@ -96,7 +82,7 @@ client.fanPoints.giveFanPointsOnPurchase(
             description: 'Ticket Category B for FC Basel vs. FC Zürich',
             price: 65.0,
             currency: 'chf',
-            partnerId: 'the partner id A',
+            partnerId: 'the partner id',
         },
         {
             title: 'Shirt men',
@@ -134,7 +120,7 @@ client.fanPoints.giveFanPointsOnPurchase(
 );
 ```
 
-### Pay with FanPoints
+## Pay with FanPoints
 
 When a user wants to pay a purchase with fan points, you can use the `payPurchaseWithFanPoints` operation. It has the exact same interface as the `giveFanPointsOnPurchase` operation:
 
@@ -161,14 +147,14 @@ client.fanPoints.payPurchaseWithFanPoints(
 );
 ```
 
-### Undo a Purchase
+## Undo a Purchase
 
 You can undo purchase items connected to a fan points transaction using the following snippet:
 
 ```typescript
 client.fanPoints.undoPurchase(
     'user id',
-    'purchaseId',
+    'purchase id',
     [
         {
             purchaseItemId: 'purchase item id',
@@ -187,7 +173,7 @@ If multiple partners are configured, you have to specify at which partner you wa
 ```typescript
 client.fanPoints.undoPurchase(
     'user id',
-    'purchaseId',
+    'purchase id',
     [
         {
             purchaseItemId: 'purchase item id',

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Setting up a Partner
+title: "Tutorial: Setting up a Partner"
 parent: Partners
 ---
 
