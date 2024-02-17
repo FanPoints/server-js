@@ -1,11 +1,11 @@
 ---
 title: "client-js: Configuration"
-layout: home
+layout: default
 ---
 
 # Configuration
 
-Every operation is performed on a `FanPointsClient` object. When creating the client, you can configure the loyalty program or the partner you want to manage. You can use the same client to interact a loyalty programs and / or multiple partners.
+Every operation is performed on a `FanPointsClient` object. When creating the client, you can configure the loyalty program or the partner you want to manage. You can use the same client to interact with a loyalty programs and / or multiple partners.
 
 ## Configuration for Loyalty Program Owners
 
