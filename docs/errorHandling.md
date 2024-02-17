@@ -7,16 +7,16 @@ nav_order: 5
 # Error Handling
 {: .no_toc }
 
-Every operation on the `FanPointsClient` returns a promise with the result of the operation.
-
 1. TOC
 {:toc}
 
 ## Missing Configuration
 
-If the client is not properly configured, the promise is rejected with an `Error` error.
+If the client is not properly configured, the promise is rejected with an `Error` error containing the details on why the configuration is faulty.
 
 ## Request Errors
+
+Every operation on the `FanPointsClient` returns a promise with the result of the operation.
 
 If an operation fails, the promise is rejected with an `RequestError` error. The `RequestError` object contains an attribute `errors` that is an array of the specific error codes that occurred during the operation:
 

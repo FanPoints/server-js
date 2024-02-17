@@ -15,21 +15,21 @@ This guide shows you how to create a new partner and how to join a loyalty progr
 
 ## Creating a New Partner
 
-Open the *FanPoints* dashboard and create a new account. Once logged in, use the *Create New* button to create a new partner.
+Open the [*FanPoints* dashboard](https://backend-app-svelte-aec.pages.dev) and create a new account. Once logged in, use the *Create New* button to create a new partner.
 
 ## Joining a Loyalty Program
 
 Open the newly created partner and navigate to the *Loyalty Programs* tab. You can send a request to join a loyalty program. This will allow users in this loyalty program to interact in your app. It might take a few days until the loyalty program (hopefully) accepts your request.
 
-> You can always use the *Example Loyalty Program* to test your integration. This loyalty program is open to everyone and can be used for testing purposes. Check out the documentation for more information.
+> You can always use the *Example Loyalty Program* to test your integration. This loyalty program is open to everyone and can be used for testing purposes.
 
 ## Using the *FanPoints* Partner App
 
-If you want users to collect and spend Fan Points in your physical stores without any further integration, you can use the *FanPoints* Partner App. It will be available for download shortly and will allow you to distribute and collect Fan Points by simply scanning the users' QR code.
+If you want users to collect and spend Fan Points in your physical stores without any further integration, you can use the *FanPoints* partner app. It will be available for download shortly and will allow you to distribute and collect Fan Points by simply scanning users QR codes.
 
 ## Setting up the *FanPoints* SDK
 
-Now you're ready to integrate the *FanPoints* SDK into your infrastructure. You can use the SDK to let users collect and spend Fan Points.
+Now you are ready to integrate the *FanPoints* SDK into your infrastructure. You can use the SDK to let users collect and spend Fan Points.
 
 Currently, only a server-side typescript SDK is available. It needs to be used in your backend, as user-level authorization is not yet supported. We are working on a client-side SDK that will allow you to use the SDK in your client-side code.
 
@@ -54,7 +54,7 @@ import { createClient } from '@fanpoints/server-js';
 
 const client = createClient({
     defaultPartnerConfig: {
-        partnerId: 'the partner id',
+        partnerId: 'the partner id',    // can be found in the dashboard
         clientId: 'the client id',
         secret: 'the client secret',
         defaultCurrency: 'chf'
@@ -65,22 +65,22 @@ const client = createClient({
 You can use the `ping` function to test if the client is working:
 
 ```typescript
-client.misc.ping().then(() => {
+client.ping().then(() => {
     console.log("The client is working!");
 });
 ```
 
 ## Using the *FanPoints* SDK
 
-In the following, we will use the *Example Loyalty Program* to demonstrate how you can use the configured *FanPoints* client. If you want to follow the tutorial, make sure to join the *Example Loyalty Program*.
+In the following, we will use the *Example Loyalty Program* to demonstrate how to use the configured *FanPoints* client. If you want to follow the tutorial, make sure to join the *Example Loyalty Program*.
 
 ### Distributing Fan Points
 
 Let's assume you want to distribute Fan Points to a user upon a purchase at your store.
 
-You first need to get the user's *FanPoints* id, for example by letting users enter their id in your app or website as part of the purchase process.
+You first need to get the *FanPoints* user id, for example by letting users enter their id in your app or website as part of the purchase process.
 
-Every distribution of Fan Points is associated with a purchase. A purchase consists of one or more items. The price of the items determines the amount of Fan Points that are distributed to the user. For now, we will use the default commission of 2% which will be distributed as Fan Points. You can use *commission rates* to customize the rates.
+Every distribution of Fan Points is associated with a purchase. A purchase consists of one or more items. The price of the items determines the amount of Fan Points that are distributed to the user. For now, we will use the default commission of 2% which will be distributed as Fan Points. You can use *commission rate labels* to customize the rates.
 
 ```typescript
 const result = await client.fanPoints.giveFanPointsOnPurchase(
@@ -209,7 +209,7 @@ try {
 }
 ```
 
-If you want to check the fan points balance before the purchase, you can use the following method to check the number of Fan Points the user has collected and the corresponding monetary value of the Fan Points:
+If you want to check the Fan Points balance before the purchase, you can use the following method to check the number of Fan Points the user has collected and the corresponding monetary value of the Fan Points:
 
 ```typescript
 const balance = await client.fanPoints.getBalance('user-a');
@@ -226,4 +226,3 @@ const fanPointsNeeded = await client.fanPoints.getPriceInFanPoints(70.0);
 ## Next Steps
 
 You can now use the *FanPoints* SDK to let users collect and spend Fan Points in your app or website. If you want to learn more about the SDK, check out the other parts of the documentation.
-```

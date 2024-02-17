@@ -7,7 +7,8 @@ query getUserById($projectId: String!, $userId: String!) {
         }
         result {
             mailAddress: mail_address
-            userId: user_id
+            fanPointsUserId: user_id
+            userId: external_user_id
         }
     }
 }

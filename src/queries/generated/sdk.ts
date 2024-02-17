@@ -1672,7 +1672,7 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { getUserById: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { mailAddress: string, userId: string } | undefined } };
+export type GetUserByIdQuery = { getUserById: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { mailAddress: string, fanPointsUserId: string, userId: string } | undefined } };
 
 
 export const GetFanPointsTransactionDocument = gql`
@@ -2152,7 +2152,8 @@ export const GetUserByIdDocument = gql`
     }
     result {
       mailAddress: mail_address
-      userId: user_id
+      fanPointsUserId: user_id
+      userId: external_user_id
     }
   }
 }

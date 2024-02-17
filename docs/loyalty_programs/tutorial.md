@@ -15,11 +15,11 @@ This guide shows you how to create a new loyalty program. Furthermore, we look a
 
 ## Creating a New Loyalty Program
 
-Open the *FanPoints* dashboard and create a new account. Once logged in, use the *Create New* button to create a new loyalty program.
+Open the [*FanPoints* dashboard](https://backend-app-svelte-aec.pages.dev) and create a new account. Once logged in, use the *Create New* button to create a new loyalty program.
 
 ## Accepting Partners
 
-Open the newly created partner and navigate to the *Partners* tab. When a partner requests to join your loyalty program, you can accept or decline the request. This will allow users to interact with the loyalty program at this partner.
+Open the newly created loyaly program and navigate to the *Partners* tab. When a partner requests to join your loyalty program, you can accept or decline the request. This will allow users to interact with the loyalty program at this partner.
 
 > You can always use the *Example Partner* to test your integration. This partner is open to everyone and can be used for testing purposes.
 
@@ -43,14 +43,14 @@ To access the *FanPoints* API, you first need to generate access tokens. Go to t
 
 ### Configuring a Client
 
-All operations are performed on a `FanPointsClient` object. With the generated access tokens, you can create a client for your partner:
+All operations are performed on a `FanPointsClient` object. With the generated access tokens, you can create a client for your loyalty program:
 
 ```typescript
 import { createClient } from '@fanpoints/server-js';
 
 const client = createClient({
     loyaltyProgramConfig: {
-        loyaltyProgramId: 'the layalty program id',
+        loyaltyProgramId: 'the loyalty program id',  // can be found in the dashboard
         clientId: 'the client id',
         secret: 'the client secret',
     },
@@ -67,6 +67,8 @@ client.misc.ping().then(() => {
 
 ## Using the *FanPoints* SDK
 
+### Registering Users
+
 You are now ready to register your users in the loyalty program. You could decide that all your existing users are automatically registered in the loyalty program. You can also let users manually opt-in into the loyalty program.
 
 Either way, you can use the following code to register a user in the loyalty program:
@@ -74,5 +76,30 @@ Either way, you can use the following code to register a user in the loyalty pro
 ```typescript
 await client.users.addUser('your user id', '<the users mail address>');
 ```
-
 Now the user is registered in the loyalty program and can start collecting and spending fan points.
+
+### On User Ids
+
+Note that you have to specify your own internal user id. The user will get its own *FanPoints* user id. You can use both your internal or the *FanPoints* user id to interact with the SDK, as translation happens automatically.
+
+You can see this by using the following snippet:
+
+```typescript
+const user = await client.users.getUser('your user id');
+
+/**
+ * user = {
+ *   mailAddress: 'tobia.ochsner@gmail.com',
+ *   fanPointsUserId: '<the fanpoints id>',
+ *   userId: '<your id>'
+ * }
+ */
+```
+
+### Deleting Users
+
+In order to delete a user from the loyalty program, you can use the following snippet:
+
+```typescript
+await client.users.deleteUser('your user id');
+```

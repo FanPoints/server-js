@@ -11,6 +11,8 @@ nav_order: 2
 1. TOC
 {:toc}
 
+## Configuring a Single Partner 
+
 Every operation is performed on a `FanPointsClient` object.
 
 You can specify the partner you want to manage by using the following snippet:
@@ -28,7 +30,9 @@ const client = createClient({
 });
 ```
 
-You can generate the `clientId` and `secret` in the *FanPoints* dashboard.
+You can generate the `clientId` and `secret` in the [*FanPoints* dashboard](https://backend-app-svelte-aec.pages.dev).
+
+## Configuring Multiple Partner
 
 You can also specify multiple partners and use the same client to interact with them:
 
@@ -53,11 +57,11 @@ const client = createClient({
 });
 ```
 
-Configuring multiple partners allows you to e.g. register a purchase with items bought at different shops.
+Configuring multiple partners allows you to e.g. register a purchase with items bought at different partners.
 
 ### Partner Labels
 
-You can also specify the purchase labels that are used by the partner. This allows you to assign purchase items to the partners without having to specify the partner id for each purchase item. You can specify the purchase labels in the partner configuration:
+You can specify the partner labels that are used by the partner. This allows you to assign purchase items to the partners without having to specify the partner id for each purchase item. You can specify the purchase labels in the partner configuration:
 
 ```typescript
 import { createClient } from '@fanpoints/client-js';
@@ -82,7 +86,7 @@ const client = createClient({
 });
 ```
 
-## Configuration for Loyalty Program Owners and Partners
+## Configuring Partners and Loyalty Programs
 
 You can also configure the client to interact with both loyalty programs and partners:
 
