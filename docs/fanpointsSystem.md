@@ -1,12 +1,16 @@
 ---
 title: The FanPoints System
 layout: home
+nav_order: 2
 ---
 
 # Overview
+{: .no_toc }
 
 On this page, we explain the core concepts of the *FanPoints* system.
 
+1. TOC
+{:toc}
 
 > In these blocks, we will guide you through a hypothetical example of AS Monaco using FanPoints to engage with their user base.
 

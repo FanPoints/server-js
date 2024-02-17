@@ -1,11 +1,16 @@
 ---
 title: "client-js: Error Handling"
 layout: home
+nav_order: 5
 ---
 
 # Error Handling
+{: .no_toc }
 
 Every operation on the `FanPointsClient` returns a promise with the result of the operation.
+
+1. TOC
+{:toc}
 
 ## Missing Configuration
 

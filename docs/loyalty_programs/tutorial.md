@@ -2,11 +2,16 @@
 title: "Tutorial: Setting up a Loyalty Program"
 layout: default
 parent: Loyalty Programs
+nav_order: 1
 ---
 
 # Setting up a Loyalty Program
+{: .no_toc }
 
 This guide shows you how to create a new loyalty program. Furthermore, we look at how you can use the *FanPoints* SDK to let your users participate in the loyalty program.
+
+1. TOC
+{:toc}
 
 ## Creating a New Loyalty Program
 

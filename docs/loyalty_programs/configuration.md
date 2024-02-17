@@ -2,9 +2,14 @@
 title: 'client-js: Configuration'
 layout: default
 parent: Loyalty Programs
+nav_order: 2
 ---
 
 # Configuration
+{: .no_toc }
+
+1. TOC
+{:toc}
 
 You the following code to create a client for your loyalty program:
 

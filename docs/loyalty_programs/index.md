@@ -2,6 +2,7 @@
 layout: default
 title: Loyalty Programs
 has_children: true
+nav_order: 4
 ---
 
 # Loyalty Programs

@@ -2,11 +2,16 @@
 title: "client-js: Fan Points Management"
 layout: default
 parent: Loyalty Programs
+nav_order: 4
 ---
 
 # Fan Points Management
+{: .no_toc }
 
 Here we look at how you can manage fan points for a user.
+
+1. TOC
+{:toc}
 
 ## Access the Number of Fan Points for a User
 

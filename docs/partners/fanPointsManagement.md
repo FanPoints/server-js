@@ -2,11 +2,16 @@
 title: "client-js: Fan Points Management"
 layout: default
 parent: Partners
+nav_order: 3
 ---
 
 # Fan Points Management
+{: .no_toc }
 
 Here we look at how you can manage fan points for a user.
+
+1. TOC
+{:toc}
 
 ## Access the Transactions of a User at a Partner
 

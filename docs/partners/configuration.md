@@ -2,9 +2,14 @@
 title: 'client-js: Configuration'
 layout: default
 parent: Partners
+nav_order: 2
 ---
 
 # Configuration
+{: .no_toc }
+
+1. TOC
+{:toc}
 
 Every operation is performed on a `FanPointsClient` object.
 

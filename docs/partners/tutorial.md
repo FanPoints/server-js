@@ -2,11 +2,16 @@
 layout: default
 title: "Tutorial: Setting up a Partner"
 parent: Partners
+nav_order: 1
 ---
 
 # Setting up a Partner
+{: .no_toc }
 
 This guide shows you how to create a new partner and how to join a loyalty program. Furthermore, we look at how you can use the *FanPoints* SDK to let users collect and spend Fan Points in your app or website.
+
+1. TOC
+{:toc}
 
 ## Creating a New Partner
 
@@ -16,7 +21,7 @@ Open the *FanPoints* dashboard and create a new account. Once logged in, use the
 
 Open the newly created partner and navigate to the *Loyalty Programs* tab. You can send a request to join a loyalty program. This will allow users in this loyalty program to interact in your app. It might take a few days until the loyalty program (hopefully) accepts your request.
 
-> You can always use the *Example Loyalty Program* to test your inetgration. This loyalty program is open to everyone and can be used for testing purposes. Check out the documentation for more information.
+> You can always use the *Example Loyalty Program* to test your integration. This loyalty program is open to everyone and can be used for testing purposes. Check out the documentation for more information.
 
 ## Using the *FanPoints* Partner App
 

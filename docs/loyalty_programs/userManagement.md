@@ -2,11 +2,16 @@
 title: "client-js: User Management"
 layout: default
 parent: Loyalty Programs
+nav_order: 3
 ---
 
 # User Management
+{: .no_toc }
 
 Here we look at how you can manage users of your loyalty program.
+
+1. TOC
+{:toc}
 
 ## Add Users
 
