@@ -35,7 +35,7 @@ client.ping().then(() => {
 });
 ```
 
-You can generate the `clientId` and `secret` in the [*FanPoints* dashboard](https://backend-app-svelte-aec.pages.dev).
+You can generate the `clientId` and `secret` in the [*FanPoints* dashboard](https://dashboard.fanpoints.ch).
 
 ## Configuring Partners and Loyalty Programs
 

@@ -15,7 +15,7 @@ This guide shows you how to create a new loyalty program. Furthermore, we look a
 
 ## Creating a New Loyalty Program
 
-Open the [*FanPoints* dashboard](https://backend-app-svelte-aec.pages.dev) and create a new account. Once logged in, use the *Create New* button to create a new loyalty program.
+Open the [*FanPoints* dashboard](https://dashboard.fanpoints.ch) and create a new account. Once logged in, use the *Create New* button to create a new loyalty program.
 
 ## Accepting Partners
 
@@ -60,7 +60,7 @@ const client = createClient({
 You can use the `ping` function to test if the client is working:
 
 ```typescript
-client.misc.ping().then(() => {
+client.ping().then(() => {
     console.log("The client is working!");
 });
 ```

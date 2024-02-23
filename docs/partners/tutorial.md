@@ -15,7 +15,7 @@ This guide shows you how to create a new partner and how to join a loyalty progr
 
 ## Creating a New Partner
 
-Open the [*FanPoints* dashboard](https://backend-app-svelte-aec.pages.dev) and create a new account. Once logged in, use the *Create New* button to create a new partner.
+Open the [*FanPoints* dashboard](https://dashboard.fanpoints.ch) and create a new account. Once logged in, use the *Create New* button to create a new partner.
 
 ## Joining a Loyalty Program
 
