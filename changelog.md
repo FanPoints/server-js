@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- The `ping` method has been added to check if the API is reachable.
+-   The `ping` method has been added to check if the API is reachable.
 
 ## [0.1.23] - 2024-02-14
 
