@@ -167,9 +167,9 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
 
     /**
      * This method pings the FanPoints API with the provided FanPoints clients.
-     * 
+     *
      * It allows to check if your configuration works.
-     * 
+     *
      * @returns a Record with the result of the ping for every client.
      * @throws {@link Error} if no config was provided to the client.
      */
