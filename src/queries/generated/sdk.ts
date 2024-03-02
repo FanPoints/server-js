@@ -66,6 +66,13 @@ export type AddressInput = {
   zip_code: Scalars['String']['input'];
 };
 
+export type Aggregate = {
+  date: Scalars['String']['output'];
+  metric: Scalars['String']['output'];
+  period: Period;
+  value: Scalars['Float']['output'];
+};
+
 export type AlreadyExecutedError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
@@ -73,6 +80,10 @@ export type AlreadyExecutedError = {
 export type BackendUserInvitation = {
   role: Role;
   username: Scalars['String']['output'];
+};
+
+export type BillingInfoNotSetError = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type Branding = {
@@ -291,9 +302,14 @@ export type FanPointsBalance = {
 export type FanPointsRate = {
   currency: Currency;
   fan_points_rate: Scalars['Float']['output'];
+  fan_points_rate_type: FanPointsRateType;
   partner_id: Scalars['String']['output'];
   rate_label: Scalars['String']['output'];
 };
+
+export type FanPointsRateType =
+  | 'absolute'
+  | 'relative';
 
 export type FanPointsReward = {
   amount: Scalars['Int']['output'];
@@ -339,6 +355,14 @@ export type GetBackendUserInvitationsResult = {
 
 export type GetBackendUsersResult = {
   result: Maybe<Array<RoleAttachment>>;
+};
+
+export type GetDailyPartnerStatisticsResult = {
+  result: PartnerStatistics;
+};
+
+export type GetDailyProjectStatisticsResult = {
+  result: ProjectStatistics;
 };
 
 export type GetFanPointsBalanceErrors = {
@@ -402,6 +426,24 @@ export type GetNumStatusPointsForActionErrors = {
 export type GetNumStatusPointsForActionResult = {
   errors: Maybe<GetNumStatusPointsForActionErrors>;
   result: Maybe<Scalars['Int']['output']>;
+};
+
+export type GetPartnerBillingInfoErrors = {
+  billing_info_to_set_error: Maybe<BillingInfoNotSetError>;
+};
+
+export type GetPartnerBillingInfoResult = {
+  errors: Maybe<GetPartnerBillingInfoErrors>;
+  result: Maybe<PartnerBillingInfo>;
+};
+
+export type GetPartnerInvoicesErrors = {
+  billing_info_to_set_error: Maybe<BillingInfoNotSetError>;
+};
+
+export type GetPartnerInvoicesResult = {
+  errors: Maybe<GetPartnerInvoicesErrors>;
+  result: Maybe<Array<Invoice>>;
 };
 
 export type GetPartnerResult = {
@@ -499,6 +541,10 @@ export type GetUsersResult = {
   result: Array<User>;
 };
 
+export type InfoMissingError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
 export type InvalidActionCategoryError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
@@ -507,12 +553,20 @@ export type InvalidAddressError = {
   reason: Scalars['String']['output'];
 };
 
+export type InvalidDateError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
 export type InvalidEmailError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type InvalidExpirationTimeError = {
   reason: Scalars['String']['output'];
+};
+
+export type InvalidIbanError = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type InvalidMailAddressError = {
@@ -559,6 +613,22 @@ export type InviteBackendUserResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type Invoice = {
+  amount: Scalars['Float']['output'];
+  currency: Currency;
+  invoice_file_url: Maybe<Scalars['String']['output']>;
+  invoice_id: Scalars['String']['output'];
+  partner_id: Scalars['String']['output'];
+  payed: Scalars['Boolean']['output'];
+  period_end: Scalars['String']['output'];
+  period_finished: Scalars['Boolean']['output'];
+  period_start: Scalars['String']['output'];
+};
+
+export type InvoicePeriod =
+  | 'monthly'
+  | 'weekly';
+
 export type LootBox = {
   lootbox_type: Scalars['String']['output'];
   opened: Scalars['Boolean']['output'];
@@ -576,6 +646,17 @@ export type ModifyBackendUserResult = {
 
 export type ModifyBrandingResult = {
   result: BrandingUploadUrls;
+};
+
+export type ModifyPartnerBillingInfoErrors = {
+  info_missing_error: Maybe<InfoMissingError>;
+  invalid_address_error: Maybe<InvalidAddressError>;
+  invalid_email_error: Maybe<InvalidEmailError>;
+  invalid_iban_error: Maybe<InvalidIbanError>;
+};
+
+export type ModifyPartnerBillingInfoResult = {
+  errors: Maybe<ModifyPartnerBillingInfoErrors>;
 };
 
 export type ModifyPartnerErrors = {
@@ -650,6 +731,7 @@ export type Mutation = {
   invite_partner_user: InviteBackendUserResult;
   invite_project_user: InviteBackendUserResult;
   modify_partner: ModifyPartnerResult;
+  modify_partner_billing_info: ModifyPartnerBillingInfoResult;
   modify_partner_branding: ModifyBrandingResult;
   modify_partner_user: ModifyBackendUserResult;
   modify_project: ModifyProjectDetailsResult;
@@ -883,6 +965,16 @@ export type MutationModify_PartnerArgs = {
 };
 
 
+export type MutationModify_Partner_Billing_InfoArgs = {
+  billing_address: InputMaybe<AddressInput>;
+  billing_contact_name: InputMaybe<Scalars['String']['input']>;
+  billing_mail_address: InputMaybe<Scalars['String']['input']>;
+  iban: InputMaybe<Scalars['String']['input']>;
+  invoice_period: InputMaybe<InvoicePeriod>;
+  partner_id: Scalars['String']['input'];
+};
+
+
 export type MutationModify_Partner_BrandingArgs = {
   partner_id: Scalars['String']['input'];
 };
@@ -968,6 +1060,7 @@ export type MutationSend_Partnership_RequestArgs = {
 export type MutationSet_Fan_Points_RateArgs = {
   currency: Currency;
   fan_points_rate: Scalars['Float']['input'];
+  fan_points_rate_type: InputMaybe<FanPointsRateType>;
   partner_id: Scalars['String']['input'];
   rate_label: Scalars['String']['input'];
 };
@@ -1022,6 +1115,20 @@ export type Partner = {
   website: Scalars['String']['output'];
 };
 
+export type PartnerBillingInfo = {
+  billing_address: Address;
+  billing_contact_name: Scalars['String']['output'];
+  billing_mail_address: Scalars['String']['output'];
+  iban: Scalars['String']['output'];
+  invoice_period: InvoicePeriod;
+  partner_id: Scalars['String']['output'];
+};
+
+export type PartnerStatistics = {
+  num_fan_points_given_out: Array<Aggregate>;
+  num_fan_points_spent: Array<Aggregate>;
+};
+
 export type PartnerWithRole = {
   branding: Branding;
   creator_id: Scalars['String']['output'];
@@ -1063,6 +1170,10 @@ export type PartyType =
   | 'partner'
   | 'project';
 
+export type Period =
+  | 'day'
+  | 'day_cumulative';
+
 export type Project = {
   branding: Branding;
   creator_id: Scalars['String']['output'];
@@ -1072,6 +1183,14 @@ export type Project = {
   primary_currency: Currency;
   project_id: Scalars['String']['output'];
   website: Scalars['String']['output'];
+};
+
+export type ProjectStatistics = {
+  num_fan_points_circulating: Array<Aggregate>;
+  num_fan_points_given_out: Array<Aggregate>;
+  num_fan_points_spent: Array<Aggregate>;
+  num_partners: Array<Aggregate>;
+  num_users: Array<Aggregate>;
 };
 
 export type ProjectWithRole = {
@@ -1106,6 +1225,7 @@ export type PurchaseItem = {
   date: Scalars['String']['output'];
   description: Scalars['String']['output'];
   fan_points_rate: Maybe<Scalars['Float']['output']>;
+  fan_points_rate_type: Maybe<FanPointsRateType>;
   partner_id: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   purchase_item_id: Scalars['String']['output'];
@@ -1124,6 +1244,8 @@ export type PurchaseItemInput = {
 
 export type Query = {
   _empty: Maybe<Scalars['String']['output']>;
+  get_daily_partner_statistics: GetDailyPartnerStatisticsResult;
+  get_daily_project_statistics: GetDailyProjectStatisticsResult;
   get_fan_points_balance: GetFanPointsBalanceResult;
   get_fan_points_rates: GetFanPointsRatesResult;
   get_fan_points_transaction: GetFanPointsTransactionResult;
@@ -1132,7 +1254,9 @@ export type Query = {
   get_my_partners: GetMyPartnersResult;
   get_my_projects: GetMyProjectsResult;
   get_partner: GetPartnerResult;
+  get_partner_billing_info: GetPartnerBillingInfoResult;
   get_partner_fan_points_transactions: GetFanPointsTransactionsResult;
+  get_partner_invoices: GetPartnerInvoicesResult;
   get_partner_status_points_transactions: GetStatusPointsTransactionsResult;
   get_partner_store: GetPartnerStoreResult;
   get_partner_tokens: GetTokensResult;
@@ -1153,6 +1277,21 @@ export type Query = {
   get_status_points_transactions: GetStatusPointsTransactionsResult;
   get_user_by_id: GetUserResult;
   get_users: GetUsersResult;
+  ping: Scalars['String']['output'];
+};
+
+
+export type QueryGet_Daily_Partner_StatisticsArgs = {
+  end_date: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
+  start_date: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Daily_Project_StatisticsArgs = {
+  end_date: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+  start_date: Scalars['String']['input'];
 };
 
 
@@ -1204,9 +1343,19 @@ export type QueryGet_PartnerArgs = {
 };
 
 
+export type QueryGet_Partner_Billing_InfoArgs = {
+  partner_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_Partner_Fan_Points_TransactionsArgs = {
   earlier_than: InputMaybe<Scalars['String']['input']>;
   limit: InputMaybe<Scalars['Int']['input']>;
+  partner_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Partner_InvoicesArgs = {
   partner_id: Scalars['String']['input'];
 };
 
@@ -1582,6 +1731,11 @@ export type UndoFanPointsPurchaseMutationVariables = Exact<{
 
 export type UndoFanPointsPurchaseMutation = { undoFanPointsPurchase: { result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined }> } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, transactionNotFoundError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined } | undefined } };
 
+export type PingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PingQuery = { ping: string };
+
 export type GetStatusPointsBalanceQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
@@ -1927,6 +2081,11 @@ export const UndoFanPointsPurchaseDocument = gql`
   }
 }
     `;
+export const PingDocument = gql`
+    query ping {
+  ping
+}
+    `;
 export const GetStatusPointsBalanceDocument = gql`
     query getStatusPointsBalance($projectId: String!, $userId: String!) {
   getStatusPointsBalance: get_status_points_balance(
@@ -2170,6 +2329,7 @@ const GetPriceInFanPointsDocumentString = print(GetPriceInFanPointsDocument);
 const GiveFanPointsOnPurchaseDocumentString = print(GiveFanPointsOnPurchaseDocument);
 const PayPurchaseWithFanPointsDocumentString = print(PayPurchaseWithFanPointsDocument);
 const UndoFanPointsPurchaseDocumentString = print(UndoFanPointsPurchaseDocument);
+const PingDocumentString = print(PingDocument);
 const GetStatusPointsBalanceDocumentString = print(GetStatusPointsBalanceDocument);
 const GetStatusPointsForActionDocumentString = print(GetStatusPointsForActionDocument);
 const GetStatusPointsTransactionsDocumentString = print(GetStatusPointsTransactionsDocument);
@@ -2202,6 +2362,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     undoFanPointsPurchase(variables: UndoFanPointsPurchaseMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: UndoFanPointsPurchaseMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<UndoFanPointsPurchaseMutation>(UndoFanPointsPurchaseDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'undoFanPointsPurchase', 'mutation');
+    },
+    ping(variables?: PingQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PingQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<PingQuery>(PingDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ping', 'query');
     },
     getStatusPointsBalance(variables: GetStatusPointsBalanceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetStatusPointsBalanceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetStatusPointsBalanceQuery>(GetStatusPointsBalanceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getStatusPointsBalance', 'query');

@@ -164,6 +164,22 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
             partnerId,
         }));
     }
+    
+    /**
+     * This method pings the FanPoints API to check if it is available.
+     * @returns a string with the result of the ping.
+     * @throws {@link Error} if no config was provided to the client.
+     */
+    public async ping(): Promise<string> {
+        const keys = Object.keys(this.SDKs);
+        if (keys.length === 0) {
+            throw new Error('No config was provided to the client.');
+        }
+
+        const sdk = this.SDKs[keys[0]];
+        const result = await sdk.ping();
+        return result.data.ping;
+    }
 
     /** @hidden */
     constructor(
