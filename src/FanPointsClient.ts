@@ -166,8 +166,11 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
     }
 
     /**
-     * This method pings the FanPoints API to check if it is available.
-     * @returns a string with the result of the ping.
+     * This method pings the FanPoints API with the provided FanPoints clients.
+     * 
+     * It allows to check if your configuration works.
+     * 
+     * @returns a Record with the result of the ping for every client.
      * @throws {@link Error} if no config was provided to the client.
      */
     public async ping(): Promise<Record<string, string>> {
@@ -179,13 +182,13 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
         const results = {} as Record<string, string>;
 
         for (const key of keys) {
-            console.log(`Pinging client for id ${key}.`)
+            console.log(`Pinging client for id ${key}.`);
 
             const sdk = this.SDKs[key];
             const result = await sdk.ping();
             results[key] = result.data.ping;
         }
-        
+
         return results;
     }
 
