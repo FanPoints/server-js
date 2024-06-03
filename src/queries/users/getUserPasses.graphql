@@ -1,0 +1,15 @@
+mutation getUserPasses($projectId: String!, $userId: String!) {
+    generateAppleWalletPass: generate_apple_wallet_pass(
+        project_id: $projectId
+        user_id: $userId
+    ) {
+        result
+    }
+
+    generateGoogleWalletPass: generate_google_wallet_pass(
+        project_id: $projectId
+        user_id: $userId
+    ) {
+        result
+    }
+}

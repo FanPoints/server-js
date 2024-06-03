@@ -114,4 +114,24 @@ export class UserModule {
         });
         return unwrap(result.data.getUserById);
     }
+
+    /**
+     * Retrieves links to the user's Apple Wallet and Google Wallet pass.
+     *
+     * @param userId - The user ID of the user.
+     *
+     * @returns an object containing URLs to the user's Apple Wallet and Google Wallet pass.
+     * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
+     */
+    public async getUserPasses(userId: string) {
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.getUserPasses({
+            projectId: loyaltyProgramId,
+            userId,
+        });
+        return {
+            googleWalletPassUrl: unwrap(result.data.generateGoogleWalletPass),
+            appleWalletPassUrl: unwrap(result.data.generateAppleWalletPass),
+        };
+    }
 }

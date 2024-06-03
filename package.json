@@ -1,6 +1,6 @@
 {
     "name": "@fanpoints/server-js",
-    "version": "0.1.24",
+    "version": "0.1.25",
     "description": "The SDK that allows to integrate FanPoints on the server-side.",
     "files": [
         "dist"
