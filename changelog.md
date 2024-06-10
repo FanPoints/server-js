@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2024-06-10
+
+### Added
+
+-   The `shop` module has been added to the SDK. This module allows a loyalty program to retrieve the items currently listed in the shop and the products bought by users. Furthermore, it allows to let users purchase items from the shop, to purchase lottery tickets, and to place bids on bidding items.
+
 ## [0.1.25] - 2024-06-03
 
 ### Added
