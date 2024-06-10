@@ -32,6 +32,8 @@ query getShopItem(
                     ticketPrice: price
                     currency
                     numPrizesAvailable: num_prizes_available
+                    lotteryStartDate: lottery_start_date
+                    lotteryEndDate: lottery_end_date
                 }
                 ... on BiddingShopItem {
                     shopItemType: shop_item_category
@@ -42,6 +44,8 @@ query getShopItem(
                     rewardId: reward_id
                     minBid: min_bid
                     currency
+                    biddingStartDate: bidding_start_date
+                    biddingEndDate: bidding_end_date
                 }
             }
         }

@@ -552,6 +552,7 @@ export type GetBoughtShopItemsResult = {
 
 export type GetCurrentBiddingStatusErrors = {
   unknown_shop_item_error: Maybe<UnknownShopItemError>;
+  unknown_user_error: Maybe<UnknownUserError>;
 };
 
 export type GetCurrentBiddingStatusResult = {
@@ -2572,7 +2573,7 @@ export type GetAuctionStatusQueryVariables = Exact<{
 }>;
 
 
-export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, bids: Array<{ date: string, bidderId: string, fanPoints: number }> } | undefined } };
+export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, bids: Array<{ date: string, bidderId: string, fanPoints: number }> } | undefined } };
 
 export type GetShopItemQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2581,7 +2582,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, numAvailable: any, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined } | undefined, errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, numAvailable: any, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number, biddingStartDate: string, biddingEndDate: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number, lotteryStartDate: string, lotteryEndDate: string } | {} | undefined } | undefined, errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2591,7 +2592,7 @@ export type GetShopItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, numAvailable: any, partnerId: string, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined }> } };
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, numAvailable: any, partnerId: string, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number, biddingStartDate: string, biddingEndDate: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number, lotteryStartDate: string, lotteryEndDate: string } | {} | undefined }> } };
 
 export type GetShopPurchasesQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2601,7 +2602,7 @@ export type GetShopPurchasesQueryVariables = Exact<{
 }>;
 
 
-export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ nr: number, groupId: string, purchaseDate: string, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, minBid: number } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, ticketPrice: number, numPrizesAvailable: number } | {}, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ nr: number, groupId: string, purchaseDate: string, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, minBid: number, biddingStartDate: string, biddingEndDate: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, ticketPrice: number, numPrizesAvailable: number, lotteryStartDate: string, lotteryEndDate: string } | {}, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3027,6 +3028,9 @@ export const GetAuctionStatusDocument = gql`
       unknownShopItemError: unknown_shop_item_error {
         _empty
       }
+      unknownUserError: unknown_user_error {
+        _empty
+      }
     }
     result {
       isAuctionOpen: is_bidding_open
@@ -3038,6 +3042,7 @@ export const GetAuctionStatusDocument = gql`
       currentHighestBid: current_highest_bid_fan_points
       currentUserBid: current_user_bid_fan_points
       nextHigherBid: next_higher_bid_fan_points
+      isUserHighestBidder: is_user_highest_bidder
     }
   }
 }
@@ -3073,6 +3078,8 @@ export const GetShopItemDocument = gql`
           ticketPrice: price
           currency
           numPrizesAvailable: num_prizes_available
+          lotteryStartDate: lottery_start_date
+          lotteryEndDate: lottery_end_date
         }
         ... on BiddingShopItem {
           shopItemType: shop_item_category
@@ -3083,6 +3090,8 @@ export const GetShopItemDocument = gql`
           rewardId: reward_id
           minBid: min_bid
           currency
+          biddingStartDate: bidding_start_date
+          biddingEndDate: bidding_end_date
         }
       }
     }
@@ -3128,6 +3137,8 @@ export const GetShopItemsDocument = gql`
           ticketPrice: price
           currency
           numPrizesAvailable: num_prizes_available
+          lotteryStartDate: lottery_start_date
+          lotteryEndDate: lottery_end_date
         }
         ... on BiddingShopItem {
           shopItemType: shop_item_category
@@ -3138,6 +3149,8 @@ export const GetShopItemsDocument = gql`
           rewardId: reward_id
           minBid: min_bid
           currency
+          biddingStartDate: bidding_start_date
+          biddingEndDate: bidding_end_date
         }
       }
     }
@@ -3183,6 +3196,8 @@ export const GetShopPurchasesDocument = gql`
           ticketPrice: price
           currency
           numPrizesAvailable: num_prizes_available
+          lotteryStartDate: lottery_start_date
+          lotteryEndDate: lottery_end_date
         }
         ... on BiddingShopItem {
           shopItemType: shop_item_category
@@ -3195,6 +3210,8 @@ export const GetShopPurchasesDocument = gql`
           deliveryDate: delivery_date
           minBid: min_bid
           currency
+          biddingStartDate: bidding_start_date
+          biddingEndDate: bidding_end_date
         }
       }
       groupId: group_id
