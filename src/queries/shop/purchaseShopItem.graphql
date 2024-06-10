@@ -1,0 +1,34 @@
+mutation purchaseShopItem(
+    $projectId: String!
+    $userId: String!
+    $rewardId: String!
+    $partnerId: String!
+    $amount: Int!
+    $deliveryAddress: AddressInput!
+    $deliveryName: String!
+) {
+    purchaseShopItem: purchase_shop_item(
+        project_id: $projectId
+        user_id: $userId
+        reward_id: $rewardId
+        partner_id: $partnerId
+        amount: $amount
+        delivery_address: $deliveryAddress
+        delivery_name: $deliveryName
+    ) {
+        errors {
+            invalidAmountError: invalid_reward_amount_error {
+                _empty
+            }
+            tooFewAvailableError: too_few_available_error {
+                _empty
+            }
+            unknownShopItemError: unknown_shop_item_error {
+                _empty
+            }
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}

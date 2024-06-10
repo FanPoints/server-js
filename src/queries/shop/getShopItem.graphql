@@ -1,0 +1,57 @@
+query getShopItem(
+    $projectId: String!
+    $partnerId: String!
+    $rewardId: String!
+) {
+    get_shop_item(
+        project_id: $projectId
+        partner_id: $partnerId
+        reward_id: $rewardId
+    ) {
+        result {
+            rewardId: reward_id
+            numAvailable: balance
+            shopItem: template {
+                ... on BasicShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    price
+                    currency
+                }
+                ... on LotteryShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    ticketPrice: price
+                    currency
+                    numPrizesAvailable: num_prizes_available
+                }
+                ... on BiddingShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    minBid: min_bid
+                    currency
+                }
+            }
+        }
+        errors {
+            unknownShopItemError: unknown_shop_item_error {
+                _empty
+            }
+        }
+    }
+}

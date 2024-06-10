@@ -1,0 +1,30 @@
+query getAuctionStatus(
+    $projectId: String!
+    $userId: String!
+    $partnerId: String!
+    $rewardId: String!
+) {
+    get_current_bidding_status(
+        partner_id: $partnerId
+        project_id: $projectId
+        reward_id: $rewardId
+        user_id: $userId
+    ) {
+        errors {
+            unknownShopItemError: unknown_shop_item_error {
+                _empty
+            }
+        }
+        result {
+            isAuctionOpen: is_bidding_open
+            bids {
+                bidderId: bidder_id
+                date
+                fanPoints: fan_points
+            }
+            currentHighestBid: current_highest_bid_fan_points
+            currentUserBid: current_user_bid_fan_points
+            nextHigherBid: next_higher_bid_fan_points
+        }
+    }
+}

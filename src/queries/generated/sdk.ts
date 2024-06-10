@@ -150,6 +150,7 @@ export type BasicShopItem = {
   partner_id: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   project_id: Scalars['String']['output'];
+  rejection_reason: Maybe<Scalars['String']['output']>;
   reward_id: Scalars['String']['output'];
   reward_type: Scalars['String']['output'];
   sale_start_date: Maybe<Scalars['String']['output']>;
@@ -157,6 +158,23 @@ export type BasicShopItem = {
   shop_item_distribution_type: ShopItemDistributionType;
   shown_in_shop: Scalars['Boolean']['output'];
   title: Scalars['String']['output'];
+};
+
+export type Bid = {
+  bidder_id: Scalars['String']['output'];
+  date: Scalars['String']['output'];
+  fan_points: Scalars['Int']['output'];
+};
+
+export type BidOnShopItemErrors = {
+  invalid_bid_amount_error: Maybe<InvalidRewardAmountError>;
+  too_few_available_error: Maybe<TooFewAvailableError>;
+  unknown_shop_item_error: Maybe<UnknownShopItemError>;
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type BidOnShopItemResult = {
+  errors: Maybe<BidOnShopItemErrors>;
 };
 
 export type BiddingShopItem = {
@@ -172,12 +190,22 @@ export type BiddingShopItem = {
   min_bid: Scalars['Float']['output'];
   partner_id: Scalars['String']['output'];
   project_id: Scalars['String']['output'];
+  rejection_reason: Maybe<Scalars['String']['output']>;
   reward_id: Scalars['String']['output'];
   reward_type: Scalars['String']['output'];
   shop_item_category: ShopItemCategory;
   shop_item_distribution_type: ShopItemDistributionType;
   shown_in_shop: Scalars['Boolean']['output'];
   title: Scalars['String']['output'];
+};
+
+export type BiddingStatus = {
+  bids: Array<Bid>;
+  current_highest_bid_fan_points: Scalars['Int']['output'];
+  current_user_bid_fan_points: Maybe<Scalars['Int']['output']>;
+  is_bidding_open: Scalars['Boolean']['output'];
+  is_user_highest_bidder: Scalars['Boolean']['output'];
+  next_higher_bid_fan_points: Scalars['Int']['output'];
 };
 
 export type BillingInfoNotSetError = {
@@ -521,6 +549,15 @@ export type GetBoughtShopItemsResult = {
   result: Maybe<Array<RewardTransaction>>;
 };
 
+export type GetCurrentBiddingStatusErrors = {
+  unknown_shop_item_error: Maybe<UnknownShopItemError>;
+};
+
+export type GetCurrentBiddingStatusResult = {
+  errors: Maybe<GetCurrentBiddingStatusErrors>;
+  result: Maybe<BiddingStatus>;
+};
+
 export type GetDailyPartnerStatisticsResult = {
   result: PartnerStatistics;
 };
@@ -579,8 +616,16 @@ export type GetModulesResult = {
   result: Maybe<Array<Module>>;
 };
 
+export type GetMyPartnerResult = {
+  result: PartnerWithRole;
+};
+
 export type GetMyPartnersResult = {
   result: Array<PartnerWithRole>;
+};
+
+export type GetMyProjectResult = {
+  result: ProjectWithRole;
 };
 
 export type GetMyProjectsResult = {
@@ -870,11 +915,29 @@ export type LotteryShopItem = {
   partner_id: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   project_id: Scalars['String']['output'];
+  rejection_reason: Maybe<Scalars['String']['output']>;
   reward_id: Scalars['String']['output'];
   reward_type: Scalars['String']['output'];
   shop_item_category: ShopItemCategory;
   shop_item_distribution_type: ShopItemDistributionType;
   shown_in_shop: Scalars['Boolean']['output'];
+  title: Scalars['String']['output'];
+};
+
+export type LotteryTicket = {
+  currency: Currency;
+  description: Scalars['String']['output'];
+  image_ids: Array<Scalars['String']['output']>;
+  image_urls: Array<Scalars['String']['output']>;
+  lottery_end_date: Scalars['String']['output'];
+  lottery_shop_item_reward_id: Scalars['String']['output'];
+  lottery_start_date: Scalars['String']['output'];
+  partner_id: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  project_id: Scalars['String']['output'];
+  reward_id: Scalars['String']['output'];
+  reward_type: Scalars['String']['output'];
+  shop_item_category: ShopItemCategory;
   title: Scalars['String']['output'];
 };
 
@@ -987,7 +1050,7 @@ export type Mutation = {
   add_store: AddStoreResult;
   add_user: AddUserResult;
   approve_shop_item: ApproveShopItemResult;
-  buy_shop_item: ExecuteShopTransactionResult;
+  bid_on_shop_item: BidOnShopItemResult;
   change_shop_partner_settings: ChangeShopPartnerSettingsResult;
   change_user_id: ChangeUserIdResult;
   change_user_mail_address: ChangeUserMailAddressResult;
@@ -1036,6 +1099,8 @@ export type Mutation = {
   modify_store: ModifyStoreResult;
   pay_purchase_with_fan_points: ExecuteFanPointsTransactionResult;
   propose_partnership_module: ProposePartnershipModuleResult;
+  purchase_lottery_ticket: ExecuteShopTransactionResult;
+  purchase_shop_item: ExecuteShopTransactionResult;
   refund_shop_item: ExecuteShopTransactionResult;
   reject_shop_item: RejectShopItemResult;
   request_fan_points_for_partner: RequestFanPointsResult;
@@ -1150,7 +1215,8 @@ export type MutationApprove_Shop_ItemArgs = {
 };
 
 
-export type MutationBuy_Shop_ItemArgs = {
+export type MutationBid_On_Shop_ItemArgs = {
+  bid_fan_points: Scalars['Int']['input'];
   delivery_address: AddressInput;
   delivery_name: Scalars['String']['input'];
   partner_id: Scalars['String']['input'];
@@ -1522,8 +1588,32 @@ export type MutationPropose_Partnership_ModuleArgs = {
 };
 
 
+export type MutationPurchase_Lottery_TicketArgs = {
+  amount: Scalars['Int']['input'];
+  delivery_address: AddressInput;
+  delivery_name: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+  reward_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationPurchase_Shop_ItemArgs = {
+  amount: Scalars['Int']['input'];
+  delivery_address: AddressInput;
+  delivery_name: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+  reward_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
 export type MutationRefund_Shop_ItemArgs = {
   group_id: Scalars['String']['input'];
+  nr: Scalars['Int']['input'];
+  partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
@@ -1532,6 +1622,7 @@ export type MutationRefund_Shop_ItemArgs = {
 export type MutationReject_Shop_ItemArgs = {
   partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
+  reason: InputMaybe<Scalars['String']['input']>;
   reward_id: Scalars['String']['input'];
 };
 
@@ -1769,6 +1860,7 @@ export type Query = {
   _empty: Maybe<Scalars['String']['output']>;
   get_bought_shop_items: GetBoughtShopItemsResult;
   get_bought_shop_items_at_partner: GetBoughtShopItemsResult;
+  get_current_bidding_status: GetCurrentBiddingStatusResult;
   get_daily_partner_statistics: GetDailyPartnerStatisticsResult;
   get_daily_project_statistics: GetDailyProjectStatisticsResult;
   get_event_types: GetEventTypesResult;
@@ -1777,7 +1869,9 @@ export type Query = {
   get_fan_points_transaction: GetFanPointsTransactionResult;
   get_fan_points_transactions: GetFanPointsTransactionsResult;
   get_modules: GetModulesResult;
+  get_my_partner: GetMyPartnerResult;
   get_my_partners: GetMyPartnersResult;
+  get_my_project: GetMyProjectResult;
   get_my_projects: GetMyProjectsResult;
   get_partner: GetPartnerResult;
   get_partner_billing_info: GetPartnerBillingInfoResult;
@@ -1801,6 +1895,7 @@ export type Query = {
   get_project_user_invitations: GetBackendUserInvitationsResult;
   get_project_users: GetBackendUsersResult;
   get_received_partnership_requests: GetReceivedPartnershipRequestsResult;
+  get_rejected_shop_items: GetShopItemsResult;
   get_sent_partnership_requests: GetSentPartnershipRequestsResult;
   get_shop_item: GetShopItemResult;
   get_shop_items: GetShopItemsResult;
@@ -1831,6 +1926,14 @@ export type QueryGet_Bought_Shop_Items_At_PartnerArgs = {
   later_than: InputMaybe<Scalars['String']['input']>;
   limit: InputMaybe<Scalars['Int']['input']>;
   partner_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Current_Bidding_StatusArgs = {
+  partner_id: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+  reward_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
 };
 
 
@@ -1887,7 +1990,19 @@ export type QueryGet_ModulesArgs = {
 };
 
 
+export type QueryGet_My_PartnerArgs = {
+  partner_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_My_PartnersArgs = {
+  user_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_My_ProjectArgs = {
+  project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
 
@@ -2026,6 +2141,11 @@ export type QueryGet_Received_Partnership_RequestsArgs = {
 };
 
 
+export type QueryGet_Rejected_Shop_ItemsArgs = {
+  project_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_Sent_Partnership_RequestsArgs = {
   requesting_id: Scalars['String']['input'];
 };
@@ -2152,6 +2272,7 @@ export type RewardToDistribute = {
 };
 
 export type RewardTransaction = {
+  can_be_undone: Scalars['Boolean']['output'];
   claimed_date: Maybe<Scalars['String']['output']>;
   details: TransactionDetails;
   group_id: Scalars['String']['output'];
@@ -2428,6 +2549,71 @@ export type PingQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type PingQuery = { ping: string };
+
+export type BidOnShopItemMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  rewardId: Scalars['String']['input'];
+  partnerId: Scalars['String']['input'];
+  bid: Scalars['Int']['input'];
+  deliveryAddress: AddressInput;
+  deliveryName: Scalars['String']['input'];
+}>;
+
+
+export type BidOnShopItemMutation = { bidOnShopItem: { errors: { invalidBidAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+
+export type GetAuctionStatusQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  partnerId: Scalars['String']['input'];
+  rewardId: Scalars['String']['input'];
+}>;
+
+
+export type GetAuctionStatusQuery = { get_current_bidding_status: { errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, bids: Array<{ date: string, bidderId: string, fanPoints: number }> } | undefined } };
+
+export type GetShopItemQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  partnerId: Scalars['String']['input'];
+  rewardId: Scalars['String']['input'];
+}>;
+
+
+export type GetShopItemQuery = { get_shop_item: { result: { rewardId: string, numAvailable: any, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined } | undefined, errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined } };
+
+export type GetShopItemsQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  shopItemCategory: InputMaybe<ShopItemCategory>;
+  lastReturnedRewardId: InputMaybe<Scalars['String']['input']>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, numAvailable: any, partnerId: string, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined }> } };
+
+export type GetShopPurchasesQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  earlierThan: InputMaybe<Scalars['String']['input']>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ nr: number, groupId: string, purchaseDate: string, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, ticketPrice: number, numPrizesAvailable: number } | {}, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+
+export type PurchaseLotteryTicketMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  rewardId: Scalars['String']['input'];
+  partnerId: Scalars['String']['input'];
+  amount: Scalars['Int']['input'];
+  deliveryAddress: AddressInput;
+  deliveryName: Scalars['String']['input'];
+}>;
+
+
+export type PurchaseLotteryTicketMutation = { purchaseLotteryTicket: { errors: { tooFewAvailableError: { _empty: string | undefined } | undefined, unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetStatusPointsBalanceQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2787,6 +2973,266 @@ export const PingDocument = gql`
   ping
 }
     `;
+export const BidOnShopItemDocument = gql`
+    mutation bidOnShopItem($projectId: String!, $userId: String!, $rewardId: String!, $partnerId: String!, $bid: Int!, $deliveryAddress: AddressInput!, $deliveryName: String!) {
+  bidOnShopItem: bid_on_shop_item(
+    project_id: $projectId
+    user_id: $userId
+    reward_id: $rewardId
+    partner_id: $partnerId
+    bid_fan_points: $bid
+    delivery_address: $deliveryAddress
+    delivery_name: $deliveryName
+  ) {
+    errors {
+      invalidBidAmountError: invalid_bid_amount_error {
+        _empty
+      }
+      tooFewAvailableError: too_few_available_error {
+        _empty
+      }
+      unknownShopItemError: unknown_shop_item_error {
+        _empty
+      }
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
+export const GetAuctionStatusDocument = gql`
+    query getAuctionStatus($projectId: String!, $userId: String!, $partnerId: String!, $rewardId: String!) {
+  get_current_bidding_status(
+    partner_id: $partnerId
+    project_id: $projectId
+    reward_id: $rewardId
+    user_id: $userId
+  ) {
+    errors {
+      unknownShopItemError: unknown_shop_item_error {
+        _empty
+      }
+    }
+    result {
+      isAuctionOpen: is_bidding_open
+      bids {
+        bidderId: bidder_id
+        date
+        fanPoints: fan_points
+      }
+      currentHighestBid: current_highest_bid_fan_points
+      currentUserBid: current_user_bid_fan_points
+      nextHigherBid: next_higher_bid_fan_points
+    }
+  }
+}
+    `;
+export const GetShopItemDocument = gql`
+    query getShopItem($projectId: String!, $partnerId: String!, $rewardId: String!) {
+  get_shop_item(
+    project_id: $projectId
+    partner_id: $partnerId
+    reward_id: $rewardId
+  ) {
+    result {
+      rewardId: reward_id
+      numAvailable: balance
+      shopItem: template {
+        ... on BasicShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          price
+          currency
+        }
+        ... on LotteryShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          ticketPrice: price
+          currency
+          numPrizesAvailable: num_prizes_available
+        }
+        ... on BiddingShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          minBid: min_bid
+          currency
+        }
+      }
+    }
+    errors {
+      unknownShopItemError: unknown_shop_item_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
+export const GetShopItemsDocument = gql`
+    query getShopItems($projectId: String!, $shopItemCategory: ShopItemCategory, $lastReturnedRewardId: String, $limit: Int) {
+  getShopItems: get_shop_items(
+    project_id: $projectId
+    return_only_listed: true
+    last_returned_reward_id: $lastReturnedRewardId
+    limit: $limit
+    shop_item_category: $shopItemCategory
+  ) {
+    result {
+      rewardId: reward_id
+      numAvailable: balance
+      partnerId: owner_id
+      shopItem: template {
+        ... on BasicShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          price
+          currency
+        }
+        ... on LotteryShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          ticketPrice: price
+          currency
+          numPrizesAvailable: num_prizes_available
+        }
+        ... on BiddingShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          minBid: min_bid
+          currency
+        }
+      }
+    }
+  }
+}
+    `;
+export const GetShopPurchasesDocument = gql`
+    query getShopPurchases($projectId: String!, $userId: String!, $earlierThan: String, $limit: Int) {
+  getShopPurchases: get_bought_shop_items(
+    project_id: $projectId
+    user_id: $userId
+    earlier_than: $earlierThan
+    limit: $limit
+  ) {
+    errors {
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+    result {
+      shopItem: reward {
+        ... on BasicShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
+          price
+          currency
+        }
+        ... on LotteryShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
+          ticketPrice: price
+          currency
+          numPrizesAvailable: num_prizes_available
+        }
+        ... on BiddingShopItem {
+          __typename
+          shopItemType: shop_item_category
+          title
+          description
+          imageUrls: image_urls
+          shopItemDistributionType: shop_item_distribution_type
+          rewardId: reward_id
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
+          minBid: min_bid
+          currency
+        }
+      }
+      groupId: group_id
+      nr
+      deliveryDetails: details {
+        deliveryAddress: delivery_address {
+          zipCode: zip_code
+          street
+          country
+          city
+        }
+        deliveryName: delivery_name
+      }
+      purchaseDate: transaction_date
+    }
+  }
+}
+    `;
+export const PurchaseLotteryTicketDocument = gql`
+    mutation purchaseLotteryTicket($projectId: String!, $userId: String!, $rewardId: String!, $partnerId: String!, $amount: Int!, $deliveryAddress: AddressInput!, $deliveryName: String!) {
+  purchaseLotteryTicket: purchase_lottery_ticket(
+    project_id: $projectId
+    user_id: $userId
+    reward_id: $rewardId
+    partner_id: $partnerId
+    amount: $amount
+    delivery_address: $deliveryAddress
+    delivery_name: $deliveryName
+  ) {
+    errors {
+      tooFewAvailableError: too_few_available_error {
+        _empty
+      }
+      unknownShopItemError: unknown_shop_item_error {
+        _empty
+      }
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
 export const GetStatusPointsBalanceDocument = gql`
     query getStatusPointsBalance($projectId: String!, $userId: String!) {
   getStatusPointsBalance: get_status_points_balance(
@@ -3047,6 +3493,12 @@ const GiveFanPointsOnPurchaseDocumentString = print(GiveFanPointsOnPurchaseDocum
 const PayPurchaseWithFanPointsDocumentString = print(PayPurchaseWithFanPointsDocument);
 const UndoFanPointsPurchaseDocumentString = print(UndoFanPointsPurchaseDocument);
 const PingDocumentString = print(PingDocument);
+const BidOnShopItemDocumentString = print(BidOnShopItemDocument);
+const GetAuctionStatusDocumentString = print(GetAuctionStatusDocument);
+const GetShopItemDocumentString = print(GetShopItemDocument);
+const GetShopItemsDocumentString = print(GetShopItemsDocument);
+const GetShopPurchasesDocumentString = print(GetShopPurchasesDocument);
+const PurchaseLotteryTicketDocumentString = print(PurchaseLotteryTicketDocument);
 const GetStatusPointsBalanceDocumentString = print(GetStatusPointsBalanceDocument);
 const GetStatusPointsForActionDocumentString = print(GetStatusPointsForActionDocument);
 const GetStatusPointsTransactionsDocumentString = print(GetStatusPointsTransactionsDocument);
@@ -3083,6 +3535,24 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     ping(variables?: PingQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PingQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<PingQuery>(PingDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ping', 'query');
+    },
+    bidOnShopItem(variables: BidOnShopItemMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: BidOnShopItemMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<BidOnShopItemMutation>(BidOnShopItemDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'bidOnShopItem', 'mutation');
+    },
+    getAuctionStatus(variables: GetAuctionStatusQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetAuctionStatusQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetAuctionStatusQuery>(GetAuctionStatusDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAuctionStatus', 'query');
+    },
+    getShopItem(variables: GetShopItemQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetShopItemQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetShopItemQuery>(GetShopItemDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getShopItem', 'query');
+    },
+    getShopItems(variables: GetShopItemsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetShopItemsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetShopItemsQuery>(GetShopItemsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getShopItems', 'query');
+    },
+    getShopPurchases(variables: GetShopPurchasesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetShopPurchasesQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetShopPurchasesQuery>(GetShopPurchasesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getShopPurchases', 'query');
+    },
+    purchaseLotteryTicket(variables: PurchaseLotteryTicketMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PurchaseLotteryTicketMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<PurchaseLotteryTicketMutation>(PurchaseLotteryTicketDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'purchaseLotteryTicket', 'mutation');
     },
     getStatusPointsBalance(variables: GetStatusPointsBalanceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetStatusPointsBalanceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetStatusPointsBalanceQuery>(GetStatusPointsBalanceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getStatusPointsBalance', 'query');
