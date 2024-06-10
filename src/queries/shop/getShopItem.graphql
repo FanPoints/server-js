@@ -3,7 +3,7 @@ query getShopItem(
     $partnerId: String!
     $rewardId: String!
 ) {
-    get_shop_item(
+    getShopItem: get_shop_item(
         project_id: $projectId
         partner_id: $partnerId
         reward_id: $rewardId
