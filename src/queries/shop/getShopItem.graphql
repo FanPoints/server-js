@@ -13,7 +13,6 @@ query getShopItem(
             numAvailable: balance
             shopItem: template {
                 ... on BasicShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description
@@ -24,7 +23,6 @@ query getShopItem(
                     currency
                 }
                 ... on LotteryShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description
@@ -36,7 +34,6 @@ query getShopItem(
                     numPrizesAvailable: num_prizes_available
                 }
                 ... on BiddingShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description

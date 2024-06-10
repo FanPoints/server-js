@@ -2581,7 +2581,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, numAvailable: any, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined } | undefined, errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, numAvailable: any, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined } | undefined, errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2591,7 +2591,7 @@ export type GetShopItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, numAvailable: any, partnerId: string, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined }> } };
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, numAvailable: any, partnerId: string, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined }> } };
 
 export type GetShopPurchasesQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2601,7 +2601,7 @@ export type GetShopPurchasesQueryVariables = Exact<{
 }>;
 
 
-export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ nr: number, groupId: string, purchaseDate: string, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, ticketPrice: number, numPrizesAvailable: number } | {}, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ nr: number, groupId: string, purchaseDate: string, shopItem: { title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, minBid: number } | { title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, ticketPrice: number, numPrizesAvailable: number } | {}, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3054,7 +3054,6 @@ export const GetShopItemDocument = gql`
       numAvailable: balance
       shopItem: template {
         ... on BasicShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3065,7 +3064,6 @@ export const GetShopItemDocument = gql`
           currency
         }
         ... on LotteryShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3077,7 +3075,6 @@ export const GetShopItemDocument = gql`
           numPrizesAvailable: num_prizes_available
         }
         ... on BiddingShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3112,7 +3109,6 @@ export const GetShopItemsDocument = gql`
       partnerId: owner_id
       shopItem: template {
         ... on BasicShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3123,7 +3119,6 @@ export const GetShopItemsDocument = gql`
           currency
         }
         ... on LotteryShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3135,7 +3130,6 @@ export const GetShopItemsDocument = gql`
           numPrizesAvailable: num_prizes_available
         }
         ... on BiddingShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3166,7 +3160,6 @@ export const GetShopPurchasesDocument = gql`
     result {
       shopItem: reward {
         ... on BasicShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3179,7 +3172,6 @@ export const GetShopPurchasesDocument = gql`
           currency
         }
         ... on LotteryShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description
@@ -3193,7 +3185,6 @@ export const GetShopPurchasesDocument = gql`
           numPrizesAvailable: num_prizes_available
         }
         ... on BiddingShopItem {
-          __typename
           shopItemType: shop_item_category
           title
           description

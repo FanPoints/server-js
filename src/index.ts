@@ -8,10 +8,21 @@ export { default as FanPointsClient, createClient } from './FanPointsClient';
 export { UserModule } from './UserModule';
 export { FanPointsModule } from './FanPointsModule';
 export { StatusPointsModule } from './StatusPointsModule';
+export {
+    ShopModule,
+    type ShopItemListing,
+    type PurchaseShopItem,
+    type LotteryShopItem,
+    type BiddingShopItem,
+    type ShopItemPurchase,
+} from './ShopModule';
 
 export { RequestError } from './utils/errors';
 
 export type {
     Currency,
     FanPointsTransactionType,
+    ShopItemCategory,
+    ShopItemDistributionType,
+    DeliveryStatus,
 } from './queries/generated/sdk';

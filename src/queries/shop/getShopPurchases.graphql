@@ -18,7 +18,6 @@ query getShopPurchases(
         result {
             shopItem: reward {
                 ... on BasicShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description
@@ -31,7 +30,6 @@ query getShopPurchases(
                     currency
                 }
                 ... on LotteryShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description
@@ -45,7 +43,6 @@ query getShopPurchases(
                     numPrizesAvailable: num_prizes_available
                 }
                 ... on BiddingShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description
