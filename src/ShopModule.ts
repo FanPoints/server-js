@@ -202,7 +202,7 @@ export class ShopModule {
      *
      * Note that only tickets for shop items that have a shopItemDistributionType of
      * `lottery` can be purchased.
-     * 
+     *
      * After the lottery is over, the winners will be drawn and the shop items will be
      * distributed to the winners automatically.
      *
@@ -250,13 +250,13 @@ export class ShopModule {
      *
      * Note that only shop items that have a shopItemDistributionType of `bidding` can be
      * bid on.
-     * 
+     *
      * Only bids higher at least greater than 50 FP than the current highest bid will be accepted.
      * Otherwise, the bid will be rejected (`invalidBidAmountError`).
      *
      * When the auction is over, the bidder with the highest bid will be the winner and purchase
      * the item automatically.
-     * 
+     *
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the shop item to bid on.
      * @param partnerId - The partner ID of the partner offering the shop item to bid on.
