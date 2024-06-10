@@ -26,6 +26,8 @@ export type LotteryShopItem = {
     currency: Currency;
     ticketPrice: number;
     numPrizesAvailable: number;
+    lotteryStartDate: string;
+    lotteryEndDate: string;
 };
 export type BiddingShopItem = {
     shopItemType: ShopItemCategory;
@@ -36,6 +38,8 @@ export type BiddingShopItem = {
     rewardId: string;
     currency: Currency;
     minBid: number;
+    biddingStartDate: string;
+    biddingEndDate: string;
 };
 
 export type ShopItemListing = {
@@ -150,9 +154,9 @@ export class ShopModule {
         });
     }
 
-    /** 
+    /**
      * Purchases a shop item for a user.
-     * 
+     *
      * Note that only shop items that have a shopItemDistributionType of `purchase` can be purchased.
      *
      * @param userId - The user ID of the user.
@@ -195,9 +199,12 @@ export class ShopModule {
 
     /**
      * Purchases a lottery ticket for a user.
-     * 
+     *
      * Note that only tickets for shop items that have a shopItemDistributionType of
      * `lottery` can be purchased.
+     * 
+     * After the lottery is over, the winners will be drawn and the shop items will be
+     * distributed to the winners automatically.
      *
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the lottery shop item to purchase tickets for.
@@ -237,13 +244,19 @@ export class ShopModule {
         });
         return unwrap(result.data.purchaseLotteryTicket);
     }
-    
+
     /**
      * Places a bid on a bidding shop item.
-     * 
+     *
      * Note that only shop items that have a shopItemDistributionType of `bidding` can be
      * bid on.
+     * 
+     * Only bids higher at least greater than 50 FP than the current highest bid will be accepted.
+     * Otherwise, the bid will be rejected (`invalidBidAmountError`).
      *
+     * When the auction is over, the bidder with the highest bid will be the winner and purchase
+     * the item automatically.
+     * 
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the shop item to bid on.
      * @param partnerId - The partner ID of the partner offering the shop item to bid on.
