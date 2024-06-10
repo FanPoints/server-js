@@ -1,0 +1,56 @@
+query getShopItems(
+    $projectId: String!
+    $shopItemCategory: ShopItemCategory
+    $lastReturnedRewardId: String
+    $limit: Int
+) {
+    getShopItems: get_shop_items(
+        project_id: $projectId
+        return_only_listed: true
+        last_returned_reward_id: $lastReturnedRewardId
+        limit: $limit
+        shop_item_category: $shopItemCategory
+    ) {
+        result {
+            rewardId: reward_id
+            numAvailable: balance
+            partnerId: owner_id
+            shopItem: template {
+                ... on BasicShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    price
+                    currency
+                }
+                ... on LotteryShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    ticketPrice: price
+                    currency
+                    numPrizesAvailable: num_prizes_available
+                }
+                ... on BiddingShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    minBid: min_bid
+                    currency
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+query getShopPurchases(
+    $projectId: String!
+    $userId: String!
+    $earlierThan: String
+    $limit: Int
+) {
+    getShopPurchases: get_bought_shop_items(
+        project_id: $projectId
+        user_id: $userId
+        earlier_than: $earlierThan
+        limit: $limit
+    ) {
+        errors {
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+        result {
+            shopItem: reward {
+                ... on BasicShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
+                    price
+                    currency
+                }
+                ... on LotteryShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
+                    ticketPrice: price
+                    currency
+                    numPrizesAvailable: num_prizes_available
+                }
+                ... on BiddingShopItem {
+                    __typename
+                    shopItemType: shop_item_category
+                    title
+                    description
+                    imageUrls: image_urls
+                    shopItemDistributionType: shop_item_distribution_type
+                    rewardId: reward_id
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
+                    minBid: min_bid
+                    currency
+                }
+            }
+            groupId: group_id
+            nr
+            deliveryDetails: details {
+                deliveryAddress: delivery_address {
+                    zipCode: zip_code
+                    street
+                    country
+                    city
+                }
+                deliveryName: delivery_name
+            }
+            purchaseDate: transaction_date
+        }
+    }
+}

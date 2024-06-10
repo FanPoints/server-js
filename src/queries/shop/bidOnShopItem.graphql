@@ -1,0 +1,34 @@
+mutation bidOnShopItem(
+    $projectId: String!
+    $userId: String!
+    $rewardId: String!
+    $partnerId: String!
+    $bid: Int!
+    $deliveryAddress: AddressInput!
+    $deliveryName: String!
+) {
+    bidOnShopItem: bid_on_shop_item(
+        project_id: $projectId
+        user_id: $userId
+        reward_id: $rewardId
+        partner_id: $partnerId
+        bid_fan_points: $bid
+        delivery_address: $deliveryAddress
+        delivery_name: $deliveryName
+    ) {
+        errors {
+            invalidBidAmountError: invalid_bid_amount_error {
+                _empty
+            }
+            tooFewAvailableError: too_few_available_error {
+                _empty
+            }
+            unknownShopItemError: unknown_shop_item_error {
+                _empty
+            }
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}
