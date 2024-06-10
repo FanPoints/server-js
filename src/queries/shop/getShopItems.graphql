@@ -17,7 +17,6 @@ query getShopItems(
             partnerId: owner_id
             shopItem: template {
                 ... on BasicShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description
@@ -28,7 +27,6 @@ query getShopItems(
                     currency
                 }
                 ... on LotteryShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description
@@ -40,7 +38,6 @@ query getShopItems(
                     numPrizesAvailable: num_prizes_available
                 }
                 ... on BiddingShopItem {
-                    __typename
                     shopItemType: shop_item_category
                     title
                     description

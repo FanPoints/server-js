@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import FanPointsClient from './FanPointsClient';
-import { Currency, PurchaseItemInput } from './queries/generated/sdk';
+import {
+    Currency,
+    PurchaseItemInput,
+} from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
 
 /**
