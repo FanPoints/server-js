@@ -432,6 +432,7 @@ export type ExecuteFanPointsTransactionResult = {
 };
 
 export type ExecuteShopTransactionErrors = {
+  invalid_reward_amount_error: Maybe<InvalidRewardAmountError>;
   too_few_available_error: Maybe<TooFewAvailableError>;
   unknown_shop_item_error: Maybe<UnknownShopItemError>;
   unknown_user_error: Maybe<UnknownUserError>;
@@ -2580,7 +2581,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { get_shop_item: { result: { rewardId: string, numAvailable: any, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined } | undefined, errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, numAvailable: any, shopItem: { __typename: 'BasicShopItem', title: string, description: string, price: number, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string } | { __typename: 'BiddingShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, minBid: number } | { __typename: 'LotteryShopItem', title: string, description: string, currency: Currency, shopItemType: ShopItemCategory, imageUrls: Array<string>, shopItemDistributionType: ShopItemDistributionType, rewardId: string, ticketPrice: number, numPrizesAvailable: number } | {} | undefined } | undefined, errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2613,7 +2614,20 @@ export type PurchaseLotteryTicketMutationVariables = Exact<{
 }>;
 
 
-export type PurchaseLotteryTicketMutation = { purchaseLotteryTicket: { errors: { tooFewAvailableError: { _empty: string | undefined } | undefined, unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+export type PurchaseLotteryTicketMutation = { purchaseLotteryTicket: { errors: { invalidAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+
+export type PurchaseShopItemMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  rewardId: Scalars['String']['input'];
+  partnerId: Scalars['String']['input'];
+  amount: Scalars['Int']['input'];
+  deliveryAddress: AddressInput;
+  deliveryName: Scalars['String']['input'];
+}>;
+
+
+export type PurchaseShopItemMutation = { purchaseShopItem: { errors: { invalidAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetStatusPointsBalanceQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3030,7 +3044,7 @@ export const GetAuctionStatusDocument = gql`
     `;
 export const GetShopItemDocument = gql`
     query getShopItem($projectId: String!, $partnerId: String!, $rewardId: String!) {
-  get_shop_item(
+  getShopItem: get_shop_item(
     project_id: $projectId
     partner_id: $partnerId
     reward_id: $rewardId
@@ -3220,6 +3234,37 @@ export const PurchaseLotteryTicketDocument = gql`
     delivery_name: $deliveryName
   ) {
     errors {
+      invalidAmountError: invalid_reward_amount_error {
+        _empty
+      }
+      tooFewAvailableError: too_few_available_error {
+        _empty
+      }
+      unknownShopItemError: unknown_shop_item_error {
+        _empty
+      }
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
+export const PurchaseShopItemDocument = gql`
+    mutation purchaseShopItem($projectId: String!, $userId: String!, $rewardId: String!, $partnerId: String!, $amount: Int!, $deliveryAddress: AddressInput!, $deliveryName: String!) {
+  purchaseShopItem: purchase_shop_item(
+    project_id: $projectId
+    user_id: $userId
+    reward_id: $rewardId
+    partner_id: $partnerId
+    amount: $amount
+    delivery_address: $deliveryAddress
+    delivery_name: $deliveryName
+  ) {
+    errors {
+      invalidAmountError: invalid_reward_amount_error {
+        _empty
+      }
       tooFewAvailableError: too_few_available_error {
         _empty
       }
@@ -3499,6 +3544,7 @@ const GetShopItemDocumentString = print(GetShopItemDocument);
 const GetShopItemsDocumentString = print(GetShopItemsDocument);
 const GetShopPurchasesDocumentString = print(GetShopPurchasesDocument);
 const PurchaseLotteryTicketDocumentString = print(PurchaseLotteryTicketDocument);
+const PurchaseShopItemDocumentString = print(PurchaseShopItemDocument);
 const GetStatusPointsBalanceDocumentString = print(GetStatusPointsBalanceDocument);
 const GetStatusPointsForActionDocumentString = print(GetStatusPointsForActionDocument);
 const GetStatusPointsTransactionsDocumentString = print(GetStatusPointsTransactionsDocument);
@@ -3553,6 +3599,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     purchaseLotteryTicket(variables: PurchaseLotteryTicketMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PurchaseLotteryTicketMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<PurchaseLotteryTicketMutation>(PurchaseLotteryTicketDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'purchaseLotteryTicket', 'mutation');
+    },
+    purchaseShopItem(variables: PurchaseShopItemMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PurchaseShopItemMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<PurchaseShopItemMutation>(PurchaseShopItemDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'purchaseShopItem', 'mutation');
     },
     getStatusPointsBalance(variables: GetStatusPointsBalanceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetStatusPointsBalanceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetStatusPointsBalanceQuery>(GetStatusPointsBalanceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getStatusPointsBalance', 'query');
