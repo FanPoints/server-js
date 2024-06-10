@@ -2572,7 +2572,7 @@ export type GetAuctionStatusQueryVariables = Exact<{
 }>;
 
 
-export type GetAuctionStatusQuery = { get_current_bidding_status: { errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, bids: Array<{ date: string, bidderId: string, fanPoints: number }> } | undefined } };
+export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownShopItemError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, bids: Array<{ date: string, bidderId: string, fanPoints: number }> } | undefined } };
 
 export type GetShopItemQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3017,7 +3017,7 @@ export const BidOnShopItemDocument = gql`
     `;
 export const GetAuctionStatusDocument = gql`
     query getAuctionStatus($projectId: String!, $userId: String!, $partnerId: String!, $rewardId: String!) {
-  get_current_bidding_status(
+  getAuctionStatus: get_current_bidding_status(
     partner_id: $partnerId
     project_id: $projectId
     reward_id: $rewardId

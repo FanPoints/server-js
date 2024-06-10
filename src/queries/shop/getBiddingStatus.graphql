@@ -4,7 +4,7 @@ query getAuctionStatus(
     $partnerId: String!
     $rewardId: String!
 ) {
-    get_current_bidding_status(
+    getAuctionStatus: get_current_bidding_status(
         partner_id: $partnerId
         project_id: $projectId
         reward_id: $rewardId
@@ -12,6 +12,9 @@ query getAuctionStatus(
     ) {
         errors {
             unknownShopItemError: unknown_shop_item_error {
+                _empty
+            }
+            unknownUserError: unknown_user_error {
                 _empty
             }
         }
