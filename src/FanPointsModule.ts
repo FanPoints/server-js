@@ -1,6 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import FanPointsClient from './FanPointsClient';
-import { Currency, PurchaseItemInput } from './queries/generated/sdk';
+import {
+    Currency,
+    PurchaseItemInput,
+    PurchaseItemPriceInput,
+} from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
 
 /**
@@ -365,5 +369,65 @@ export class FanPointsModule<PartnerLabel extends string> {
             currency: currency || defaultCurrency,
         });
         return unwrap(result.data.getPriceInFanPoints);
+    }
+
+    /**
+     * Estimates how many Fan Points a user would receive for the given purchase.
+     *
+     * This allows you to check how many Fan Points a user would receive for
+     * a given purchase. It does not actually distribute the Fan Points. Use
+     * {@link giveFanPointsOnPurchase} to distribute Fan Points.
+     *
+     * @param userId - the id of the user
+     * @param purchaseItems - the items that were purchased
+     *
+     * @returns the amount of Fan Points the user would receive.
+     */
+    public async estimateGivenOutFanPointsOnPurchase(
+        purchaseItems: {
+            partnerId?: string;
+            price: number;
+            currency?: Currency;
+            partnerLabel?: PartnerLabel;
+            rateLabel?: string;
+        }[],
+    ) {
+        const purchaseItemsPerPartner = {} as Record<
+            string,
+            PurchaseItemPriceInput[]
+        >;
+        purchaseItems.forEach((purchaseItem) => {
+            const { partnerId, defaultCurrency } = this.client.getPartner(
+                purchaseItem.partnerId,
+                purchaseItem.partnerLabel,
+            );
+
+            const modfiedPurchaseItem = {
+                ...purchaseItem,
+                rate_label: purchaseItem.rateLabel,
+                currency: purchaseItem.currency || defaultCurrency,
+            };
+            delete modfiedPurchaseItem.rateLabel;
+            delete modfiedPurchaseItem.partnerLabel;
+
+            if (!purchaseItemsPerPartner[partnerId]) {
+                purchaseItemsPerPartner[partnerId] = [];
+            }
+            purchaseItemsPerPartner[partnerId].push(modfiedPurchaseItem);
+        });
+
+        const results = Object.entries(purchaseItemsPerPartner).map(
+            async ([partnerId, purchaseItems]) => {
+                const { sdk } = this.client.getPartner(partnerId);
+                const result = (
+                    await sdk.estimateGivenOutFanPointsOnPurchase({
+                        partnerId,
+                        purchaseItems: purchaseItems,
+                    })
+                ).data.estimateGivenOutFanPointsOnPurchase;
+                return unwrap(result);
+            },
+        );
+        return (await Promise.all(results)).reduce((acc, val) => acc + val, 0);
     }
 }

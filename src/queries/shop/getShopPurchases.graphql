@@ -28,6 +28,8 @@ query getShopPurchases(
                     deliveryDate: delivery_date
                     price
                     currency
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
                 }
                 ... on LotteryShopItem {
                     shopItemType: shop_item_category
@@ -43,6 +45,8 @@ query getShopPurchases(
                     numPrizesAvailable: num_prizes_available
                     lotteryStartDate: lottery_start_date
                     lotteryEndDate: lottery_end_date
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
                 }
                 ... on BiddingShopItem {
                     shopItemType: shop_item_category
@@ -57,6 +61,8 @@ query getShopPurchases(
                     currency
                     biddingStartDate: bidding_start_date
                     biddingEndDate: bidding_end_date
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
                 }
             }
             groupId: group_id

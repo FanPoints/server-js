@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2024-07-02
+
+### Added
+
+-   The `estimateGivenOutFanPointsOnPurchase` query has been added that allows to estimate the number of Fan Points that will be given out for a given purchase.
+
+### Changed
+
+-   The purchase queries in the `FanPoints` module now return the full partner associated with the purchase.
+
 ## [0.2.0] - 2024-06-10
 
 ### Added
