@@ -24,6 +24,7 @@ query getAuctionStatus(
                 bidderId: bidder_id
                 date
                 fanPoints: fan_points
+                byCurrentUser: by_current_user
             }
             currentHighestBid: current_highest_bid_fan_points
             currentUserBid: current_user_bid_fan_points

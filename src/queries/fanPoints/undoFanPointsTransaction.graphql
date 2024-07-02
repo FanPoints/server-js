@@ -19,6 +19,14 @@ mutation undoFanPointsPurchase(
             purchaseItems: purchase_items {
                 purchaseItemId: purchase_item_id
                 partnerId: partner_id
+                partner {
+                    name
+                    description
+                    website
+                    branding {
+                        logoUrl: logo_color_url
+                    }
+                }
                 title
                 description
                 price
@@ -26,6 +34,8 @@ mutation undoFanPointsPurchase(
                 amount
                 rateLabel: rate_label
                 date
+                hasBeenUndone: has_been_undone
+                hasBeenSettled: has_been_settled
             }
         }
         errors {

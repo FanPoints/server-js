@@ -162,6 +162,7 @@ export type BasicShopItem = {
 
 export type Bid = {
   bidder_id: Scalars['String']['output'];
+  by_current_user: Scalars['Boolean']['output'];
   date: Scalars['String']['output'];
   fan_points: Scalars['Int']['output'];
 };
@@ -336,6 +337,7 @@ export type CreateTokenResult = {
 export type Currency =
   | 'chf'
   | 'eur'
+  | 'fp'
   | 'usd';
 
 export type DeclinePartnershipRequestResult = {
@@ -418,6 +420,15 @@ export type DistributionDetails = {
 
 export type EmptyResult = {
   _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type EstimateGivenOutFanPointsResult = {
+  errors: Maybe<EstimateGivenOutFanPointsResultErrors>;
+  result: Maybe<Scalars['Int']['output']>;
+};
+
+export type EstimateGivenOutFanPointsResultErrors = {
+  invalid_rate_label_error: Maybe<InvalidRateLabelError>;
 };
 
 export type EventType = {
@@ -1838,6 +1849,7 @@ export type PurchaseItem = {
   fan_points_rate_type: Maybe<FanPointsRateType>;
   has_been_settled: Scalars['Boolean']['output'];
   has_been_undone: Scalars['Boolean']['output'];
+  partner: Partner;
   partner_id: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   purchase_item_id: Scalars['String']['output'];
@@ -1854,12 +1866,19 @@ export type PurchaseItemInput = {
   title: Scalars['String']['input'];
 };
 
+export type PurchaseItemPriceInput = {
+  currency: Currency;
+  price: Scalars['Float']['input'];
+  rate_label: InputMaybe<Scalars['String']['input']>;
+};
+
 export type QrCodeVersion =
   | 'deep_link_distribute'
   | 'json_v1';
 
 export type Query = {
   _empty: Maybe<Scalars['String']['output']>;
+  estimate_given_out_fan_points_on_purchase: EstimateGivenOutFanPointsResult;
   get_bought_shop_items: GetBoughtShopItemsResult;
   get_bought_shop_items_at_partner: GetBoughtShopItemsResult;
   get_current_bidding_status: GetCurrentBiddingStatusResult;
@@ -1911,6 +1930,12 @@ export type Query = {
   get_users: GetUsersResult;
   get_wallet_customization: GetWalletCustomizationResult;
   ping: Scalars['String']['output'];
+};
+
+
+export type QueryEstimate_Given_Out_Fan_Points_On_PurchaseArgs = {
+  partner_id: Scalars['String']['input'];
+  purchase_items: Array<PurchaseItemPriceInput>;
 };
 
 
@@ -2156,6 +2181,7 @@ export type QueryGet_Sent_Partnership_RequestsArgs = {
 export type QueryGet_Shop_ItemArgs = {
   partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
+  return_prices_in_fan_points: InputMaybe<Scalars['Boolean']['input']>;
   reward_id: Scalars['String']['input'];
 };
 
@@ -2165,6 +2191,7 @@ export type QueryGet_Shop_ItemsArgs = {
   limit: InputMaybe<Scalars['Int']['input']>;
   project_id: Scalars['String']['input'];
   return_only_listed: Scalars['Boolean']['input'];
+  return_prices_in_fan_points: InputMaybe<Scalars['Boolean']['input']>;
   shop_item_category: InputMaybe<ShopItemCategory>;
 };
 
@@ -2477,6 +2504,14 @@ export type WalletCustomization = {
   title: Scalars['String']['output'];
 };
 
+export type EstimateGivenOutFanPointsOnPurchaseQueryVariables = Exact<{
+  partnerId: Scalars['String']['input'];
+  purchaseItems: Array<PurchaseItemPriceInput> | PurchaseItemPriceInput;
+}>;
+
+
+export type EstimateGivenOutFanPointsOnPurchaseQuery = { estimateGivenOutFanPointsOnPurchase: { result: number | undefined, errors: { invalidRateLabelError: { _empty: string | undefined } | undefined } | undefined } };
+
 export type GetFanPointsTransactionQueryVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['String']['input'];
@@ -2485,7 +2520,7 @@ export type GetFanPointsTransactionQueryVariables = Exact<{
 }>;
 
 
-export type GetFanPointsTransactionQuery = { getFanPointsTransaction: { result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined }> } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, transactionNotFoundError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetFanPointsTransactionQuery = { getFanPointsTransaction: { result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined, hasBeenUndone: boolean, hasBeenSettled: boolean, partner: { name: string, description: string, website: string, branding: { logoUrl: string | undefined } } }> } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, transactionNotFoundError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetFanPointsTransactionsQueryVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
@@ -2495,7 +2530,7 @@ export type GetFanPointsTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type GetFanPointsTransactionsQuery = { getFanPointsTransactions: { result: Array<{ purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined }> }> | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetFanPointsTransactionsQuery = { getFanPointsTransactions: { result: Array<{ purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined, hasBeenUndone: boolean, hasBeenSettled: boolean, partner: { name: string, description: string, website: string, branding: { logoUrl: string | undefined } } }> }> | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetFanPointsBalanceQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2523,7 +2558,7 @@ export type GiveFanPointsOnPurchaseMutationVariables = Exact<{
 }>;
 
 
-export type GiveFanPointsOnPurchaseMutation = { giveFanPointsOnPurchase: { errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, invalidRateLabelError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined, nonUniquePurchaseItemIdsError: { _empty: string | undefined } | undefined } | undefined, result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined }> } | undefined } };
+export type GiveFanPointsOnPurchaseMutation = { giveFanPointsOnPurchase: { errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, invalidRateLabelError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined, nonUniquePurchaseItemIdsError: { _empty: string | undefined } | undefined } | undefined, result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined, hasBeenUndone: boolean, hasBeenSettled: boolean, partner: { name: string, description: string, website: string, branding: { logoUrl: string | undefined } } }> } | undefined } };
 
 export type PayPurchaseWithFanPointsMutationVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
@@ -2534,7 +2569,7 @@ export type PayPurchaseWithFanPointsMutationVariables = Exact<{
 }>;
 
 
-export type PayPurchaseWithFanPointsMutation = { payPurchaseWithFanPoints: { errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, invalidRateLabelError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined, nonUniquePurchaseItemIdsError: { _empty: string | undefined } | undefined } | undefined, result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined }> } | undefined } };
+export type PayPurchaseWithFanPointsMutation = { payPurchaseWithFanPoints: { errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, invalidRateLabelError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined, nonUniquePurchaseItemIdsError: { _empty: string | undefined } | undefined } | undefined, result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined, hasBeenUndone: boolean, hasBeenSettled: boolean, partner: { name: string, description: string, website: string, branding: { logoUrl: string | undefined } } }> } | undefined } };
 
 export type UndoFanPointsPurchaseMutationVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
@@ -2545,7 +2580,7 @@ export type UndoFanPointsPurchaseMutationVariables = Exact<{
 }>;
 
 
-export type UndoFanPointsPurchaseMutation = { undoFanPointsPurchase: { result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined }> } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, transactionNotFoundError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined } | undefined } };
+export type UndoFanPointsPurchaseMutation = { undoFanPointsPurchase: { result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined, hasBeenUndone: boolean, hasBeenSettled: boolean, partner: { name: string, description: string, website: string, branding: { logoUrl: string | undefined } } }> } | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, transactionNotFoundError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type PingQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2573,7 +2608,7 @@ export type GetAuctionStatusQueryVariables = Exact<{
 }>;
 
 
-export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, bids: Array<{ date: string, bidderId: string, fanPoints: number }> } | undefined } };
+export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownShopItemError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, bids: Array<{ date: string, bidderId: string, fanPoints: number, byCurrentUser: boolean }> } | undefined } };
 
 export type GetShopItemQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2731,6 +2766,21 @@ export type GetUserPassesMutationVariables = Exact<{
 export type GetUserPassesMutation = { generateAppleWalletPass: { result: string }, generateGoogleWalletPass: { result: string } };
 
 
+export const EstimateGivenOutFanPointsOnPurchaseDocument = gql`
+    query estimateGivenOutFanPointsOnPurchase($partnerId: String!, $purchaseItems: [PurchaseItemPriceInput!]!) {
+  estimateGivenOutFanPointsOnPurchase: estimate_given_out_fan_points_on_purchase(
+    partner_id: $partnerId
+    purchase_items: $purchaseItems
+  ) {
+    errors {
+      invalidRateLabelError: invalid_rate_label_error {
+        _empty
+      }
+    }
+    result
+  }
+}
+    `;
 export const GetFanPointsTransactionDocument = gql`
     query getFanPointsTransaction($projectId: String, $userId: String!, $purchaseId: String!, $partnerId: String!) {
   getFanPointsTransaction: get_fan_points_transaction(
@@ -2746,6 +2796,14 @@ export const GetFanPointsTransactionDocument = gql`
       purchaseItems: purchase_items {
         purchaseItemId: purchase_item_id
         partnerId: partner_id
+        partner {
+          name
+          description
+          website
+          branding {
+            logoUrl: logo_color_url
+          }
+        }
         title
         description
         price
@@ -2753,6 +2811,8 @@ export const GetFanPointsTransactionDocument = gql`
         amount
         rateLabel: rate_label
         date
+        hasBeenUndone: has_been_undone
+        hasBeenSettled: has_been_settled
       }
     }
     errors {
@@ -2781,6 +2841,14 @@ export const GetFanPointsTransactionsDocument = gql`
       purchaseItems: purchase_items {
         purchaseItemId: purchase_item_id
         partnerId: partner_id
+        partner {
+          name
+          description
+          website
+          branding {
+            logoUrl: logo_color_url
+          }
+        }
         title
         description
         price
@@ -2788,6 +2856,8 @@ export const GetFanPointsTransactionsDocument = gql`
         amount
         rateLabel: rate_label
         date
+        hasBeenUndone: has_been_undone
+        hasBeenSettled: has_been_settled
       }
     }
     errors {
@@ -2872,6 +2942,14 @@ export const GiveFanPointsOnPurchaseDocument = gql`
       purchaseItems: purchase_items {
         purchaseItemId: purchase_item_id
         partnerId: partner_id
+        partner {
+          name
+          description
+          website
+          branding {
+            logoUrl: logo_color_url
+          }
+        }
         title
         description
         price
@@ -2879,6 +2957,8 @@ export const GiveFanPointsOnPurchaseDocument = gql`
         amount
         rateLabel: rate_label
         date
+        hasBeenUndone: has_been_undone
+        hasBeenSettled: has_been_settled
       }
     }
   }
@@ -2923,6 +3003,14 @@ export const PayPurchaseWithFanPointsDocument = gql`
       purchaseItems: purchase_items {
         purchaseItemId: purchase_item_id
         partnerId: partner_id
+        partner {
+          name
+          description
+          website
+          branding {
+            logoUrl: logo_color_url
+          }
+        }
         title
         description
         price
@@ -2930,6 +3018,8 @@ export const PayPurchaseWithFanPointsDocument = gql`
         amount
         rateLabel: rate_label
         date
+        hasBeenUndone: has_been_undone
+        hasBeenSettled: has_been_settled
       }
     }
   }
@@ -2951,6 +3041,14 @@ export const UndoFanPointsPurchaseDocument = gql`
       purchaseItems: purchase_items {
         purchaseItemId: purchase_item_id
         partnerId: partner_id
+        partner {
+          name
+          description
+          website
+          branding {
+            logoUrl: logo_color_url
+          }
+        }
         title
         description
         price
@@ -2958,6 +3056,8 @@ export const UndoFanPointsPurchaseDocument = gql`
         amount
         rateLabel: rate_label
         date
+        hasBeenUndone: has_been_undone
+        hasBeenSettled: has_been_settled
       }
     }
     errors {
@@ -3038,6 +3138,7 @@ export const GetAuctionStatusDocument = gql`
         bidderId: bidder_id
         date
         fanPoints: fan_points
+        byCurrentUser: by_current_user
       }
       currentHighestBid: current_highest_bid_fan_points
       currentUserBid: current_user_bid_fan_points
@@ -3053,6 +3154,7 @@ export const GetShopItemDocument = gql`
     project_id: $projectId
     partner_id: $partnerId
     reward_id: $rewardId
+    return_prices_in_fan_points: true
   ) {
     result {
       rewardId: reward_id
@@ -3111,6 +3213,7 @@ export const GetShopItemsDocument = gql`
     last_returned_reward_id: $lastReturnedRewardId
     limit: $limit
     shop_item_category: $shopItemCategory
+    return_prices_in_fan_points: true
   ) {
     result {
       rewardId: reward_id
@@ -3183,6 +3286,8 @@ export const GetShopPurchasesDocument = gql`
           deliveryDate: delivery_date
           price
           currency
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
         }
         ... on LotteryShopItem {
           shopItemType: shop_item_category
@@ -3198,6 +3303,8 @@ export const GetShopPurchasesDocument = gql`
           numPrizesAvailable: num_prizes_available
           lotteryStartDate: lottery_start_date
           lotteryEndDate: lottery_end_date
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
         }
         ... on BiddingShopItem {
           shopItemType: shop_item_category
@@ -3212,6 +3319,8 @@ export const GetShopPurchasesDocument = gql`
           currency
           biddingStartDate: bidding_start_date
           biddingEndDate: bidding_end_date
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
         }
       }
       groupId: group_id
@@ -3538,6 +3647,7 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const EstimateGivenOutFanPointsOnPurchaseDocumentString = print(EstimateGivenOutFanPointsOnPurchaseDocument);
 const GetFanPointsTransactionDocumentString = print(GetFanPointsTransactionDocument);
 const GetFanPointsTransactionsDocumentString = print(GetFanPointsTransactionsDocument);
 const GetFanPointsBalanceDocumentString = print(GetFanPointsBalanceDocument);
@@ -3566,6 +3676,9 @@ const GetUserByIdDocumentString = print(GetUserByIdDocument);
 const GetUserPassesDocumentString = print(GetUserPassesDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    estimateGivenOutFanPointsOnPurchase(variables: EstimateGivenOutFanPointsOnPurchaseQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: EstimateGivenOutFanPointsOnPurchaseQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<EstimateGivenOutFanPointsOnPurchaseQuery>(EstimateGivenOutFanPointsOnPurchaseDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'estimateGivenOutFanPointsOnPurchase', 'query');
+    },
     getFanPointsTransaction(variables: GetFanPointsTransactionQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetFanPointsTransactionQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetFanPointsTransactionQuery>(GetFanPointsTransactionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getFanPointsTransaction', 'query');
     },
