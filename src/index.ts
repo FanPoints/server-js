@@ -3,7 +3,12 @@ export type {
     PartnerConfig,
     LoyaltyProgramConfig,
 } from './FanPointsClient';
-export { default as FanPointsClient, createClient } from './FanPointsClient';
+export {
+    default as FanPointsClient,
+    createClient,
+    createPartnerClient,
+    createLoyaltyProgramClient,
+} from './FanPointsClient';
 
 export { UserModule } from './UserModule';
 export { FanPointsModule } from './FanPointsModule';

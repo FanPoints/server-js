@@ -300,7 +300,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      *
      * @param userId - the id of the user that performed the purchase to undo
      * @param purchaseId - the id of the purchase to undo
-     * @param purchaseItemId - the id of the purchase item to undo
+     * @param purchaseItems - the purchase items to undo
      *
      * @returns an list of the performed undo purchases
      *
@@ -378,7 +378,6 @@ export class FanPointsModule<PartnerLabel extends string> {
      * a given purchase. It does not actually distribute the Fan Points. Use
      * {@link giveFanPointsOnPurchase} to distribute Fan Points.
      *
-     * @param userId - the id of the user
      * @param purchaseItems - the items that were purchased
      *
      * @returns the amount of Fan Points the user would receive.

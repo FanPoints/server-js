@@ -311,3 +311,31 @@ export const createClient = <PartnerLabel extends string = string>(
     clientConfig: ClientConfig<PartnerLabel>,
 ): FanPointsClient<PartnerLabel> =>
     new FanPointsClient(clientConfig, config.apiEndpoint, config.oAuthDomain);
+
+/**
+ * This method creates a new FanPointsClient instance configured for a specific partner.
+ *
+ * @returns a single client instance that can be used to manage a partner.
+ */
+export const createPartnerClient = (
+    clientConfig: PartnerConfig<never>,
+): FanPointsClient<never> =>
+    new FanPointsClient(
+        { defaultPartnerConfig: clientConfig },
+        config.apiEndpoint,
+        config.oAuthDomain,
+    );
+
+/**
+ * This method creates a new FanPointsClient instance configured for a specific loyalty program.
+ *
+ * @returns a single client instance that can be used to manage a loyalty program.
+ */
+export const createLoyaltyProgramClient = (
+    clientConfig: LoyaltyProgramConfig,
+): FanPointsClient<never> =>
+    new FanPointsClient(
+        { loyaltyProgramConfig: clientConfig },
+        config.apiEndpoint,
+        config.oAuthDomain,
+    );
