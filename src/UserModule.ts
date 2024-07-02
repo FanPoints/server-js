@@ -66,7 +66,7 @@ export class UserModule {
      * Changes the email address of a user in your loyalty program.
      *
      * @param userId - The user ID of the user.
-     * @param mailAddress - The new email address of the user.
+     * @param newMailAddress - The new email address of the user.
      *
      * @throws {@link RequestError} if the user does not exist
      * (`unknownUserError`) or the email address is invalid

@@ -107,7 +107,7 @@ export class ShopModule {
      * Returns the given shop item.
      *
      * @param rewardId - The reward ID of the item to return.
-     * @param limit - The ID of the partner offering the item.
+     * @param partnerId - The ID of the partner offering the item.
      *
      * @throws {@link RequestError} if the item does not exist (`unknownShopItemError`).
      */
