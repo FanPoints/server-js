@@ -8,7 +8,7 @@ import { unwrap } from './utils/errors';
 import { Expand } from './utils/expandType';
 
 type RawShopItem = NonNullable<GetShopItemQuery['getShopItem']['result']>;
-export type ShopItem = Expand<
+export type MarketplaceItem = Expand<
     RawShopItem & {
         product: RawShopItem['product'] & { rewardType: 'Product' };
         distributionPolicy: RawShopItem['distributionPolicy'] & {
@@ -23,23 +23,23 @@ export type ShopItem = Expand<
 type RawShopPurchase = NonNullable<
     GetShopPurchasesQuery['getShopPurchases']['result']
 >[number];
-export type ShopPurchase = Expand<
+export type MarketplacePurchase = Expand<
     RawShopPurchase & {
         product: RawShopPurchase['product'] & { rewardType: 'Product' };
     }
 >;
 
 /**
- * This class allows you to display the items in the shop, to purchase
- * shop items and lottery tickets and to place bids. Furthermore, it
+ * This class allows you to display the items in the marketplace, to purchase
+ * items and lottery tickets and to place bids. Furthermore, it
  * allows to retrieve purchases done by the user.
  */
-export class ShopModule {
+export class MarketplaceModule {
     /** @hidden */
     constructor(private client: FanPointsClient) {}
 
     /**
-     * Returns the items listed in the shop of the loyalty program.
+     * Returns the items listed in the marketplace of the loyalty program.
      *
      * The items can be filtered by category. Use `limit` and `lastReturnedRewardId`
      * to paginate the results.
@@ -51,7 +51,7 @@ export class ShopModule {
      * @param lastReturnedRewardId - The reward ID of the last returned item. If not specified,
      * the first items will be returned.
      */
-    public async getShopItems(
+    public async getMarketplaceItems(
         productCategory?: ProductCategory,
         limit?: number,
         lastReturnedRewardId?: string,
@@ -75,11 +75,11 @@ export class ShopModule {
                         'ShopLotteryDistributionPolicy'),
         );
 
-        return shopItems as ShopItem[];
+        return shopItems as MarketplaceItem[];
     }
 
     /**
-     * Returns the given shop item.
+     * Returns the given marketplace item.
      *
      * @param rewardId - The reward ID of the item to return.
      * @param distributionPolicyId - The ID of the distribution policy of the item to return.
@@ -87,7 +87,7 @@ export class ShopModule {
      *
      * @throws {@link RequestError} if the item does not exist (`unknownProductError`).
      */
-    public async getShopItem(
+    public async getMarketplaceItem(
         rewardId: string,
         distributionPolicyId: string,
         partnerId: string,
@@ -101,13 +101,13 @@ export class ShopModule {
         });
 
         return unwrap({
-            result: result.data.getShopItem.result as ShopItem,
+            result: result.data.getShopItem.result as MarketplaceItem,
             errors: result.data.getShopItem.errors,
         });
     }
 
     /**
-     * Returns the purchases of a user in your shop.
+     * Returns the purchases of a user in your marketplace.
      *
      * @param userId - The user ID of the user.
      * @param limit - The maximum number of items to return. If not specified, all items
@@ -117,7 +117,7 @@ export class ShopModule {
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async getShopPurchases(
+    public async getPurchases(
         userId: string,
         limit?: number,
         earlierThan?: string,
@@ -130,15 +130,17 @@ export class ShopModule {
             earlierThan,
         });
         return unwrap({
-            result: result.data.getShopPurchases.result as ShopPurchase[],
+            result: result.data.getShopPurchases
+                .result as MarketplacePurchase[],
             errors: result.data.getShopPurchases.errors,
         });
     }
 
     /**
-     * Purchases a shop item for a user.
+     * Purchases a marketplace item for a user.
      *
-     * Note that only shop items that have a shopItemDistributionType of `purchase` can be purchased.
+     * Note that only marketplace items that have a distributionType of `ShopPurchaseDistributionPolicy`
+     * can be purchased.
      *
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the item to purchase.
@@ -153,7 +155,7 @@ export class ShopModule {
      * points to purchase the item (`tooFewAvailableError`), or if the given amount is not
      * valid (`invalidAmountError`).
      */
-    public async purchaseShopItem(
+    public async purchaseItem(
         userId: string,
         rewardId: string,
         distributionPolicyId: string,
@@ -184,17 +186,17 @@ export class ShopModule {
     /**
      * Purchases a lottery ticket for a user.
      *
-     * Note that only tickets for shop items that have a shopItemDistributionType of
-     * `lottery` can be purchased.
+     * Note that only tickets for items that have a distributionType of
+     * `ShopLotteryDistributionPolicy` can be purchased.
      *
-     * After the lottery is over, the winners will be drawn and the shop items will be
+     * After the lottery is over, the winners will be drawn and the products will be
      * distributed to the winners automatically.
      *
      * @param userId - The user ID of the user.
-     * @param rewardId - The reward ID of the lottery shop item to purchase tickets for.
-     * @param distributionPolicyId - The ID of the distribution policy of the lottery shop item to
+     * @param rewardId - The reward ID of the lottery marketplace item to purchase tickets for.
+     * @param distributionPolicyId - The ID of the distribution policy of the lottery marketplace item to
      * purchase tickets for.
-     * @param partnerId - The partner ID of the partner offering the lottery shop item to
+     * @param partnerId - The partner ID of the partner offering the lottery marketplace item to
      * purchase tickets for.
      * @param amount - The number of the tickets to purchase.
      * @param deliveryName - The name of the person to deliver the item to.
@@ -234,9 +236,9 @@ export class ShopModule {
     }
 
     /**
-     * Places a bid on a bidding shop item.
+     * Places a bid on a bidding marketplace item.
      *
-     * Note that only shop items that have a shopItemDistributionType of `bidding` can be
+     * Note that only marketplace items that have a distributionType of `ShopAuctionDistributionPolicy` can be
      * bid on.
      *
      * Only bids higher at least greater than 50 FP than the current highest bid will be accepted.
@@ -246,9 +248,9 @@ export class ShopModule {
      * the item automatically.
      *
      * @param userId - The user ID of the user.
-     * @param rewardId - The reward ID of the shop item to bid on.
-     * @param distributionPolicyId - The ID of the distribution policy of the shop item to bid on.
-     * @param partnerId - The partner ID of the partner offering the shop item to bid on.
+     * @param rewardId - The reward ID of the marketplace item to bid on.
+     * @param distributionPolicyId - The ID of the distribution policy of the marketplace item to bid on.
+     * @param partnerId - The partner ID of the partner offering the marketplace item to bid on.
      * @param bid - The number of fan points to bid on the item.
      * @param deliveryName - The name of the person to deliver the item to.
      * @param deliveryAddress - The address of the person to deliver the item to.
@@ -258,7 +260,7 @@ export class ShopModule {
      * points to place the bid (`tooFewAvailableError`), or if the given bid is not
      * valid (`invalidBidAmountError`).
      */
-    public async bidOnShopItem(
+    public async bidOnItem(
         userId: string,
         rewardId: string,
         distributionPolicyId: string,
@@ -287,11 +289,11 @@ export class ShopModule {
     }
 
     /**
-     * Returns the current status of the auction for a lottery shop item.
+     * Returns the current status of the auction for a lottery marketplace item.
      *
      * @param userId - The user ID of the user.
-     * @param rewardId - The reward ID of the shop item to get the auction status for.
-     * @param partnerId - The partner ID of the partner offering the shop item to get the
+     * @param rewardId - The reward ID of the item to get the auction status for.
+     * @param partnerId - The partner ID of the partner offering the item to get the
      * auction status for.
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`) or if
