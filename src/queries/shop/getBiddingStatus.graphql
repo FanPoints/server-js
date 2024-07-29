@@ -3,12 +3,14 @@ query getAuctionStatus(
     $userId: String!
     $partnerId: String!
     $rewardId: String!
+    $distributionPolicyId: String!
 ) {
     getAuctionStatus: get_current_bidding_status(
         partner_id: $partnerId
         project_id: $projectId
         reward_id: $rewardId
         user_id: $userId
+        distribution_policy_id: $distributionPolicyId
     ) {
         errors {
             unknownProductError: unknown_product_error {
