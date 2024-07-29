@@ -606,7 +606,7 @@ export type GetLootboxSettingsResult = {
 };
 
 export type GetLootboxesErrors = {
-  unkown_user_error: Maybe<UnknownUserError>;
+  unknown_user_error: Maybe<UnknownUserError>;
 };
 
 export type GetLootboxesResult = {
@@ -3435,7 +3435,7 @@ export const GetLootboxesDocument = gql`
     query getLootboxes($projectId: String!, $userId: String!) {
   getLootboxes: get_lootboxes(project_id: $projectId, user_id: $userId) {
     errors {
-      unknownUserError: unkown_user_error {
+      unknownUserError: unknown_user_error {
         _empty
       }
     }
