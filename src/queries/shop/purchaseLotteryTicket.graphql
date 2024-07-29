@@ -2,6 +2,7 @@ mutation purchaseLotteryTicket(
     $projectId: String!
     $userId: String!
     $rewardId: String!
+    $distributionPolicyId: String!
     $partnerId: String!
     $amount: Int!
     $deliveryAddress: AddressInput!
@@ -11,6 +12,7 @@ mutation purchaseLotteryTicket(
         project_id: $projectId
         user_id: $userId
         reward_id: $rewardId
+        distribution_policy_id: $distributionPolicyId
         partner_id: $partnerId
         amount: $amount
         delivery_address: $deliveryAddress
@@ -23,7 +25,7 @@ mutation purchaseLotteryTicket(
             tooFewAvailableError: too_few_available_error {
                 _empty
             }
-            unknownShopItemError: unknown_shop_item_error {
+            unknownProductError: unknown_product_error {
                 _empty
             }
             unknownUserError: unknown_user_error {

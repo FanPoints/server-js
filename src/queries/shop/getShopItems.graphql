@@ -1,6 +1,6 @@
 query getShopItems(
     $projectId: String!
-    $shopItemCategory: ShopItemCategory
+    $productCategory: ProductCategory
     $lastReturnedRewardId: String
     $limit: Int
 ) {
@@ -9,48 +9,52 @@ query getShopItems(
         return_only_listed: true
         last_returned_reward_id: $lastReturnedRewardId
         limit: $limit
-        shop_item_category: $shopItemCategory
+        product_category: $productCategory
         return_prices_in_fan_points: true
     ) {
         result {
             rewardId: reward_id
             numAvailable: balance
             partnerId: owner_id
-            shopItem: template {
-                ... on BasicShopItem {
-                    shopItemType: shop_item_category
+            product: template {
+                __typename
+                ... on Product {
                     title
                     description
+                    productCategory: product_category
                     imageUrls: image_urls
-                    shopItemDistributionType: shop_item_distribution_type
-                    rewardId: reward_id
+                    partner {
+                        partnerId: partner_id
+                        name
+                        branding {
+                            logoColorUrl: logo_color_url
+                        }
+                    }
+                }
+            }
+            distributionPolicy: distribution_policy {
+                __typename
+                ... on ShopPurchaseDistributionPolicy {
+                    distributionPolicyId: distribution_policy_id
                     price
                     currency
                 }
-                ... on LotteryShopItem {
-                    shopItemType: shop_item_category
-                    title
-                    description
-                    imageUrls: image_urls
-                    shopItemDistributionType: shop_item_distribution_type
-                    rewardId: reward_id
-                    ticketPrice: price
-                    currency
-                    numPrizesAvailable: num_prizes_available
-                    lotteryStartDate: lottery_start_date
-                    lotteryEndDate: lottery_end_date
-                }
-                ... on BiddingShopItem {
-                    shopItemType: shop_item_category
-                    title
-                    description
-                    imageUrls: image_urls
-                    shopItemDistributionType: shop_item_distribution_type
-                    rewardId: reward_id
+                ... on ShopAuctionDistributionPolicy {
+                    distributionPolicyId: distribution_policy_id
                     minBid: min_bid
                     currency
-                    biddingStartDate: bidding_start_date
-                    biddingEndDate: bidding_end_date
+                    auctionStartDate: auction_start_date
+                    auctionEndDate: auction_end_date
+                    auctionStatus: auction_status
+                }
+                ... on ShopLotteryDistributionPolicy {
+                    distributionPolicyId: distribution_policy_id
+                    ticketPrice: price
+                    currency
+                    lotteryStartDate: lottery_start_date
+                    lotteryEndDate: lottery_end_date
+                    lotteryStatus: lottery_status
+                    numTicketsToDraw: num_tickets_to_draw
                 }
             }
         }

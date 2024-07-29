@@ -15,11 +15,6 @@ export { FanPointsModule } from './FanPointsModule';
 export { StatusPointsModule } from './StatusPointsModule';
 export {
     ShopModule,
-    type ShopItemListing,
-    type PurchaseShopItem,
-    type LotteryShopItem,
-    type BiddingShopItem,
-    type ShopItemPurchase,
 } from './ShopModule';
 
 export { RequestError } from './utils/errors';
@@ -27,7 +22,7 @@ export { RequestError } from './utils/errors';
 export type {
     Currency,
     FanPointsTransactionType,
-    ShopItemCategory,
+    ProductCategory,
     ShopItemDistributionType,
     DeliveryStatus,
 } from './queries/generated/sdk';

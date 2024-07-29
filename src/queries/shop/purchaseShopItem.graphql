@@ -3,6 +3,7 @@ mutation purchaseShopItem(
     $userId: String!
     $rewardId: String!
     $partnerId: String!
+    $distributionPolicyId: String!
     $amount: Int!
     $deliveryAddress: AddressInput!
     $deliveryName: String!
@@ -11,6 +12,7 @@ mutation purchaseShopItem(
         project_id: $projectId
         user_id: $userId
         reward_id: $rewardId
+        distribution_policy_id: $distributionPolicyId
         partner_id: $partnerId
         amount: $amount
         delivery_address: $deliveryAddress
@@ -23,7 +25,7 @@ mutation purchaseShopItem(
             tooFewAvailableError: too_few_available_error {
                 _empty
             }
-            unknownShopItemError: unknown_shop_item_error {
+            unknownProductError: unknown_product_error {
                 _empty
             }
             unknownUserError: unknown_user_error {
