@@ -1,0 +1,20 @@
+query getLootboxes($projectId: String!, $userId: String!) {
+    getLootboxes: get_lootboxes(project_id: $projectId, user_id: $userId) {
+        errors {
+            unknownUserError: unkown_user_error {
+                _empty
+            }
+        }
+        result {
+            transactionGroupId: group_id
+            transactionNr: nr
+            lootbox: reward {
+                rewardType: __typename
+                ... on Lootbox {
+                    rewardId: reward_id
+                    opened
+                }
+            }
+        }
+    }
+}

@@ -2880,6 +2880,33 @@ export type PingQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type PingQuery = { ping: string };
 
+export type ClaimPrizesMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  transactionGroupId: Scalars['String']['input'];
+}>;
+
+
+export type ClaimPrizesMutation = { claimPrizes: { errors: { unknownUserError: { _empty: string | undefined } | undefined, unknownLootboxError: { _empty: string | undefined } | undefined } | undefined } };
+
+export type GetLootboxesQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetLootboxesQuery = { getLootboxes: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, lootbox: { rewardType: 'FanPointsReward' } | { opened: boolean, rewardId: string, rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { rewardType: 'Product' } }> | undefined } };
+
+export type OpenLootboxMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  transactionGroupId: Scalars['String']['input'];
+  transactionNr: Scalars['Int']['input'];
+}>;
+
+
+export type OpenLootboxMutation = { openLootbox: { result: Array<{ transactionGroupId: string, transactionNr: number, lootbox: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, delivery_status: DeliveryStatus, delivery_date: string | undefined, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, creationDate: string, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } }> | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, unknownLootboxError: { _empty: string | undefined } | undefined, alreadyOpenedLootboxError: { _empty: string | undefined } | undefined } | undefined } };
+
 export type BidOnShopItemMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
@@ -3384,6 +3411,92 @@ export const UndoFanPointsPurchaseDocument = gql`
 export const PingDocument = gql`
     query ping {
   ping
+}
+    `;
+export const ClaimPrizesDocument = gql`
+    mutation claimPrizes($projectId: String!, $userId: String!, $transactionGroupId: String!) {
+  claimPrizes: claim_lootbox_rewards(
+    project_id: $projectId
+    user_id: $userId
+    rewards_transaction_group_id: $transactionGroupId
+  ) {
+    errors {
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+      unknownLootboxError: unknown_lootbox_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
+export const GetLootboxesDocument = gql`
+    query getLootboxes($projectId: String!, $userId: String!) {
+  getLootboxes: get_lootboxes(project_id: $projectId, user_id: $userId) {
+    errors {
+      unknownUserError: unkown_user_error {
+        _empty
+      }
+    }
+    result {
+      transactionGroupId: group_id
+      transactionNr: nr
+      lootbox: reward {
+        rewardType: __typename
+        ... on Lootbox {
+          rewardId: reward_id
+          opened
+        }
+      }
+    }
+  }
+}
+    `;
+export const OpenLootboxDocument = gql`
+    mutation openLootbox($projectId: String!, $userId: String!, $transactionGroupId: String!, $transactionNr: Int!) {
+  openLootbox: open_lootbox(
+    project_id: $projectId
+    user_id: $userId
+    transaction_group_id: $transactionGroupId
+    transaction_nr: $transactionNr
+  ) {
+    result {
+      transactionGroupId: group_id
+      transactionNr: nr
+      lootbox: reward {
+        rewardType: __typename
+        ... on Product {
+          rewardId: reward_id
+          title
+          description
+          productCategory: product_category
+          imageUrls: image_urls
+          creationDate: creation_date
+          partner {
+            partnerId: partner_id
+            name
+            branding {
+              logoColorUrl: logo_color_url
+            }
+          }
+          delivery_status
+          delivery_date
+        }
+      }
+    }
+    errors {
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+      unknownLootboxError: unknown_lootbox_error {
+        _empty
+      }
+      alreadyOpenedLootboxError: already_opened_error {
+        _empty
+      }
+    }
+  }
 }
     `;
 export const BidOnShopItemDocument = gql`
@@ -3936,6 +4049,9 @@ const GiveFanPointsOnPurchaseDocumentString = print(GiveFanPointsOnPurchaseDocum
 const PayPurchaseWithFanPointsDocumentString = print(PayPurchaseWithFanPointsDocument);
 const UndoFanPointsPurchaseDocumentString = print(UndoFanPointsPurchaseDocument);
 const PingDocumentString = print(PingDocument);
+const ClaimPrizesDocumentString = print(ClaimPrizesDocument);
+const GetLootboxesDocumentString = print(GetLootboxesDocument);
+const OpenLootboxDocumentString = print(OpenLootboxDocument);
 const BidOnShopItemDocumentString = print(BidOnShopItemDocument);
 const GetAuctionStatusDocumentString = print(GetAuctionStatusDocument);
 const GetShopItemDocumentString = print(GetShopItemDocument);
@@ -3982,6 +4098,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     ping(variables?: PingQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PingQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<PingQuery>(PingDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ping', 'query');
+    },
+    claimPrizes(variables: ClaimPrizesMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: ClaimPrizesMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<ClaimPrizesMutation>(ClaimPrizesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'claimPrizes', 'mutation');
+    },
+    getLootboxes(variables: GetLootboxesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetLootboxesQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetLootboxesQuery>(GetLootboxesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getLootboxes', 'query');
+    },
+    openLootbox(variables: OpenLootboxMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: OpenLootboxMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<OpenLootboxMutation>(OpenLootboxDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'openLootbox', 'mutation');
     },
     bidOnShopItem(variables: BidOnShopItemMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: BidOnShopItemMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<BidOnShopItemMutation>(BidOnShopItemDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'bidOnShopItem', 'mutation');

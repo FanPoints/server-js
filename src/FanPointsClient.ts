@@ -7,6 +7,7 @@ import {
 import config from './backendConfig';
 import { FanPointsModule } from './FanPointsModule';
 import { MarketplaceModule } from './MarketplaceModule';
+import { PrizesModule } from './PrizesModule';
 import { Currency, getSdk, Sdk } from './queries/generated/sdk';
 import { StatusPointsModule } from './StatusPointsModule';
 import { UserModule } from './UserModule';
@@ -38,6 +39,7 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
     public statusPoints: StatusPointsModule;
     public users: UserModule;
     public marketplace: MarketplaceModule;
+    public prizes: PrizesModule;
 
     /**
      * This middleware adds the JWT token to the request headers.
@@ -258,6 +260,7 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
         this.fanPoints = new FanPointsModule(this);
         this.statusPoints = new StatusPointsModule(this);
         this.marketplace = new MarketplaceModule(this);
+        this.prizes = new PrizesModule(this);
     }
 }
 

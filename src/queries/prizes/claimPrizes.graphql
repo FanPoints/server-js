@@ -1,0 +1,20 @@
+mutation claimPrizes(
+    $projectId: String!
+    $userId: String!
+    $transactionGroupId: String!
+) {
+    claimPrizes: claim_lootbox_rewards(
+        project_id: $projectId
+        user_id: $userId
+        rewards_transaction_group_id: $transactionGroupId
+    ) {
+        errors {
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+            unknownLootboxError: unknown_lootbox_error {
+                _empty
+            }
+        }
+    }
+}
