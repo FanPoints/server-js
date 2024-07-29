@@ -107,7 +107,8 @@ export class MarketplaceModule {
     }
 
     /**
-     * Returns the purchases of a user in your marketplace.
+     * Returns the products obtained by a user. These include products bought / won
+     * in the marketplace, but also products obtained through other means like lootboxes
      *
      * @param userId - The user ID of the user.
      * @param limit - The maximum number of items to return. If not specified, all items
@@ -117,7 +118,7 @@ export class MarketplaceModule {
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
-    public async getPurchases(
+    public async getObtainedProducts(
         userId: string,
         limit?: number,
         earlierThan?: string,
