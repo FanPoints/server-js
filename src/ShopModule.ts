@@ -1,69 +1,6 @@
 import FanPointsClient from './FanPointsClient';
-import {
-    Currency,
-    ShopItemCategory,
-    ShopItemDistributionType,
-} from './queries/generated/sdk';
+import { ProductCategory } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
-
-export type PurchaseShopItem = {
-    shopItemType: ShopItemCategory;
-    title: string;
-    description: string;
-    imageUrls: string[];
-    shopItemDistributionType: ShopItemDistributionType;
-    rewardId: string;
-    currency: Currency;
-    price: number;
-};
-export type LotteryShopItem = {
-    shopItemType: ShopItemCategory;
-    title: string;
-    description: string;
-    imageUrls: string[];
-    shopItemDistributionType: ShopItemDistributionType;
-    rewardId: string;
-    currency: Currency;
-    ticketPrice: number;
-    numPrizesAvailable: number;
-    lotteryStartDate: string;
-    lotteryEndDate: string;
-};
-export type BiddingShopItem = {
-    shopItemType: ShopItemCategory;
-    title: string;
-    description: string;
-    imageUrls: string[];
-    shopItemDistributionType: ShopItemDistributionType;
-    rewardId: string;
-    currency: Currency;
-    minBid: number;
-    biddingStartDate: string;
-    biddingEndDate: string;
-};
-
-export type ShopItemListing = {
-    rewardId: string;
-    numAvailable: number;
-    partnerId: string;
-    shopItem: PurchaseShopItem | LotteryShopItem | BiddingShopItem;
-};
-
-export type ShopItemPurchase = {
-    shopItem: PurchaseShopItem;
-    groupId: string;
-    nr: number;
-    deliveryDetails: {
-        deliveryAddress: {
-            zipCode: string;
-            street: string;
-            country: string;
-            city: string;
-        };
-        deliveryName: string;
-    };
-    purchaseDate: string;
-};
 
 /**
  * This class allows you to display the items in the shop, to purchase
@@ -80,7 +17,7 @@ export class ShopModule {
      * The items can be filtered by category. Use `limit` and `lastReturnedRewardId`
      * to paginate the results.
      *
-     * @param shopItemCategory - The category of the items to return. If not specified,
+     * @param productCategory - The category of the items to return. If not specified,
      * all items will be returned.
      * @param limit - The maximum number of items to return. If not specified, all items
      * will be returned.
@@ -88,19 +25,19 @@ export class ShopModule {
      * the first items will be returned.
      */
     public async getShopItems(
-        shopItemCategory?: ShopItemCategory,
+        productCategory?: ProductCategory,
         limit?: number,
         lastReturnedRewardId?: string,
     ) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getShopItems({
             projectId: loyaltyProgramId,
-            shopItemCategory,
+            productCategory,
             limit,
             lastReturnedRewardId,
         });
 
-        return result.data.getShopItems.result as ShopItemListing[];
+        return result.data.getShopItems.result;
     }
 
     /**
@@ -109,18 +46,23 @@ export class ShopModule {
      * @param rewardId - The reward ID of the item to return.
      * @param partnerId - The ID of the partner offering the item.
      *
-     * @throws {@link RequestError} if the item does not exist (`unknownShopItemError`).
+     * @throws {@link RequestError} if the item does not exist (`unknownProductError`).
      */
-    public async getShopItem(rewardId: string, partnerId: string) {
+    public async getShopItem(
+        rewardId: string,
+        distributionPolicyId: string,
+        partnerId: string,
+    ) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getShopItem({
             projectId: loyaltyProgramId,
+            distributionPolicyId,
             rewardId,
             partnerId,
         });
 
         return unwrap({
-            result: result.data.getShopItem.result as ShopItemListing,
+            result: result.data.getShopItem.result,
             errors: result.data.getShopItem.errors,
         });
     }
@@ -149,7 +91,7 @@ export class ShopModule {
             earlierThan,
         });
         return unwrap({
-            result: result.data.getShopPurchases.result as ShopItemPurchase[],
+            result: result.data.getShopPurchases.result,
             errors: result.data.getShopPurchases.errors,
         });
     }
@@ -167,13 +109,14 @@ export class ShopModule {
      * @param deliveryAddress - The address of the person to deliver the item to.
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`), if
-     * the item does not exist (`unknownShopItemError`), if the user does not have enough
+     * the item does not exist (`unknownProductError`), if the user does not have enough
      * points to purchase the item (`tooFewAvailableError`), or if the given amount is not
      * valid (`invalidAmountError`).
      */
     public async purchaseShopItem(
         userId: string,
         rewardId: string,
+        distributionPolicyId: string,
         partnerId: string,
         amount: number,
         deliveryName: string,
@@ -188,6 +131,7 @@ export class ShopModule {
         const result = await sdk.purchaseShopItem({
             projectId: loyaltyProgramId,
             userId,
+            distributionPolicyId,
             rewardId,
             partnerId,
             amount,
@@ -215,13 +159,14 @@ export class ShopModule {
      * @param deliveryAddress - The address of the person to deliver the item to.
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`), if
-     * the item does not exist (`unknownShopItemError`), if the user does not have enough
+     * the item does not exist (`unknownProductError`), if the user does not have enough
      * points to purchase the ticket (`tooFewAvailableError`), or if the given amount is not
      * valid (`invalidAmountError`).
      */
     public async purchaseLotteryTicket(
         userId: string,
         rewardId: string,
+        distributionPolicyId: string,
         partnerId: string,
         amount: number,
         deliveryName: string,
@@ -236,6 +181,7 @@ export class ShopModule {
         const result = await sdk.purchaseLotteryTicket({
             projectId: loyaltyProgramId,
             userId,
+            distributionPolicyId,
             rewardId,
             partnerId,
             amount,
@@ -265,13 +211,14 @@ export class ShopModule {
      * @param deliveryAddress - The address of the person to deliver the item to.
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`), if
-     * the item does not exist (`unknownShopItemError`), if the user does not have enough
+     * the item does not exist (`unknownProductError`), if the user does not have enough
      * points to place the bid (`tooFewAvailableError`), or if the given bid is not
      * valid (`invalidBidAmountError`).
      */
     public async bidOnShopItem(
         userId: string,
         rewardId: string,
+        distributionPolicyId: string,
         partnerId: string,
         bid: number,
         deliveryName: string,
@@ -287,6 +234,7 @@ export class ShopModule {
             projectId: loyaltyProgramId,
             userId,
             rewardId,
+            distributionPolicyId,
             partnerId,
             bid,
             deliveryAddress,
@@ -304,7 +252,7 @@ export class ShopModule {
      * auction status for.
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`) or if
-     * the item does not exist (`unknownShopItemError`).
+     * the item does not exist (`unknownProductError`).
      */
     public async getAuctionStatus(
         userId: string,

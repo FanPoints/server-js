@@ -4,7 +4,7 @@ query getShopPurchases(
     $earlierThan: String
     $limit: Int
 ) {
-    getShopPurchases: get_bought_shop_items(
+    getShopPurchases: get_bought_products(
         project_id: $projectId
         user_id: $userId
         earlier_than: $earlierThan
@@ -17,56 +17,25 @@ query getShopPurchases(
         }
         result {
             shopItem: reward {
-                ... on BasicShopItem {
-                    shopItemType: shop_item_category
+                __typename
+                ... on Product {
+                    rewardId: reward_id
                     title
                     description
+                    productCategory: product_category
                     imageUrls: image_urls
-                    shopItemDistributionType: shop_item_distribution_type
-                    rewardId: reward_id
-                    deliveryStatus: delivery_status
-                    deliveryDate: delivery_date
-                    price
-                    currency
-                    deliveryStatus: delivery_status
-                    deliveryDate: delivery_date
-                }
-                ... on LotteryShopItem {
-                    shopItemType: shop_item_category
-                    title
-                    description
-                    imageUrls: image_urls
-                    shopItemDistributionType: shop_item_distribution_type
-                    rewardId: reward_id
-                    deliveryStatus: delivery_status
-                    deliveryDate: delivery_date
-                    ticketPrice: price
-                    currency
-                    numPrizesAvailable: num_prizes_available
-                    lotteryStartDate: lottery_start_date
-                    lotteryEndDate: lottery_end_date
-                    deliveryStatus: delivery_status
-                    deliveryDate: delivery_date
-                }
-                ... on BiddingShopItem {
-                    shopItemType: shop_item_category
-                    title
-                    description
-                    imageUrls: image_urls
-                    shopItemDistributionType: shop_item_distribution_type
-                    rewardId: reward_id
-                    deliveryStatus: delivery_status
-                    deliveryDate: delivery_date
-                    minBid: min_bid
-                    currency
-                    biddingStartDate: bidding_start_date
-                    biddingEndDate: bidding_end_date
-                    deliveryStatus: delivery_status
-                    deliveryDate: delivery_date
+                    creationDate: creation_date
+                    partner {
+                        partnerId: partner_id
+                        name
+                        branding {
+                            logoColorUrl: logo_color_url
+                        }
+                    }
                 }
             }
-            groupId: group_id
-            nr
+            transactionGroupId: group_id
+            transactionNr: nr
             deliveryDetails: details {
                 deliveryAddress: delivery_address {
                     zipCode: zip_code
