@@ -1,0 +1,49 @@
+mutation openLootbox(
+    $projectId: String!
+    $userId: String!
+    $transactionGroupId: String!
+    $transactionNr: Int!
+) {
+    openLootbox: open_lootbox(
+        project_id: $projectId
+        user_id: $userId
+        transaction_group_id: $transactionGroupId
+        transaction_nr: $transactionNr
+    ) {
+        result {
+            transactionGroupId: group_id
+            transactionNr: nr
+            lootbox: reward {
+                rewardType: __typename
+                ... on Product {
+                    rewardId: reward_id
+                    title
+                    description
+                    productCategory: product_category
+                    imageUrls: image_urls
+                    creationDate: creation_date
+                    partner {
+                        partnerId: partner_id
+                        name
+                        branding {
+                            logoColorUrl: logo_color_url
+                        }
+                    }
+                    delivery_status
+                    delivery_date
+                }
+            }
+        }
+        errors {
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+            unknownLootboxError: unknown_lootbox_error {
+                _empty
+            }
+            alreadyOpenedLootboxError: already_opened_error {
+                _empty
+            }
+        }
+    }
+}
