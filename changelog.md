@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The prizes module has been added to the SDK. It allows to open lootboxes and claim prizes.
 
+### Changed
+
+-   The `getPurchases` method in the `MarketplaceModule` has been renamed to `getObtainedProducts` to better reflect that it also returns products obtained through other means like lootboxes.
+
 ## [0.2.3] - 2024-07-29
 
 ### Changed
