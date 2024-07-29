@@ -293,6 +293,7 @@ export class MarketplaceModule {
      *
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the item to get the auction status for.
+     * @param distributionPolicyId - The ID of the distribution policy of the item to get the auction status for.
      * @param partnerId - The partner ID of the partner offering the item to get the
      * auction status for.
      *
@@ -302,12 +303,14 @@ export class MarketplaceModule {
     public async getAuctionStatus(
         userId: string,
         rewardId: string,
+        distributionPolicyId: string,
         partnerId: string,
     ) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getAuctionStatus({
             projectId: loyaltyProgramId,
             userId,
+            distributionPolicyId,
             rewardId,
             partnerId,
         });

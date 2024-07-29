@@ -32,6 +32,8 @@ query getShopPurchases(
                             logoColorUrl: logo_color_url
                         }
                     }
+                    delivery_status
+                    delivery_date
                 }
             }
             transactionGroupId: group_id

@@ -2169,6 +2169,7 @@ export type QueryGet_Bought_Products_At_PartnerArgs = {
 
 
 export type QueryGet_Current_Bidding_StatusArgs = {
+  distribution_policy_id: Scalars['String']['input'];
   partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
@@ -2898,6 +2899,7 @@ export type GetAuctionStatusQueryVariables = Exact<{
   userId: Scalars['String']['input'];
   partnerId: Scalars['String']['input'];
   rewardId: Scalars['String']['input'];
+  distributionPolicyId: Scalars['String']['input'];
 }>;
 
 
@@ -2931,7 +2933,7 @@ export type GetShopPurchasesQueryVariables = Exact<{
 }>;
 
 
-export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, creationDate: string, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, delivery_status: DeliveryStatus, delivery_date: string | undefined, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, creationDate: string, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3414,12 +3416,13 @@ export const BidOnShopItemDocument = gql`
 }
     `;
 export const GetAuctionStatusDocument = gql`
-    query getAuctionStatus($projectId: String!, $userId: String!, $partnerId: String!, $rewardId: String!) {
+    query getAuctionStatus($projectId: String!, $userId: String!, $partnerId: String!, $rewardId: String!, $distributionPolicyId: String!) {
   getAuctionStatus: get_current_bidding_status(
     partner_id: $partnerId
     project_id: $projectId
     reward_id: $rewardId
     user_id: $userId
+    distribution_policy_id: $distributionPolicyId
   ) {
     errors {
       unknownProductError: unknown_product_error {
@@ -3594,6 +3597,8 @@ export const GetShopPurchasesDocument = gql`
               logoColorUrl: logo_color_url
             }
           }
+          delivery_status
+          delivery_date
         }
       }
       transactionGroupId: group_id
