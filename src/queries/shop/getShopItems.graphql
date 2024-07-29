@@ -14,10 +14,9 @@ query getShopItems(
     ) {
         result {
             rewardId: reward_id
-            numAvailable: balance
             partnerId: owner_id
             product: template {
-                __typename
+                rewardType: __typename
                 ... on Product {
                     title
                     description
@@ -33,7 +32,7 @@ query getShopItems(
                 }
             }
             distributionPolicy: distribution_policy {
-                __typename
+                distributionType: __typename
                 ... on ShopPurchaseDistributionPolicy {
                     distributionPolicyId: distribution_policy_id
                     price

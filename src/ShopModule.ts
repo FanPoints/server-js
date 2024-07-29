@@ -1,6 +1,33 @@
 import FanPointsClient from './FanPointsClient';
-import { ProductCategory } from './queries/generated/sdk';
+import {
+    GetShopItemQuery,
+    GetShopPurchasesQuery,
+    ProductCategory,
+} from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
+import { Expand } from './utils/expandType';
+
+type RawShopItem = NonNullable<GetShopItemQuery['getShopItem']['result']>;
+export type ShopItem = Expand<
+    RawShopItem & {
+        product: RawShopItem['product'] & { rewardType: 'Product' };
+        distributionPolicy: RawShopItem['distributionPolicy'] & {
+            distributionType:
+                | 'ShopPurchaseDistributionPolicy'
+                | 'ShopAuctionDistributionPolicy'
+                | 'ShopLotteryDistributionPolicy';
+        };
+    }
+>;
+
+type RawShopPurchase = NonNullable<
+    GetShopPurchasesQuery['getShopPurchases']['result']
+>[number];
+export type ShopPurchase = Expand<
+    RawShopPurchase & {
+        product: RawShopPurchase['product'] & { rewardType: 'Product' };
+    }
+>;
 
 /**
  * This class allows you to display the items in the shop, to purchase
@@ -37,13 +64,25 @@ export class ShopModule {
             lastReturnedRewardId,
         });
 
-        return result.data.getShopItems.result;
+        const shopItems = result.data.getShopItems.result.filter(
+            (entry) =>
+                entry.product?.rewardType === 'Product' &&
+                (entry.distributionPolicy.distributionType ===
+                    'ShopPurchaseDistributionPolicy' ||
+                    entry.distributionPolicy.distributionType ===
+                        'ShopAuctionDistributionPolicy' ||
+                    entry.distributionPolicy.distributionType ===
+                        'ShopLotteryDistributionPolicy'),
+        );
+
+        return shopItems as ShopItem[];
     }
 
     /**
      * Returns the given shop item.
      *
      * @param rewardId - The reward ID of the item to return.
+     * @param distributionPolicyId - The ID of the distribution policy of the item to return.
      * @param partnerId - The ID of the partner offering the item.
      *
      * @throws {@link RequestError} if the item does not exist (`unknownProductError`).
@@ -62,7 +101,7 @@ export class ShopModule {
         });
 
         return unwrap({
-            result: result.data.getShopItem.result,
+            result: result.data.getShopItem.result as ShopItem,
             errors: result.data.getShopItem.errors,
         });
     }
@@ -91,7 +130,7 @@ export class ShopModule {
             earlierThan,
         });
         return unwrap({
-            result: result.data.getShopPurchases.result,
+            result: result.data.getShopPurchases.result as ShopPurchase[],
             errors: result.data.getShopPurchases.errors,
         });
     }
@@ -103,6 +142,7 @@ export class ShopModule {
      *
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the item to purchase.
+     * @param distributionPolicyId - The ID of the distribution policy of the item to purchase.
      * @param partnerId - The partner ID of the partner offering the item to purchase.
      * @param amount - The number of the items to purchase.
      * @param deliveryName - The name of the person to deliver the item to.
@@ -152,6 +192,8 @@ export class ShopModule {
      *
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the lottery shop item to purchase tickets for.
+     * @param distributionPolicyId - The ID of the distribution policy of the lottery shop item to
+     * purchase tickets for.
      * @param partnerId - The partner ID of the partner offering the lottery shop item to
      * purchase tickets for.
      * @param amount - The number of the tickets to purchase.
@@ -205,6 +247,7 @@ export class ShopModule {
      *
      * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the shop item to bid on.
+     * @param distributionPolicyId - The ID of the distribution policy of the shop item to bid on.
      * @param partnerId - The partner ID of the partner offering the shop item to bid on.
      * @param bid - The number of fan points to bid on the item.
      * @param deliveryName - The name of the person to deliver the item to.

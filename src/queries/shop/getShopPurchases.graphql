@@ -16,8 +16,8 @@ query getShopPurchases(
             }
         }
         result {
-            shopItem: reward {
-                __typename
+            product: reward {
+                rewardType: __typename
                 ... on Product {
                     rewardId: reward_id
                     title
