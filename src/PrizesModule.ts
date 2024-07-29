@@ -1,5 +1,17 @@
 import FanPointsClient from './FanPointsClient';
+import { GetLootboxesQuery, OpenLootboxMutation } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
+import { Expand } from './utils/expandType';
+
+type RawLootbox = NonNullable<GetLootboxesQuery['getLootboxes']['result']>[number];
+export type Lootbox = Expand<RawLootbox & { 
+    lootbox: RawLootbox['lootbox'] & { rewardType: 'Lootbox' }
+}>;
+
+type RawPrize = NonNullable<OpenLootboxMutation["openLootbox"]['result']>[number];
+export type Prize = Expand<RawPrize & { 
+    prize: RawPrize['prize'] & { rewardType: 'Product' | 'FanPointsReward' }
+}>;
 
 /**
  * This class allows you to get the unopened lootboxes of users and to open lootboxes
@@ -25,7 +37,10 @@ export class PrizesModule {
             projectId: loyaltyProgramId,
             userId,
         });
-        return unwrap(result.data.getLootboxes);
+        return unwrap({
+            result: result.data.getLootboxes.result as Lootbox[],
+            errors: result.data.getLootboxes.errors,
+        });
     }
 
     /**
@@ -58,7 +73,10 @@ export class PrizesModule {
             transactionGroupId,
             transactionNr,
         });
-        return unwrap(result.data.openLootbox);
+        return unwrap({
+            result: result.data.openLootbox.result as Prize[],
+            errors: result.data.openLootbox.errors,
+        });
     }
 
     /**

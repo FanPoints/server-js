@@ -24,7 +24,6 @@ query getShopPurchases(
                     description
                     productCategory: product_category
                     imageUrls: image_urls
-                    creationDate: creation_date
                     partner {
                         partnerId: partner_id
                         name
@@ -32,8 +31,8 @@ query getShopPurchases(
                             logoColorUrl: logo_color_url
                         }
                     }
-                    delivery_status
-                    delivery_date
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
                 }
             }
             transactionGroupId: group_id

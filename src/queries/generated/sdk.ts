@@ -2905,7 +2905,7 @@ export type OpenLootboxMutationVariables = Exact<{
 }>;
 
 
-export type OpenLootboxMutation = { openLootbox: { result: Array<{ transactionGroupId: string, transactionNr: number, lootbox: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, delivery_status: DeliveryStatus, delivery_date: string | undefined, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, creationDate: string, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } }> | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, unknownLootboxError: { _empty: string | undefined } | undefined, alreadyOpenedLootboxError: { _empty: string | undefined } | undefined } | undefined } };
+export type OpenLootboxMutation = { openLootbox: { result: Array<{ transactionGroupId: string, transactionNr: number, prize: { amount: number, rewardId: string, rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } }> | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, unknownLootboxError: { _empty: string | undefined } | undefined, alreadyOpenedLootboxError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type BidOnShopItemMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2960,7 +2960,7 @@ export type GetShopPurchasesQueryVariables = Exact<{
 }>;
 
 
-export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, delivery_status: DeliveryStatus, delivery_date: string | undefined, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, creationDate: string, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3464,7 +3464,7 @@ export const OpenLootboxDocument = gql`
     result {
       transactionGroupId: group_id
       transactionNr: nr
-      lootbox: reward {
+      prize: reward {
         rewardType: __typename
         ... on Product {
           rewardId: reward_id
@@ -3472,7 +3472,6 @@ export const OpenLootboxDocument = gql`
           description
           productCategory: product_category
           imageUrls: image_urls
-          creationDate: creation_date
           partner {
             partnerId: partner_id
             name
@@ -3480,8 +3479,10 @@ export const OpenLootboxDocument = gql`
               logoColorUrl: logo_color_url
             }
           }
-          delivery_status
-          delivery_date
+        }
+        ... on FanPointsReward {
+          rewardId: reward_id
+          amount
         }
       }
     }
@@ -3702,7 +3703,6 @@ export const GetShopPurchasesDocument = gql`
           description
           productCategory: product_category
           imageUrls: image_urls
-          creationDate: creation_date
           partner {
             partnerId: partner_id
             name
@@ -3710,8 +3710,8 @@ export const GetShopPurchasesDocument = gql`
               logoColorUrl: logo_color_url
             }
           }
-          delivery_status
-          delivery_date
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
         }
       }
       transactionGroupId: group_id
