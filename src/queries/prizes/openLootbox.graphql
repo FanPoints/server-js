@@ -13,7 +13,7 @@ mutation openLootbox(
         result {
             transactionGroupId: group_id
             transactionNr: nr
-            lootbox: reward {
+            prize: reward {
                 rewardType: __typename
                 ... on Product {
                     rewardId: reward_id
@@ -21,7 +21,6 @@ mutation openLootbox(
                     description
                     productCategory: product_category
                     imageUrls: image_urls
-                    creationDate: creation_date
                     partner {
                         partnerId: partner_id
                         name
@@ -29,8 +28,10 @@ mutation openLootbox(
                             logoColorUrl: logo_color_url
                         }
                     }
-                    delivery_status
-                    delivery_date
+                }
+                ... on FanPointsReward {
+                    rewardId: reward_id
+                    amount
                 }
             }
         }
