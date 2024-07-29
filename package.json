@@ -53,9 +53,9 @@
         "rollup": "^4.6.0",
         "rollup-plugin-dts": "^6.1.0",
         "sync-request": "^6.1.0",
-        "typedoc": "^0.25.4",
-        "typedoc-material-theme": "^1.0.1",
-        "typescript": "^5.2.2"
+        "typedoc": "^0.26.5",
+        "typedoc-material-theme": "^1.1.0",
+        "typescript": "^5.5.4"
     },
     "dependencies": {
         "@aws-sdk/client-appsync": "^3.462.0",

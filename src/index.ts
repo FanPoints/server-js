@@ -13,9 +13,7 @@ export {
 export { UserModule } from './UserModule';
 export { FanPointsModule } from './FanPointsModule';
 export { StatusPointsModule } from './StatusPointsModule';
-export {
-    ShopModule,
-} from './ShopModule';
+export { ShopModule, type ShopItem } from './ShopModule';
 
 export { RequestError } from './utils/errors';
 
