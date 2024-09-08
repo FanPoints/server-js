@@ -3,7 +3,7 @@ mutation undoFanPointsPurchase(
     $userId: String!
     $partnerId: String!
     $purchaseId: String!
-    $purchaseItemId: String
+    $purchaseItemId: String!
 ) {
     undoFanPointsPurchase: undo_fan_points_transaction(
         project_id: $projectId

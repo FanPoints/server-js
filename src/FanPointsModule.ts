@@ -429,4 +429,32 @@ export class FanPointsModule<PartnerLabel extends string> {
         );
         return (await Promise.all(results)).reduce((acc, val) => acc + val, 0);
     }
+
+    /**
+     * Registers a Tixevo checkout.
+     *
+     * This method allows you to register a new or modified raw Tixevo checkout.
+     *
+     * @param jsonPayload - The JSON payload of the Tixevo checkout as a string.
+     * @param partnerId - The ID of the partner where the checkout happened.
+     * @param partnerLabel - The label of the partner where the checkout happened.
+     *
+     * @throws {@link RequestError} if the payload is not in the expected
+     * format (`invalidDataFormatError`).
+     */
+    public async registerTixevoTransaction(
+        jsonPayload: string,
+        partnerId?: string,
+        partnerLabel?: PartnerLabel,
+    ) {
+        const { sdk, partnerId: specificPartnerId } = this.client.getPartner(
+            partnerId,
+            partnerLabel,
+        );
+        const result = await sdk.registerTixevoCheckout({
+            partnerId: specificPartnerId,
+            jsonPayload,
+        });
+        return unwrap(result.data.registerTixevoCheckout);
+    }
 }
