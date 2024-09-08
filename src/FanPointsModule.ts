@@ -442,7 +442,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @throws {@link RequestError} if the payload is not in the expected
      * format (`invalidDataFormatError`).
      */
-    public async registerTixevoTransaction(
+    public async registerTixevoCheckout(
         jsonPayload: string,
         partnerId?: string,
         partnerLabel?: PartnerLabel,
