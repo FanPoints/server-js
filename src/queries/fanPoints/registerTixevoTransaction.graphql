@@ -1,0 +1,12 @@
+mutation registerTixevoCheckout($partnerId: String!, $jsonPayload: String!) {
+    registerTixevoCheckout: register_tixevo_checkout(
+        partner_id: $partnerId
+        json_payload: $jsonPayload
+    ) {
+        errors {
+            invalidDataFormatError: invalid_data_format_error {
+                _empty
+            }
+        }
+    }
+}

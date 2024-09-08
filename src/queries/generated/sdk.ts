@@ -23,15 +23,6 @@ export type AcceptPartnershipRequestResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
-export type AcceptProposedPartnershipModuleErrors = {
-  invalid_module_id_error: Maybe<InvalidModuleIdError>;
-  unknown_partnership_error: Maybe<UnknownPartnershipError>;
-};
-
-export type AcceptProposedPartnershipModuleResult = {
-  errors: Maybe<AcceptProposedPartnershipModuleErrors>;
-};
-
 export type AchievementCategory =
   | 'collection'
   | 'esports'
@@ -52,6 +43,10 @@ export type AchievementTemplate = {
   target_items: Maybe<Array<Scalars['String']['output']>>;
   target_number: Maybe<Scalars['Int']['output']>;
   title: Scalars['String']['output'];
+};
+
+export type AddDiscountCodesResult = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type AddProductResult = {
@@ -315,20 +310,15 @@ export type DeclinePartnershipRequestResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
-export type DeclineProposedPartnershipModuleErrors = {
-  invalid_module_id_error: Maybe<InvalidModuleIdError>;
-  unknown_partnership_error: Maybe<UnknownPartnershipError>;
-};
-
-export type DeclineProposedPartnershipModuleResult = {
-  errors: Maybe<DeclineProposedPartnershipModuleErrors>;
-};
-
 export type DeleteBackendUserInvitationResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type DeleteBackendUserResult = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type DeleteDiscountCodeResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
@@ -353,10 +343,6 @@ export type DeleteProjectAchievementTemplateResult = {
 };
 
 export type DeleteProjectResult = {
-  _empty: Maybe<Scalars['String']['output']>;
-};
-
-export type DeleteProposedPartnershipModuleResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
@@ -388,7 +374,25 @@ export type DeliveryStatus =
   | 'delivered'
   | 'not_delivered';
 
+export type DiscountCode = {
+  discount_code: Scalars['String']['output'];
+  partner_id: Scalars['String']['output'];
+  rate_label: Maybe<Scalars['String']['output']>;
+  used: Scalars['Boolean']['output'];
+  user_id: Scalars['String']['output'];
+};
+
+export type DiscountCodesStatistics = {
+  num_discount_codes_entered: Scalars['Int']['output'];
+  num_discount_codes_given_out: Scalars['Int']['output'];
+  num_discount_codes_used: Scalars['Int']['output'];
+};
+
 export type DistributionPolicy = BasicDistributionPolicy | PromotionDistributionPolicy | ShopAuctionDistributionPolicy | ShopLotteryDistributionPolicy | ShopPurchaseDistributionPolicy;
+
+export type DoesUserExistResult = {
+  result: Scalars['Boolean']['output'];
+};
 
 export type EmptyResult = {
   _empty: Maybe<Scalars['String']['output']>;
@@ -491,6 +495,15 @@ export type FanSegmentationInput = {
   visit_frequency_type: Scalars['String']['input'];
 };
 
+export type GenerateDiscountCodeErrors = {
+  no_discount_codes_available_error: Maybe<NoDiscountCodesAvailableError>;
+};
+
+export type GenerateDiscountCodeResult = {
+  errors: Maybe<GenerateDiscountCodeErrors>;
+  result: Maybe<Scalars['String']['output']>;
+};
+
 export type GenerateProductImageUploadUrlErrors = {
   unknown_product_error: Maybe<UnknownProductError>;
 };
@@ -551,6 +564,23 @@ export type GetDailyProjectStatisticsResult = {
   result: ProjectStatistics;
 };
 
+export type GetDiscountCodeErrors = {
+  unknown_discount_code_error: Maybe<UnknownDiscountCodeError>;
+};
+
+export type GetDiscountCodeResult = {
+  errors: Maybe<GetDiscountCodeErrors>;
+  result: Maybe<DiscountCode>;
+};
+
+export type GetDiscountCodesResult = {
+  result: Array<DiscountCode>;
+};
+
+export type GetDiscountCodesStatisticsResult = {
+  result: DiscountCodesStatistics;
+};
+
 export type GetEventTypesResult = {
   result: Array<EventType>;
 };
@@ -595,6 +625,10 @@ export type GetFanPointsTransactionsErrors = {
 export type GetFanPointsTransactionsResult = {
   errors: Maybe<GetFanPointsTransactionsErrors>;
   result: Maybe<Array<FanPointsTransaction>>;
+};
+
+export type GetInvoicesResult = {
+  result: Maybe<Array<Invoice>>;
 };
 
 export type GetLootboxInfoResult = {
@@ -662,7 +696,7 @@ export type GetPartnerInvoicesErrors = {
 
 export type GetPartnerInvoicesResult = {
   errors: Maybe<GetPartnerInvoicesErrors>;
-  result: Maybe<Array<Invoice>>;
+  result: Maybe<Array<PartnerInvoice>>;
 };
 
 export type GetPartnerProductResult = {
@@ -685,6 +719,10 @@ export type GetPartnerStoreErrors = {
 export type GetPartnerStoreResult = {
   errors: Maybe<GetPartnerStoreErrors>;
   result: Maybe<Store>;
+};
+
+export type GetPartnerTerminalsResult = {
+  result: Array<PartnerTerminal>;
 };
 
 export type GetPartnersResult = {
@@ -723,6 +761,24 @@ export type GetProductsResult = {
 
 export type GetProjectAchievementTemplatesResult = {
   result: Array<AchievementTemplate>;
+};
+
+export type GetProjectBillingInfoErrors = {
+  billing_info_to_set_error: Maybe<BillingInfoNotSetError>;
+};
+
+export type GetProjectBillingInfoResult = {
+  errors: Maybe<GetProjectBillingInfoErrors>;
+  result: Maybe<ProjectBillingInfo>;
+};
+
+export type GetProjectInvoicesErrors = {
+  billing_info_to_set_error: Maybe<BillingInfoNotSetError>;
+};
+
+export type GetProjectInvoicesResult = {
+  errors: Maybe<GetProjectInvoicesErrors>;
+  result: Maybe<Array<ProjectInvoice>>;
 };
 
 export type GetProjectResult = {
@@ -770,6 +826,15 @@ export type GetRewardToDistributeResult = {
 
 export type GetRewardsToDistributeResult = {
   result: Array<RewardToDistribute>;
+};
+
+export type GetSamsungStoreUrlErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type GetSamsungStoreUrlResult = {
+  errors: Maybe<GetSamsungStoreUrlErrors>;
+  result: Maybe<Scalars['String']['output']>;
 };
 
 export type GetSentPartnershipRequestsResult = {
@@ -821,6 +886,10 @@ export type GetTokensResult = {
   result: Maybe<Array<Token>>;
 };
 
+export type GetUnknownTerminalsResult = {
+  result: Array<Terminal>;
+};
+
 export type GetUserErrors = {
   unknown_user_error: Maybe<UnknownUserError>;
 };
@@ -853,6 +922,10 @@ export type InvalidActionCategoryError = {
 
 export type InvalidAddressError = {
   reason: Scalars['String']['output'];
+};
+
+export type InvalidDataFormatError = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type InvalidDateError = {
@@ -927,23 +1000,16 @@ export type InviteBackendUserResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
-export type Invoice = {
-  amount: Scalars['Float']['output'];
-  currency: Currency;
-  invoice_file_url: Maybe<Scalars['String']['output']>;
-  invoice_id: Scalars['String']['output'];
-  invoiced_purchases_file_url: Maybe<Scalars['String']['output']>;
-  partner_id: Scalars['String']['output'];
-  payed: Scalars['Boolean']['output'];
-  period_end: Scalars['String']['output'];
-  period_finished: Scalars['Boolean']['output'];
-  period_start: Scalars['String']['output'];
-};
+export type Invoice = PartnerInvoice | ProjectInvoice;
 
 export type InvoicePeriod =
   | 'biweekly'
   | 'monthly'
   | 'weekly';
+
+export type LinkTerminalToPartnerResult = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
 
 export type Lootbox = {
   opened: Scalars['Boolean']['output'];
@@ -986,6 +1052,14 @@ export type LotteryTicket = {
   reward_type: Scalars['String']['output'];
   shop_item_category: ProductCategory;
   title: Scalars['String']['output'];
+};
+
+export type MarkInvoiceAsPaidErrors = {
+  unknown_invoice_error: Maybe<UnknownInvoiceError>;
+};
+
+export type MarkInvoiceAsPaidResult = {
+  errors: Maybe<MarkInvoiceAsPaidErrors>;
 };
 
 export type MarkProductAsDeliveredErrors = {
@@ -1056,6 +1130,17 @@ export type ModifyProjectAchievementTemplateResult = {
   result: Maybe<AchievementTemplate>;
 };
 
+export type ModifyProjectBillingInfoErrors = {
+  info_missing_error: Maybe<InfoMissingError>;
+  invalid_address_error: Maybe<InvalidAddressError>;
+  invalid_email_error: Maybe<InvalidEmailError>;
+  invalid_iban_error: Maybe<InvalidIbanError>;
+};
+
+export type ModifyProjectBillingInfoResult = {
+  errors: Maybe<ModifyProjectBillingInfoErrors>;
+};
+
 export type ModifyProjectDetailsErrors = {
   invalid_name_error: Maybe<InvalidNameError>;
   invalid_website_error: Maybe<InvalidWebsiteError>;
@@ -1113,9 +1198,9 @@ export type ModuleCannotBeDeactivatedError = {
 export type Mutation = {
   _empty: Maybe<Scalars['String']['output']>;
   accept_partnership_request: AcceptPartnershipRequestResult;
-  accept_proposed_partnership_module: AcceptProposedPartnershipModuleResult;
   activate_module: ToggleModuleResult;
   add_bidding_distribution_policy: AddShopDistributionPolicyResult;
+  add_discount_codes: AddDiscountCodesResult;
   add_lottery_distribution_policy: AddShopDistributionPolicyResult;
   add_product: AddProductResult;
   add_project_achievement_template: AddProjectAchievementTemplateResult;
@@ -1135,7 +1220,7 @@ export type Mutation = {
   create_project_token: CreateTokenResult;
   deactivate_module: ToggleModuleResult;
   decline_partnership_request: DeclinePartnershipRequestResult;
-  decline_proposed_partnership_module: DeclineProposedPartnershipModuleResult;
+  delete_discount_code: DeleteDiscountCodeResult;
   delete_fan_points_rate: DeleteFanPointsRateResult;
   delete_partner: DeletePartnerResult;
   delete_partner_token: DeleteTokenResult;
@@ -1148,18 +1233,20 @@ export type Mutation = {
   delete_project_token: DeleteTokenResult;
   delete_project_user: DeleteBackendUserResult;
   delete_project_user_invitation: DeleteBackendUserInvitationResult;
-  delete_proposed_partnership_module: DeleteProposedPartnershipModuleResult;
   delete_shop_distribution_policy: DeleteShopDistributionPolicyResult;
   delete_store: DeleteStoreResult;
   delete_user: DeleteUserResult;
   distribute_status_points: ExecuteStatusPointsTransactionResult;
   generate_apple_wallet_pass: GenerateWalletPassResult;
+  generate_discount_code: GenerateDiscountCodeResult;
   generate_google_wallet_pass: GenerateWalletPassResult;
   generate_product_upload_url: GenerateProductImageUploadUrlResult;
   generate_wallet_icon_upload_url: GenerateUploadUrlResult;
   give_fan_points_on_purchase: ExecuteFanPointsTransactionResult;
   invite_partner_user: InviteBackendUserResult;
   invite_project_user: InviteBackendUserResult;
+  link_terminal_to_partner: LinkTerminalToPartnerResult;
+  mark_invoice_as_paid: MarkInvoiceAsPaidResult;
   mark_product_as_delivered: MarkProductAsDeliveredResult;
   modify_bidding_distribution_policy: ModifyShopDistributionPolicyResult;
   modify_lootbox_settings: ModifyLootboxSettingsResult;
@@ -1171,6 +1258,7 @@ export type Mutation = {
   modify_product: ModifyProductResult;
   modify_project: ModifyProjectDetailsResult;
   modify_project_achievement_template: ModifyProjectAchievementTemplateResult;
+  modify_project_billing_info: ModifyProjectBillingInfoResult;
   modify_project_branding: ModifyBrandingResult;
   modify_project_user: ModifyBackendUserResult;
   modify_promotion_distribution_policy: ModifyPromotionDistributionPolicyResult;
@@ -1178,10 +1266,11 @@ export type Mutation = {
   modify_store: ModifyStoreResult;
   open_lootbox: OpenLootBoxResult;
   pay_purchase_with_fan_points: ExecuteFanPointsTransactionResult;
-  propose_partnership_module: ProposePartnershipModuleResult;
   purchase_lottery_ticket: ExecuteShopTransactionResult;
   purchase_shop_item: ExecuteShopTransactionResult;
   refund_shop_item: ExecuteShopTransactionResult;
+  register_terminal: RegisterTerminalResult;
+  register_tixevo_checkout: RegisterTransactionResult;
   reject_distribution_policy: RejectDistributionPolicyResult;
   request_fan_points_for_partner: RequestFanPointsResult;
   reset_partner_branding: ResetBrandingResult;
@@ -1189,23 +1278,19 @@ export type Mutation = {
   send_partnership_request: SendPartnershipRequestResult;
   set_fan_points_rate: SetFanPointsRateResult;
   set_wallet_customization: SetWalletCustomizationResult;
+  settle_invoiced_transactions: SettleInvoicedTransactionsResult;
   transfer_partner_ownership: TransferOwnershipResult;
   transfer_project_ownership: TransferOwnershipResult;
   undo_fan_points_transaction: ExecuteFanPointsTransactionResult;
   undo_status_points_transaction: ExecuteStatusPointsTransactionResult;
+  unlink_terminal_from_partner: UnlinkTerminalFromPartnerResult;
+  use_discount_code: UseDiscountCodeResult;
 };
 
 
 export type MutationAccept_Partnership_RequestArgs = {
   requested_id: Scalars['String']['input'];
   requesting_id: Scalars['String']['input'];
-};
-
-
-export type MutationAccept_Proposed_Partnership_ModuleArgs = {
-  accepting_id: Scalars['String']['input'];
-  module_id: Scalars['String']['input'];
-  partnership_id: Scalars['String']['input'];
 };
 
 
@@ -1225,6 +1310,13 @@ export type MutationAdd_Bidding_Distribution_PolicyArgs = {
   partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
+};
+
+
+export type MutationAdd_Discount_CodesArgs = {
+  discount_codes: Array<Scalars['String']['input']>;
+  partner_id: Scalars['String']['input'];
+  rate_label: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1390,10 +1482,9 @@ export type MutationDecline_Partnership_RequestArgs = {
 };
 
 
-export type MutationDecline_Proposed_Partnership_ModuleArgs = {
-  declining_id: Scalars['String']['input'];
-  module_id: Scalars['String']['input'];
-  partnership_id: Scalars['String']['input'];
+export type MutationDelete_Discount_CodeArgs = {
+  discount_code: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
 };
 
 
@@ -1467,13 +1558,6 @@ export type MutationDelete_Project_User_InvitationArgs = {
 };
 
 
-export type MutationDelete_Proposed_Partnership_ModuleArgs = {
-  module_id: Scalars['String']['input'];
-  partnership_id: Scalars['String']['input'];
-  proposing_id: Scalars['String']['input'];
-};
-
-
 export type MutationDelete_Shop_Distribution_PolicyArgs = {
   distribution_policy_id: Scalars['String']['input'];
   partner_id: Scalars['String']['input'];
@@ -1505,6 +1589,13 @@ export type MutationDistribute_Status_PointsArgs = {
 
 
 export type MutationGenerate_Apple_Wallet_PassArgs = {
+  project_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationGenerate_Discount_CodeArgs = {
+  partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
@@ -1547,6 +1638,17 @@ export type MutationInvite_Project_UserArgs = {
   project_id: Scalars['String']['input'];
   role: Role;
   username: Scalars['String']['input'];
+};
+
+
+export type MutationLink_Terminal_To_PartnerArgs = {
+  partner_id: Scalars['String']['input'];
+  terminal_id: Scalars['String']['input'];
+};
+
+
+export type MutationMark_Invoice_As_PaidArgs = {
+  invoice_id: Scalars['String']['input'];
 };
 
 
@@ -1656,6 +1758,15 @@ export type MutationModify_Project_Achievement_TemplateArgs = {
 };
 
 
+export type MutationModify_Project_Billing_InfoArgs = {
+  billing_address: InputMaybe<AddressInput>;
+  billing_contact_name: InputMaybe<Scalars['String']['input']>;
+  billing_mail_address: InputMaybe<Scalars['String']['input']>;
+  iban: InputMaybe<Scalars['String']['input']>;
+  project_id: Scalars['String']['input'];
+};
+
+
 export type MutationModify_Project_BrandingArgs = {
   project_id: Scalars['String']['input'];
 };
@@ -1717,13 +1828,6 @@ export type MutationPay_Purchase_With_Fan_PointsArgs = {
 };
 
 
-export type MutationPropose_Partnership_ModuleArgs = {
-  module_id: Scalars['String']['input'];
-  partnership_id: Scalars['String']['input'];
-  proposing_id: Scalars['String']['input'];
-};
-
-
 export type MutationPurchase_Lottery_TicketArgs = {
   amount: Scalars['Int']['input'];
   delivery_address: AddressInput;
@@ -1753,6 +1857,21 @@ export type MutationRefund_Shop_ItemArgs = {
   nr: Scalars['Int']['input'];
   partner_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
+};
+
+
+export type MutationRegister_TerminalArgs = {
+  merchant_country: Scalars['String']['input'];
+  merchant_location: Scalars['String']['input'];
+  merchant_name: Scalars['String']['input'];
+  terminal_id: Scalars['String']['input'];
+  transaction_date: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationRegister_Tixevo_CheckoutArgs = {
+  json_payload: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
 };
 
 
@@ -1813,6 +1932,11 @@ export type MutationSet_Wallet_CustomizationArgs = {
 };
 
 
+export type MutationSettle_Invoiced_TransactionsArgs = {
+  invoice_id: Scalars['String']['input'];
+};
+
+
 export type MutationTransfer_Partner_OwnershipArgs = {
   new_owner_id: Scalars['String']['input'];
   old_owner_id: Scalars['String']['input'];
@@ -1831,7 +1955,7 @@ export type MutationUndo_Fan_Points_TransactionArgs = {
   partner_id: Scalars['String']['input'];
   project_id: InputMaybe<Scalars['String']['input']>;
   purchase_id: Scalars['String']['input'];
-  purchase_item_id: InputMaybe<Scalars['String']['input']>;
+  purchase_item_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
 
@@ -1843,7 +1967,24 @@ export type MutationUndo_Status_Points_TransactionArgs = {
   user_id: Scalars['String']['input'];
 };
 
+
+export type MutationUnlink_Terminal_From_PartnerArgs = {
+  partner_id: Scalars['String']['input'];
+  terminal_id: Scalars['String']['input'];
+};
+
+
+export type MutationUse_Discount_CodeArgs = {
+  discount_code: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
 export type NewOwnerNotInScopeError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type NoDiscountCodesAvailableError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
@@ -1888,9 +2029,34 @@ export type PartnerBillingInfo = {
   partner_id: Scalars['String']['output'];
 };
 
+export type PartnerInvoice = {
+  amount: Scalars['Float']['output'];
+  currency: Currency;
+  fan_points_bought: Scalars['Int']['output'];
+  fan_points_bought_chf: Scalars['Float']['output'];
+  fan_points_sold: Scalars['Int']['output'];
+  fan_points_sold_chf: Scalars['Float']['output'];
+  invoice_file_url: Maybe<Scalars['String']['output']>;
+  invoice_id: Scalars['String']['output'];
+  invoiced_purchases_file_url: Maybe<Scalars['String']['output']>;
+  partner: Maybe<Partner>;
+  partner_id: Scalars['String']['output'];
+  payed: Scalars['Boolean']['output'];
+  period_end: Scalars['String']['output'];
+  period_finished: Scalars['Boolean']['output'];
+  period_start: Scalars['String']['output'];
+  settled: Scalars['Boolean']['output'];
+  to_pay_by: Payer;
+};
+
 export type PartnerStatistics = {
   num_fan_points_given_out: Array<Aggregate>;
   num_fan_points_spent: Array<Aggregate>;
+};
+
+export type PartnerTerminal = {
+  partner: Partner;
+  terminal: Terminal;
 };
 
 export type PartnerWithRole = {
@@ -1933,6 +2099,10 @@ export type PartnershipRequest = {
 export type PartyType =
   | 'partner'
   | 'project';
+
+export type Payer =
+  | 'fanpoints'
+  | 'partner';
 
 export type Period =
   | 'day'
@@ -1991,6 +2161,30 @@ export type Project = {
   website: Scalars['String']['output'];
 };
 
+export type ProjectBillingInfo = {
+  billing_address: Address;
+  billing_contact_name: Scalars['String']['output'];
+  billing_mail_address: Scalars['String']['output'];
+  iban: Scalars['String']['output'];
+  project_id: Scalars['String']['output'];
+};
+
+export type ProjectInvoice = {
+  amount: Scalars['Float']['output'];
+  currency: Currency;
+  fan_points_bought: Scalars['Int']['output'];
+  invoice_file_url: Maybe<Scalars['String']['output']>;
+  invoice_id: Scalars['String']['output'];
+  invoiced_purchases_file_url: Maybe<Scalars['String']['output']>;
+  payed: Scalars['Boolean']['output'];
+  period_end: Scalars['String']['output'];
+  period_finished: Scalars['Boolean']['output'];
+  period_start: Scalars['String']['output'];
+  project: Maybe<Project>;
+  project_id: Scalars['String']['output'];
+  settled: Scalars['Boolean']['output'];
+};
+
 export type ProjectStatistics = {
   num_fan_points_circulating: Array<Aggregate>;
   num_fan_points_given_out: Array<Aggregate>;
@@ -2019,15 +2213,6 @@ export type PromotionDistributionPolicy = {
   project: Project;
   rejection_reason: Maybe<Scalars['String']['output']>;
   total_amount_to_distribute: Scalars['Int']['output'];
-};
-
-export type ProposePartnershipModuleErrors = {
-  invalid_module_id_error: Maybe<InvalidModuleIdError>;
-  unknown_partnership_error: Maybe<UnknownPartnershipError>;
-};
-
-export type ProposePartnershipModuleResult = {
-  errors: Maybe<ProposePartnershipModuleErrors>;
 };
 
 export type ProposedPartnershipModule = {
@@ -2074,6 +2259,7 @@ export type QrCodeVersion =
 
 export type Query = {
   _empty: Maybe<Scalars['String']['output']>;
+  does_user_exist: DoesUserExistResult;
   estimate_given_out_fan_points_on_purchase: EstimateGivenOutFanPointsResult;
   get_approved_distribution_policies: GetRewardsToDistributeResult;
   get_bought_products: GetBoughtProductsResult;
@@ -2081,6 +2267,9 @@ export type Query = {
   get_current_bidding_status: GetCurrentBiddingStatusResult;
   get_daily_partner_statistics: GetDailyPartnerStatisticsResult;
   get_daily_project_statistics: GetDailyProjectStatisticsResult;
+  get_discount_code: GetDiscountCodeResult;
+  get_discount_codes: GetDiscountCodesResult;
+  get_discount_codes_statistics: GetDiscountCodesStatisticsResult;
   get_distribution_policies_for_reward: GetRewardsToDistributeResult;
   get_distribution_policy: GetRewardToDistributeResult;
   get_event_types: GetEventTypesResult;
@@ -2088,6 +2277,7 @@ export type Query = {
   get_fan_points_rates: GetFanPointsRatesResult;
   get_fan_points_transaction: GetFanPointsTransactionResult;
   get_fan_points_transactions: GetFanPointsTransactionsResult;
+  get_invoices: GetInvoicesResult;
   get_lootbox_info: GetLootboxInfoResult;
   get_lootbox_settings: GetLootboxSettingsResult;
   get_lootboxes: GetLootboxesResult;
@@ -2106,15 +2296,17 @@ export type Query = {
   get_partner_products: GetPartnerProductsResult;
   get_partner_status_points_transactions: GetStatusPointsTransactionsResult;
   get_partner_store: GetPartnerStoreResult;
+  get_partner_terminals: GetPartnerTerminalsResult;
   get_partner_tokens: GetTokensResult;
   get_partner_user_invitations: GetBackendUserInvitationsResult;
   get_partner_users: GetBackendUsersResult;
-  get_partners: GetPartnersResult;
   get_partnerships: GetPartnershipsResult;
   get_potential_partnerships: GetPotentialPartnershipsResult;
   get_price_in_fan_points: GetPriceInFanPointsResult;
   get_project: GetProjectResult;
   get_project_achievement_templates: GetProjectAchievementTemplatesResult;
+  get_project_billing_info: GetProjectBillingInfoResult;
+  get_project_invoices: GetProjectInvoicesResult;
   get_project_tokens: GetTokensResult;
   get_project_user_invitations: GetBackendUserInvitationsResult;
   get_project_users: GetBackendUsersResult;
@@ -2122,6 +2314,7 @@ export type Query = {
   get_promotion_distribution_policy: GetPromotionDistributionPolicyResult;
   get_received_partnership_requests: GetReceivedPartnershipRequestsResult;
   get_rejected_distribution_policies: GetRewardsToDistributeResult;
+  get_samsung_store_url: GetSamsungStoreUrlResult;
   get_sent_partnership_requests: GetSentPartnershipRequestsResult;
   get_shop_distribution_policies: GetShopItemsResult;
   get_shop_distribution_policy: GetShopItemResult;
@@ -2131,11 +2324,18 @@ export type Query = {
   get_status_points_for_action: GetNumStatusPointsForActionResult;
   get_status_points_transactions: GetStatusPointsTransactionsResult;
   get_unapproved_distribution_policies: GetRewardsToDistributeResult;
+  get_unknown_terminals: GetUnknownTerminalsResult;
   get_user_by_id: GetUserResult;
   get_user_qr_code: GetQrCodeResult;
   get_users: GetUsersResult;
   get_wallet_customization: GetWalletCustomizationResult;
   ping: Scalars['String']['output'];
+};
+
+
+export type QueryDoes_User_ExistArgs = {
+  partner_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
 };
 
 
@@ -2191,6 +2391,25 @@ export type QueryGet_Daily_Project_StatisticsArgs = {
 };
 
 
+export type QueryGet_Discount_CodeArgs = {
+  discount_code: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Discount_CodesArgs = {
+  last_returned_discount_code: InputMaybe<Scalars['String']['input']>;
+  limit: InputMaybe<Scalars['Int']['input']>;
+  partner_id: Scalars['String']['input'];
+  search_prefix: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGet_Discount_Codes_StatisticsArgs = {
+  partner_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_Distribution_Policies_For_RewardArgs = {
   partner_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
@@ -2235,6 +2454,11 @@ export type QueryGet_Fan_Points_TransactionsArgs = {
   limit: InputMaybe<Scalars['Int']['input']>;
   project_id: InputMaybe<Scalars['String']['input']>;
   user_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_InvoicesArgs = {
+  to_pay_by: Payer;
 };
 
 
@@ -2308,6 +2532,8 @@ export type QueryGet_Partner_Fan_Points_TransactionsArgs = {
   later_than: InputMaybe<Scalars['String']['input']>;
   limit: InputMaybe<Scalars['Int']['input']>;
   partner_id: Scalars['String']['input'];
+  project_id: InputMaybe<Scalars['String']['input']>;
+  user_id: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -2343,6 +2569,11 @@ export type QueryGet_Partner_StoreArgs = {
 };
 
 
+export type QueryGet_Partner_TerminalsArgs = {
+  partner_id: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGet_Partner_TokensArgs = {
   partner_id: Scalars['String']['input'];
 };
@@ -2355,13 +2586,6 @@ export type QueryGet_Partner_User_InvitationsArgs = {
 
 export type QueryGet_Partner_UsersArgs = {
   partner_id: Scalars['String']['input'];
-};
-
-
-export type QueryGet_PartnersArgs = {
-  last_returned_partner_id: InputMaybe<Scalars['String']['input']>;
-  limit: InputMaybe<Scalars['Int']['input']>;
-  project_id: Scalars['String']['input'];
 };
 
 
@@ -2392,6 +2616,16 @@ export type QueryGet_ProjectArgs = {
 
 
 export type QueryGet_Project_Achievement_TemplatesArgs = {
+  project_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Project_Billing_InfoArgs = {
+  project_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Project_InvoicesArgs = {
   project_id: Scalars['String']['input'];
 };
 
@@ -2431,6 +2665,12 @@ export type QueryGet_Received_Partnership_RequestsArgs = {
 export type QueryGet_Rejected_Distribution_PoliciesArgs = {
   project_id: Scalars['String']['input'];
   purpose: RewardPurpose;
+};
+
+
+export type QueryGet_Samsung_Store_UrlArgs = {
+  project_id: InputMaybe<Scalars['String']['input']>;
+  user_id: Scalars['String']['input'];
 };
 
 
@@ -2519,6 +2759,18 @@ export type QueryGet_Wallet_CustomizationArgs = {
   project_id: Scalars['String']['input'];
 };
 
+export type RegisterTerminalResult = {
+  result: Scalars['String']['output'];
+};
+
+export type RegisterTransactionErrors = {
+  invalid_data_format_error: Maybe<InvalidDataFormatError>;
+};
+
+export type RegisterTransactionResult = {
+  errors: Maybe<RegisterTransactionErrors>;
+};
+
 export type RejectDistributionPolicyErrors = {
   unknown_product_error: Maybe<UnknownProductError>;
 };
@@ -2547,7 +2799,7 @@ export type ResetBrandingResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
-export type Reward = FanPointsReward | Lootbox | LotteryTicket | Product;
+export type Reward = FanPointsReward | Lootbox | LotteryTicket | Product | StatusPointsReward;
 
 export type RewardPurpose =
   | 'lootbox_rewards'
@@ -2609,6 +2861,14 @@ export type SetFanPointsRateResult = {
 
 export type SetWalletCustomizationResult = {
   _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type SettleInvoicedTransactionsErrors = {
+  unknown_invoice_error: Maybe<UnknownInvoiceError>;
+};
+
+export type SettleInvoicedTransactionsResult = {
+  errors: Maybe<SettleInvoicedTransactionsErrors>;
 };
 
 export type ShopAuctionDistributionPolicy = {
@@ -2682,6 +2942,14 @@ export type Subscription = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type Terminal = {
+  last_transaction_date: Maybe<Scalars['String']['output']>;
+  merchant_country: Maybe<Scalars['String']['output']>;
+  merchant_location: Maybe<Scalars['String']['output']>;
+  merchant_name: Maybe<Scalars['String']['output']>;
+  terminal_id: Scalars['String']['output'];
+};
+
 export type ToggleModuleErrors = {
   invalid_module_id_error: Maybe<InvalidModuleIdError>;
   module_cannot_be_deactivated_error: Maybe<ModuleCannotBeDeactivatedError>;
@@ -2747,6 +3015,14 @@ export type UnknownAchievementTemplateError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type UnknownDiscountCodeError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type UnknownInvoiceError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
 export type UnknownLootboxError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
@@ -2777,6 +3053,18 @@ export type UnknownUserError = {
 
 export type UnkownError = {
   _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type UnlinkTerminalFromPartnerResult = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type UseDiscountCodeErrors = {
+  unknown_discount_code_error: Maybe<UnknownDiscountCodeError>;
+};
+
+export type UseDiscountCodeResult = {
+  errors: Maybe<UseDiscountCodeErrors>;
 };
 
 export type User = {
@@ -2864,12 +3152,20 @@ export type PayPurchaseWithFanPointsMutationVariables = Exact<{
 
 export type PayPurchaseWithFanPointsMutation = { payPurchaseWithFanPoints: { errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, invalidRateLabelError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined, nonUniquePurchaseItemIdsError: { _empty: string | undefined } | undefined } | undefined, result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined, hasBeenUndone: boolean, hasBeenSettled: boolean, partner: { name: string, description: string, website: string, branding: { logoUrl: string | undefined } } }> } | undefined } };
 
+export type RegisterTixevoCheckoutMutationVariables = Exact<{
+  partnerId: Scalars['String']['input'];
+  jsonPayload: Scalars['String']['input'];
+}>;
+
+
+export type RegisterTixevoCheckoutMutation = { registerTixevoCheckout: { errors: { invalidDataFormatError: { _empty: string | undefined } | undefined } | undefined } };
+
 export type UndoFanPointsPurchaseMutationVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
   userId: Scalars['String']['input'];
   partnerId: Scalars['String']['input'];
   purchaseId: Scalars['String']['input'];
-  purchaseItemId: InputMaybe<Scalars['String']['input']>;
+  purchaseItemId: Scalars['String']['input'];
 }>;
 
 
@@ -2895,7 +3191,7 @@ export type GetLootboxesQueryVariables = Exact<{
 }>;
 
 
-export type GetLootboxesQuery = { getLootboxes: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, lootbox: { rewardType: 'FanPointsReward' } | { opened: boolean, rewardId: string, rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { rewardType: 'Product' } }> | undefined } };
+export type GetLootboxesQuery = { getLootboxes: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, lootbox: { rewardType: 'FanPointsReward' } | { opened: boolean, rewardId: string, rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { rewardType: 'Product' } | { rewardType: 'StatusPointsReward' } }> | undefined } };
 
 export type OpenLootboxMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2905,7 +3201,7 @@ export type OpenLootboxMutationVariables = Exact<{
 }>;
 
 
-export type OpenLootboxMutation = { openLootbox: { result: Array<{ transactionGroupId: string, transactionNr: number, prize: { amount: number, rewardId: string, rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } }> | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, unknownLootboxError: { _empty: string | undefined } | undefined, alreadyOpenedLootboxError: { _empty: string | undefined } | undefined } | undefined } };
+export type OpenLootboxMutation = { openLootbox: { result: Array<{ transactionGroupId: string, transactionNr: number, prize: { amount: number, rewardId: string, rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } }> | undefined, errors: { unknownUserError: { _empty: string | undefined } | undefined, unknownLootboxError: { _empty: string | undefined } | undefined, alreadyOpenedLootboxError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type BidOnShopItemMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2940,7 +3236,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2950,7 +3246,7 @@ export type GetShopItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
 
 export type GetShopPurchasesQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -2960,7 +3256,7 @@ export type GetShopPurchasesQueryVariables = Exact<{
 }>;
 
 
-export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3350,8 +3646,22 @@ export const PayPurchaseWithFanPointsDocument = gql`
   }
 }
     `;
+export const RegisterTixevoCheckoutDocument = gql`
+    mutation registerTixevoCheckout($partnerId: String!, $jsonPayload: String!) {
+  registerTixevoCheckout: register_tixevo_checkout(
+    partner_id: $partnerId
+    json_payload: $jsonPayload
+  ) {
+    errors {
+      invalidDataFormatError: invalid_data_format_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
 export const UndoFanPointsPurchaseDocument = gql`
-    mutation undoFanPointsPurchase($projectId: String, $userId: String!, $partnerId: String!, $purchaseId: String!, $purchaseItemId: String) {
+    mutation undoFanPointsPurchase($projectId: String, $userId: String!, $partnerId: String!, $purchaseId: String!, $purchaseItemId: String!) {
   undoFanPointsPurchase: undo_fan_points_transaction(
     project_id: $projectId
     user_id: $userId
@@ -4047,6 +4357,7 @@ const GetFanPointsBalanceDocumentString = print(GetFanPointsBalanceDocument);
 const GetPriceInFanPointsDocumentString = print(GetPriceInFanPointsDocument);
 const GiveFanPointsOnPurchaseDocumentString = print(GiveFanPointsOnPurchaseDocument);
 const PayPurchaseWithFanPointsDocumentString = print(PayPurchaseWithFanPointsDocument);
+const RegisterTixevoCheckoutDocumentString = print(RegisterTixevoCheckoutDocument);
 const UndoFanPointsPurchaseDocumentString = print(UndoFanPointsPurchaseDocument);
 const PingDocumentString = print(PingDocument);
 const ClaimPrizesDocumentString = print(ClaimPrizesDocument);
@@ -4092,6 +4403,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     payPurchaseWithFanPoints(variables: PayPurchaseWithFanPointsMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PayPurchaseWithFanPointsMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<PayPurchaseWithFanPointsMutation>(PayPurchaseWithFanPointsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'payPurchaseWithFanPoints', 'mutation');
+    },
+    registerTixevoCheckout(variables: RegisterTixevoCheckoutMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: RegisterTixevoCheckoutMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<RegisterTixevoCheckoutMutation>(RegisterTixevoCheckoutDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'registerTixevoCheckout', 'mutation');
     },
     undoFanPointsPurchase(variables: UndoFanPointsPurchaseMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: UndoFanPointsPurchaseMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<UndoFanPointsPurchaseMutation>(UndoFanPointsPurchaseDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'undoFanPointsPurchase', 'mutation');
