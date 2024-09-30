@@ -273,6 +273,16 @@ export type Coordinates = {
   longitude: Scalars['String']['output'];
 };
 
+export type CreateFanPointsPaymentSessionErrors = {
+  invalid_reward_amount_error: Maybe<InvalidRewardAmountError>;
+  invalid_transaction_id_error: Maybe<InvalidTransactionIdError>;
+};
+
+export type CreateFanPointsPaymentSessionResult = {
+  errors: Maybe<CreateFanPointsPaymentSessionErrors>;
+  result: Maybe<FanPointsPaymentSession>;
+};
+
 export type CreatePartnerErrors = {
   invalid_name_error: Maybe<InvalidNameError>;
 };
@@ -444,6 +454,7 @@ export type ExecuteTransactionErrors = {
   non_unique_purchase_item_ids_error: Maybe<NonUniquePurchaseItemIdsError>;
   too_few_available_error: Maybe<TooFewAvailableError>;
   transaction_not_found_error: Maybe<TransactionNotFoundError>;
+  unknown_session_error: Maybe<UnknownSessionError>;
   unknown_user_error: Maybe<UnknownUserError>;
 };
 
@@ -452,6 +463,27 @@ export type FanPointsBalance = {
   fan_points: Scalars['Int']['output'];
   monetary_value: Scalars['Float']['output'];
 };
+
+export type FanPointsPaymentSession = {
+  amount: Scalars['Int']['output'];
+  cancel_url: Scalars['String']['output'];
+  currency: Currency;
+  custom_purchase_id: Maybe<Scalars['String']['output']>;
+  display_price: Scalars['Boolean']['output'];
+  expiry_date: Scalars['String']['output'];
+  partner_id: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  project_id: Scalars['String']['output'];
+  session_id: Scalars['String']['output'];
+  session_url: Scalars['String']['output'];
+  status: FanPointsPaymentSessionStatus;
+  success_url: Scalars['String']['output'];
+};
+
+export type FanPointsPaymentSessionStatus =
+  | 'active'
+  | 'completed'
+  | 'expired';
 
 export type FanPointsRate = {
   currency: Currency;
@@ -484,6 +516,12 @@ export type FanPointsTransactionType =
   | 'purchased_with_fanpoints'
   | 'undo_distributed_on_purchase'
   | 'undo_purchased_with_fanpoints';
+
+export type FanPointsTransactionsFilter = {
+  combined_user_id_title: InputMaybe<StringFilter>;
+  title: InputMaybe<StringFilter>;
+  user_id: InputMaybe<StringFilter>;
+};
 
 export type FanSegmentation = {
   age_groups: Array<Maybe<Scalars['String']['output']>>;
@@ -592,6 +630,15 @@ export type GetFanPointsBalanceErrors = {
 export type GetFanPointsBalanceResult = {
   errors: Maybe<GetFanPointsBalanceErrors>;
   result: Maybe<FanPointsBalance>;
+};
+
+export type GetFanPointsPaymentSessionErrors = {
+  unknown_session_error: Maybe<UnknownSessionError>;
+};
+
+export type GetFanPointsPaymentSessionResult = {
+  errors: Maybe<GetFanPointsPaymentSessionErrors>;
+  result: Maybe<FanPointsPaymentSession>;
 };
 
 export type GetFanPointsRatesResult = {
@@ -1214,6 +1261,7 @@ export type Mutation = {
   change_user_id: ChangeUserIdResult;
   change_user_mail_address: ChangeUserMailAddressResult;
   claim_lootbox_rewards: ClaimLootboxRewardsResult;
+  create_fan_points_payment_session: CreateFanPointsPaymentSessionResult;
   create_partner: CreatePartnerResult;
   create_partner_token: CreateTokenResult;
   create_project: CreateProjectResult;
@@ -1237,6 +1285,7 @@ export type Mutation = {
   delete_store: DeleteStoreResult;
   delete_user: DeleteUserResult;
   distribute_status_points: ExecuteStatusPointsTransactionResult;
+  execute_fan_points_payment_session: ExecuteFanPointsTransactionResult;
   generate_apple_wallet_pass: GenerateWalletPassResult;
   generate_discount_code: GenerateDiscountCodeResult;
   generate_google_wallet_pass: GenerateWalletPassResult;
@@ -1443,6 +1492,18 @@ export type MutationClaim_Lootbox_RewardsArgs = {
 };
 
 
+export type MutationCreate_Fan_Points_Payment_SessionArgs = {
+  cancel_url: Scalars['String']['input'];
+  currency: Currency;
+  custom_purchase_id: InputMaybe<Scalars['String']['input']>;
+  display_price: Scalars['Boolean']['input'];
+  partner_id: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  project_id: Scalars['String']['input'];
+  success_url: Scalars['String']['input'];
+};
+
+
 export type MutationCreate_PartnerArgs = {
   name: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
@@ -1584,6 +1645,13 @@ export type MutationDistribute_Status_PointsArgs = {
   partner_id: Scalars['String']['input'];
   project_id: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationExecute_Fan_Points_Payment_SessionArgs = {
+  project_id: Scalars['String']['input'];
+  session_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
 
@@ -2274,6 +2342,7 @@ export type Query = {
   get_distribution_policy: GetRewardToDistributeResult;
   get_event_types: GetEventTypesResult;
   get_fan_points_balance: GetFanPointsBalanceResult;
+  get_fan_points_payment_session: GetFanPointsPaymentSessionResult;
   get_fan_points_rates: GetFanPointsRatesResult;
   get_fan_points_transaction: GetFanPointsTransactionResult;
   get_fan_points_transactions: GetFanPointsTransactionsResult;
@@ -2435,6 +2504,12 @@ export type QueryGet_Fan_Points_BalanceArgs = {
 };
 
 
+export type QueryGet_Fan_Points_Payment_SessionArgs = {
+  project_id: Scalars['String']['input'];
+  session_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_Fan_Points_RatesArgs = {
   partner_id: Scalars['String']['input'];
 };
@@ -2528,11 +2603,12 @@ export type QueryGet_Partner_Fan_Points_BalanceArgs = {
 
 
 export type QueryGet_Partner_Fan_Points_TransactionsArgs = {
-  earlier_than: InputMaybe<Scalars['String']['input']>;
-  later_than: InputMaybe<Scalars['String']['input']>;
+  earlier_than_date: InputMaybe<Scalars['String']['input']>;
+  later_than_date: InputMaybe<Scalars['String']['input']>;
   limit: InputMaybe<Scalars['Int']['input']>;
   partner_id: Scalars['String']['input'];
   project_id: InputMaybe<Scalars['String']['input']>;
+  transactions_filter: InputMaybe<FanPointsTransactionsFilter>;
   user_id: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2938,6 +3014,10 @@ export type Store = {
   store_id: Scalars['String']['output'];
 };
 
+export type StringFilter = {
+  contains: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Subscription = {
   _empty: Maybe<Scalars['String']['output']>;
 };
@@ -3043,6 +3123,10 @@ export type UnknownPromotionError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type UnknownSessionError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
 export type UnknownStoreError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
@@ -3084,6 +3168,20 @@ export type WalletCustomization = {
   show_fanpoints_logo: Scalars['Boolean']['output'];
   title: Scalars['String']['output'];
 };
+
+export type CreateFanPointsPaymentSessionMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  partnerId: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  currency: Currency;
+  displayPrice: Scalars['Boolean']['input'];
+  cancelUrl: Scalars['String']['input'];
+  successUrl: Scalars['String']['input'];
+  customPurchaseId: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CreateFanPointsPaymentSessionMutation = { createFanPointsPaymentSession: { result: { amount: number, currency: Currency, status: FanPointsPaymentSessionStatus, sessionId: string, partnerId: string, customPurchaseId: string | undefined, sessionUrl: string, cancelUrl: string, successUrl: string, expiryDate: string } | undefined, errors: { invalidAmountError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type EstimateGivenOutFanPointsOnPurchaseQueryVariables = Exact<{
   partnerId: Scalars['String']['input'];
@@ -3387,6 +3485,41 @@ export type GetUserPassesMutationVariables = Exact<{
 export type GetUserPassesMutation = { generateAppleWalletPass: { result: string }, generateGoogleWalletPass: { result: string } };
 
 
+export const CreateFanPointsPaymentSessionDocument = gql`
+    mutation createFanPointsPaymentSession($projectId: String!, $partnerId: String!, $price: Float!, $currency: Currency!, $displayPrice: Boolean!, $cancelUrl: String!, $successUrl: String!, $customPurchaseId: String) {
+  createFanPointsPaymentSession: create_fan_points_payment_session(
+    project_id: $projectId
+    partner_id: $partnerId
+    price: $price
+    currency: $currency
+    display_price: $displayPrice
+    cancel_url: $cancelUrl
+    success_url: $successUrl
+    custom_purchase_id: $customPurchaseId
+  ) {
+    result {
+      sessionId: session_id
+      partnerId: partner_id
+      customPurchaseId: custom_purchase_id
+      amount
+      currency
+      status
+      sessionUrl: session_url
+      cancelUrl: cancel_url
+      successUrl: success_url
+      expiryDate: expiry_date
+    }
+    errors {
+      invalidAmountError: invalid_reward_amount_error {
+        _empty
+      }
+      invalidTransactionIdError: invalid_transaction_id_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
 export const EstimateGivenOutFanPointsOnPurchaseDocument = gql`
     query estimateGivenOutFanPointsOnPurchase($partnerId: String!, $purchaseItems: [PurchaseItemPriceInput!]!) {
   estimateGivenOutFanPointsOnPurchase: estimate_given_out_fan_points_on_purchase(
@@ -4350,6 +4483,7 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const CreateFanPointsPaymentSessionDocumentString = print(CreateFanPointsPaymentSessionDocument);
 const EstimateGivenOutFanPointsOnPurchaseDocumentString = print(EstimateGivenOutFanPointsOnPurchaseDocument);
 const GetFanPointsTransactionDocumentString = print(GetFanPointsTransactionDocument);
 const GetFanPointsTransactionsDocumentString = print(GetFanPointsTransactionsDocument);
@@ -4383,6 +4517,9 @@ const GetUserByIdDocumentString = print(GetUserByIdDocument);
 const GetUserPassesDocumentString = print(GetUserPassesDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    createFanPointsPaymentSession(variables: CreateFanPointsPaymentSessionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: CreateFanPointsPaymentSessionMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<CreateFanPointsPaymentSessionMutation>(CreateFanPointsPaymentSessionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createFanPointsPaymentSession', 'mutation');
+    },
     estimateGivenOutFanPointsOnPurchase(variables: EstimateGivenOutFanPointsOnPurchaseQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: EstimateGivenOutFanPointsOnPurchaseQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<EstimateGivenOutFanPointsOnPurchaseQuery>(EstimateGivenOutFanPointsOnPurchaseDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'estimateGivenOutFanPointsOnPurchase', 'query');
     },
