@@ -1,0 +1,42 @@
+mutation createFanPointsPaymentSession(
+    $projectId: String!
+    $partnerId: String!
+    $price: Float!
+    $currency: Currency!
+    $displayPrice: Boolean!
+    $cancelUrl: String!
+    $successUrl: String!
+    $customPurchaseId: String
+) {
+    createFanPointsPaymentSession: create_fan_points_payment_session(
+        project_id: $projectId
+        partner_id: $partnerId
+        price: $price
+        currency: $currency
+        display_price: $displayPrice
+        cancel_url: $cancelUrl
+        success_url: $successUrl
+        custom_purchase_id: $customPurchaseId
+    ) {
+        result {
+            sessionId: session_id
+            partnerId: partner_id
+            customPurchaseId: custom_purchase_id
+            amount
+            currency
+            status
+            sessionUrl: session_url
+            cancelUrl: cancel_url 
+            successUrl: success_url
+            expiryDate: expiry_date
+        }
+        errors {
+            invalidAmountError: invalid_reward_amount_error {
+                _empty
+            }
+            invalidTransactionIdError: invalid_transaction_id_error {
+                _empty
+            }
+        }
+    }
+}

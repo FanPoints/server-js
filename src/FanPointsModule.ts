@@ -193,6 +193,10 @@ export class FanPointsModule<PartnerLabel extends string> {
     /**
      * Allows a user to pay a purchase using FanPoints.
      *
+     * This method directly performs the payment. Alternatively, you can use the `createFanPointsPaymentSession`
+     * method for a simpler payment flow, where a payment session is created, where you can redirect the fan
+     * to a dedicated FanPoints checkout page hosted by the loyalty program.
+     *
      * The titles and descriptions can be used to add human readable information on the
      * transaction that could be used to display to the user.
      *
@@ -275,6 +279,67 @@ export class FanPointsModule<PartnerLabel extends string> {
             },
         );
         return Promise.all(results);
+    }
+
+    /**
+     * Creates a new payment session which can be used to allow payment with FanPoints.
+     *
+     * The flow is as follows:
+     *
+     * 1. When your user chooses to pay with FanPoints, you can use this method to create a payment session.
+     * 2. The payment session has a unique session URL with the checkout form hosted by the loyalty program.
+     *    Redirect your user to this URL.
+     * 3. The user completes the checkout and is redirected to the given callback URL or cancellation URL.
+     *
+     * @param price - the price of the purchase
+     * @param currency - the currency of the price
+     * @param displayPrice - whether the price (in the currency) should be displayed on the checkout page in addition to the number of FanPoints
+     * @param cancelUrl - the URL to redirect to if the user cancels the payment
+     * @param successUrl - the URL to redirect to if the user completes the payment successfully
+     * @param loyaltyProgramId - the ID of the loyalty program, where the user belongs to (only needed if the client config does not contain a loyalty program ID)
+     * @param customPurchaseId - an optional custom purchase id which can be used to link the payment to a specific purchase in your system
+     * @param partnerId - the id of the partner where the purchase happened (only needed if the client config does not contain a partner ID)
+     * @param partnerLabel - the label of the partner where the purchase happened (optional)
+     *
+     * @returns the created session with the session URL
+     */
+    public async createFanPointsPaymentSession(
+        price: number,
+        currency: Currency,
+        displayPrice: boolean,
+        cancelUrl: string,
+        successUrl: string,
+        loyaltyProgramId?: string,
+        customPurchaseId?: string,
+        partnerId?: string,
+        partnerLabel?: PartnerLabel,
+    ) {
+        const { sdk, partnerId: specificPartnerId } = this.client.getPartner(
+            partnerId,
+            partnerLabel,
+        );
+
+        if (!loyaltyProgramId) {
+            loyaltyProgramId = this.client.loyaltyProgramId;
+        }
+
+        if (!loyaltyProgramId) {
+            throw new Error(
+                'A loyalty program id has to be provided by either the client config or as a direct function argument.',
+            );
+        }
+
+        const result = await sdk.createFanPointsPaymentSession({
+            projectId: loyaltyProgramId,
+            partnerId: specificPartnerId,
+            price,
+            currency,
+            displayPrice,
+            cancelUrl,
+            successUrl,
+            customPurchaseId,
+        });
+        return unwrap(result.data.createFanPointsPaymentSession);
     }
 
     /**

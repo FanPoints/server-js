@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.7] - 2024-09-30
+
+### Added
+
+-   The method `createFanPointsPaymentSession` has been added to the `FanPointsModule`, allowing an alternative payment flow where the user is redirected to a dedicated FanPoints checkout page hosted by the loyalty program.
+
 ## [0.2.6] - 2024-09-08
 
 ### Changed
