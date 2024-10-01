@@ -26,7 +26,7 @@ mutation createFanPointsPaymentSession(
             currency
             status
             sessionUrl: session_url
-            cancelUrl: cancel_url 
+            cancelUrl: cancel_url
             successUrl: success_url
             expiryDate: expiry_date
         }

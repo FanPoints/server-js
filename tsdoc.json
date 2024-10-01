@@ -13,6 +13,7 @@
         "@remarks": true,
         "@example": true,
         "@link": true,
-        "@throws": true
+        "@throws": true,
+        "@deprecated": true
     }
 }

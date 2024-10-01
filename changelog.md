@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The method `createFanPointsPaymentSession` has been added to the `FanPointsModule`, allowing an alternative payment flow where the user is redirected to a dedicated FanPoints checkout page hosted by the loyalty program.
 
+### Changed
+
+-   The method `payPurchaseWithFanPoints` has been deprecated in favor of the `createFanPointsPaymentSession` method.
+
 ## [0.2.6] - 2024-09-08
 
 ### Changed

@@ -191,11 +191,14 @@ export class FanPointsModule<PartnerLabel extends string> {
     }
 
     /**
+     * @deprecated
+     *
      * Allows a user to pay a purchase using FanPoints.
      *
-     * This method directly performs the payment. Alternatively, you can use the `createFanPointsPaymentSession`
-     * method for a simpler payment flow, where a payment session is created, where you can redirect the fan
-     * to a dedicated FanPoints checkout page hosted by the loyalty program.
+     * This method directly performs the payment. It is recommended to use the `createFanPointsPaymentSession`
+     * method for a simpler payment flow, where a payment session is created, where you can redirect the user
+     * to a dedicated FanPoints checkout page hosted by the loyalty program. This allows to authenticate the
+     * user on the checkout page hosted by the loyalty program.
      *
      * The titles and descriptions can be used to add human readable information on the
      * transaction that could be used to display to the user.
@@ -290,6 +293,9 @@ export class FanPointsModule<PartnerLabel extends string> {
      * 2. The payment session has a unique session URL with the checkout form hosted by the loyalty program.
      *    Redirect your user to this URL.
      * 3. The user completes the checkout and is redirected to the given callback URL or cancellation URL.
+     *
+     * This flow is preferred over the `payPurchaseWithFanPoints` method as it allows to properly authenticate
+     * the user on the checkout page hosted by the loyalty program.
      *
      * @param price - the price of the purchase
      * @param currency - the currency of the price
