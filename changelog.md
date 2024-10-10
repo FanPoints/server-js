@@ -5,15 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.8] - 2024-10-10
+
+-   Some marketplace types are now exported for easier use of the rewards.
+
+### Changed
+
+-   Auctions now return the number of bids and the current highest bid.
+-   `getAuctionStatus` now also works without user_id.
+
 ## [0.2.7] - 2024-10-01
 
 ### Added
 
 -   The method `createFanPointsPaymentSession` has been added to the `FanPointsModule`, allowing an alternative payment flow where the user is redirected to a dedicated FanPoints checkout page hosted by the loyalty program.
-
-### Changed
-
--   The method `payPurchaseWithFanPoints` has been deprecated in favor of the `createFanPointsPaymentSession` method.
 
 ## [0.2.6] - 2024-09-08
 
