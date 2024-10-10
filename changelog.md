@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.8] - 2024-10-10
 
+### Added
+
 -   Some marketplace types are now exported for easier use of the rewards.
 
 ### Changed
