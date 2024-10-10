@@ -7,7 +7,7 @@
 
 const request = require('sync-request');
 const credentials = require('./backendRepoCredentials.json');
-const version = 'feat-psp-sessions';
+const version = 'feat-minor-shop-improvements';
 const url = `https://raw.githubusercontent.com/FanPoints/backend/${version}/api/generated/merged_schema_with_directives.graphql`;
 const token = credentials.githubApiRepoAccessToken;
 

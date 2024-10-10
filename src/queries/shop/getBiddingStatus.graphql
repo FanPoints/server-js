@@ -1,6 +1,6 @@
 query getAuctionStatus(
     $projectId: String!
-    $userId: String!
+    $userId: String
     $partnerId: String!
     $rewardId: String!
     $distributionPolicyId: String!

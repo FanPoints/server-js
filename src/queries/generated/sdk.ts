@@ -261,6 +261,14 @@ export type ClaimLootboxRewardsResult = {
   errors: Maybe<ClaimLootboxRewardsErrors>;
 };
 
+export type ConnectShopifyShopErrors = {
+  unknown_shopify_shop_error: Maybe<UnknownShopifyShopError>;
+};
+
+export type ConnectShopifyShopResult = {
+  errors: Maybe<ConnectShopifyShopErrors>;
+};
+
 export type Contact = {
   address: Address;
   contact_name: Maybe<Scalars['String']['output']>;
@@ -452,6 +460,7 @@ export type ExecuteTransactionErrors = {
   invalid_reward_amount_error: Maybe<InvalidRewardAmountError>;
   invalid_transaction_id_error: Maybe<InvalidTransactionIdError>;
   non_unique_purchase_item_ids_error: Maybe<NonUniquePurchaseItemIdsError>;
+  session_expired_error: Maybe<SessionExpiredError>;
   too_few_available_error: Maybe<TooFewAvailableError>;
   transaction_not_found_error: Maybe<TransactionNotFoundError>;
   unknown_session_error: Maybe<UnknownSessionError>;
@@ -901,6 +910,10 @@ export type GetShopItemsResult = {
   result: Array<RewardToDistribute>;
 };
 
+export type GetShopifyShopsResult = {
+  result: Array<ShopifyShop>;
+};
+
 export type GetStatusPointsBalanceResult = {
   errors: Maybe<GetStatusPointsErrors>;
   result: Maybe<Scalars['Int']['output']>;
@@ -1261,6 +1274,7 @@ export type Mutation = {
   change_user_id: ChangeUserIdResult;
   change_user_mail_address: ChangeUserMailAddressResult;
   claim_lootbox_rewards: ClaimLootboxRewardsResult;
+  connect_shopify_shop: ConnectShopifyShopResult;
   create_fan_points_payment_session: CreateFanPointsPaymentSessionResult;
   create_partner: CreatePartnerResult;
   create_partner_token: CreateTokenResult;
@@ -1321,7 +1335,7 @@ export type Mutation = {
   register_terminal: RegisterTerminalResult;
   register_tixevo_checkout: RegisterTransactionResult;
   reject_distribution_policy: RejectDistributionPolicyResult;
-  request_fan_points_for_partner: RequestFanPointsResult;
+  remove_shopify_shop: RemoveShopifyShopResult;
   reset_partner_branding: ResetBrandingResult;
   reset_project_branding: ResetBrandingResult;
   send_partnership_request: SendPartnershipRequestResult;
@@ -1489,6 +1503,13 @@ export type MutationClaim_Lootbox_RewardsArgs = {
   project_id: Scalars['String']['input'];
   rewards_transaction_group_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
+};
+
+
+export type MutationConnect_Shopify_ShopArgs = {
+  partner_id: Scalars['String']['input'];
+  secret: Scalars['String']['input'];
+  shopify_shop_id: Scalars['String']['input'];
 };
 
 
@@ -1952,9 +1973,9 @@ export type MutationReject_Distribution_PolicyArgs = {
 };
 
 
-export type MutationRequest_Fan_Points_For_PartnerArgs = {
-  amount: Scalars['Int']['input'];
+export type MutationRemove_Shopify_ShopArgs = {
   partner_id: Scalars['String']['input'];
+  shopify_shop_id: Scalars['String']['input'];
 };
 
 
@@ -2358,7 +2379,6 @@ export type Query = {
   get_partner: GetPartnerResult;
   get_partner_approval_settings: GetPartnerApprovalSettingsResult;
   get_partner_billing_info: GetPartnerBillingInfoResult;
-  get_partner_fan_points_balance: GetFanPointsBalanceResult;
   get_partner_fan_points_transactions: GetFanPointsTransactionsResult;
   get_partner_invoices: GetPartnerInvoicesResult;
   get_partner_product: GetPartnerProductResult;
@@ -2389,6 +2409,7 @@ export type Query = {
   get_shop_distribution_policy: GetShopItemResult;
   get_shop_item: GetShopItemResult;
   get_shop_items: GetShopItemsResult;
+  get_shopify_shops: GetShopifyShopsResult;
   get_status_points_balance: GetStatusPointsBalanceResult;
   get_status_points_for_action: GetNumStatusPointsForActionResult;
   get_status_points_transactions: GetStatusPointsTransactionsResult;
@@ -2442,7 +2463,7 @@ export type QueryGet_Current_Bidding_StatusArgs = {
   partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
-  user_id: Scalars['String']['input'];
+  user_id: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -2593,11 +2614,6 @@ export type QueryGet_Partner_Approval_SettingsArgs = {
 
 
 export type QueryGet_Partner_Billing_InfoArgs = {
-  partner_id: Scalars['String']['input'];
-};
-
-
-export type QueryGet_Partner_Fan_Points_BalanceArgs = {
   partner_id: Scalars['String']['input'];
 };
 
@@ -2786,6 +2802,11 @@ export type QueryGet_Shop_ItemsArgs = {
 };
 
 
+export type QueryGet_Shopify_ShopsArgs = {
+  partner_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_Status_Points_BalanceArgs = {
   project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
@@ -2863,6 +2884,10 @@ export type RejectProductResult = {
   errors: Maybe<RejectProductErrors>;
 };
 
+export type RemoveShopifyShopResult = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
 export type RequestFanPointsErrors = {
   invalid_reward_amount_error: Maybe<InvalidRewardAmountError>;
 };
@@ -2926,6 +2951,10 @@ export type SendPartnershipRequestResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type SessionExpiredError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
 export type SetFanPointsRateErrors = {
   invalid_rate_error: Maybe<InvalidRateError>;
   invalid_rate_label_error: Maybe<InvalidRateLabelError>;
@@ -2953,6 +2982,8 @@ export type ShopAuctionDistributionPolicy = {
   auction_start_date: Scalars['String']['output'];
   auction_status: AuctionResultStatus;
   currency: Currency;
+  current_highest_bid: Maybe<Scalars['Float']['output']>;
+  current_number_of_bids: Maybe<Scalars['Int']['output']>;
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
   min_bid: Scalars['Float']['output'];
@@ -2988,6 +3019,11 @@ export type ShopPurchaseDistributionPolicy = {
   project: Project;
   rejection_reason: Maybe<Scalars['String']['output']>;
   sale_start_date: Maybe<Scalars['String']['output']>;
+};
+
+export type ShopifyShop = {
+  partner_id: Scalars['String']['output'];
+  shopify_shop_id: Scalars['String']['output'];
 };
 
 export type StatusPointsReward = {
@@ -3124,6 +3160,10 @@ export type UnknownPromotionError = {
 };
 
 export type UnknownSessionError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type UnknownShopifyShopError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
@@ -3317,7 +3357,7 @@ export type BidOnShopItemMutation = { bidOnShopItem: { errors: { invalidBidAmoun
 
 export type GetAuctionStatusQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
-  userId: Scalars['String']['input'];
+  userId: InputMaybe<Scalars['String']['input']>;
   partnerId: Scalars['String']['input'];
   rewardId: Scalars['String']['input'];
   distributionPolicyId: Scalars['String']['input'];
@@ -3334,7 +3374,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { rewardId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3344,7 +3384,7 @@ export type GetShopItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
 
 export type GetShopPurchasesQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3973,7 +4013,7 @@ export const BidOnShopItemDocument = gql`
 }
     `;
 export const GetAuctionStatusDocument = gql`
-    query getAuctionStatus($projectId: String!, $userId: String!, $partnerId: String!, $rewardId: String!, $distributionPolicyId: String!) {
+    query getAuctionStatus($projectId: String!, $userId: String, $partnerId: String!, $rewardId: String!, $distributionPolicyId: String!) {
   getAuctionStatus: get_current_bidding_status(
     partner_id: $partnerId
     project_id: $projectId
@@ -4046,6 +4086,8 @@ export const GetShopItemDocument = gql`
           auctionStartDate: auction_start_date
           auctionEndDate: auction_end_date
           auctionStatus: auction_status
+          currentHighestBid: current_highest_bid
+          currentNumberOfBids: current_number_of_bids
         }
         ... on ShopLotteryDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4109,6 +4151,8 @@ export const GetShopItemsDocument = gql`
           auctionStartDate: auction_start_date
           auctionEndDate: auction_end_date
           auctionStatus: auction_status
+          currentHighestBid: current_highest_bid
+          currentNumberOfBids: current_number_of_bids
         }
         ... on ShopLotteryDistributionPolicy {
           distributionPolicyId: distribution_policy_id
