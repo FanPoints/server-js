@@ -8,17 +8,25 @@ import { unwrap } from './utils/errors';
 import { Expand } from './utils/expandType';
 
 type RawShopItem = NonNullable<GetShopItemQuery['getShopItem']['result']>;
-export type Product = Expand<RawShopItem['product'] & { rewardType: 'Product' }>;
+export type Product = Expand<
+    RawShopItem['product'] & { rewardType: 'Product' }
+>;
 
-export type SaleDistributionPolicy = Expand<RawShopItem['distributionPolicy'] & {
-    distributionType: 'ShopPurchaseDistributionPolicy';
-}>;
-export type AuctionDistributionPolicy = Expand<RawShopItem['distributionPolicy'] & {
-    distributionType: 'ShopAuctionDistributionPolicy';
-}>;
-export type LotteryDistributionPolicy = Expand<RawShopItem['distributionPolicy'] & {
-    distributionType: 'ShopLotteryDistributionPolicy';
-}>;
+export type SaleDistributionPolicy = Expand<
+    RawShopItem['distributionPolicy'] & {
+        distributionType: 'ShopPurchaseDistributionPolicy';
+    }
+>;
+export type AuctionDistributionPolicy = Expand<
+    RawShopItem['distributionPolicy'] & {
+        distributionType: 'ShopAuctionDistributionPolicy';
+    }
+>;
+export type LotteryDistributionPolicy = Expand<
+    RawShopItem['distributionPolicy'] & {
+        distributionType: 'ShopLotteryDistributionPolicy';
+    }
+>;
 
 export type MarketplaceItem = Expand<
     RawShopItem & {
@@ -33,9 +41,11 @@ export type MarketplaceItem = Expand<
 type RawShopPurchase = NonNullable<
     GetShopPurchasesQuery['getShopPurchases']['result']
 >[number];
-export type PurchasedProduct = Expand<RawShopPurchase['product'] & {
-    rewardType: 'Product';
-}>;
+export type PurchasedProduct = Expand<
+    RawShopPurchase['product'] & {
+        rewardType: 'Product';
+    }
+>;
 export type MarketplacePurchase = Expand<
     RawShopPurchase & {
         product: PurchasedProduct;
