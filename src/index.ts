@@ -13,7 +13,15 @@ export {
 export { UserModule } from './UserModule';
 export { FanPointsModule } from './FanPointsModule';
 export { StatusPointsModule } from './StatusPointsModule';
-export { MarketplaceModule, type MarketplaceItem } from './MarketplaceModule';
+export {
+    MarketplaceModule,
+    type MarketplaceItem,
+    type Product,
+    type SaleDistributionPolicy,
+    type AuctionDistributionPolicy,
+    type LotteryDistributionPolicy,
+    type PurchasedProduct,
+} from './MarketplaceModule';
 export { PrizesModule } from './PrizesModule';
 
 export { RequestError } from './utils/errors';

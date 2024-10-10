@@ -45,6 +45,8 @@ query getShopItems(
                     auctionStartDate: auction_start_date
                     auctionEndDate: auction_end_date
                     auctionStatus: auction_status
+                    currentHighestBid: current_highest_bid
+                    currentNumberOfBids: current_number_of_bids
                 }
                 ... on ShopLotteryDistributionPolicy {
                     distributionPolicyId: distribution_policy_id

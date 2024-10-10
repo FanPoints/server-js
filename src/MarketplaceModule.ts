@@ -8,24 +8,37 @@ import { unwrap } from './utils/errors';
 import { Expand } from './utils/expandType';
 
 type RawShopItem = NonNullable<GetShopItemQuery['getShopItem']['result']>;
+export type Product = Expand<RawShopItem['product'] & { rewardType: 'Product' }>;
+
+export type SaleDistributionPolicy = Expand<RawShopItem['distributionPolicy'] & {
+    distributionType: 'ShopPurchaseDistributionPolicy';
+}>;
+export type AuctionDistributionPolicy = Expand<RawShopItem['distributionPolicy'] & {
+    distributionType: 'ShopAuctionDistributionPolicy';
+}>;
+export type LotteryDistributionPolicy = Expand<RawShopItem['distributionPolicy'] & {
+    distributionType: 'ShopLotteryDistributionPolicy';
+}>;
+
 export type MarketplaceItem = Expand<
     RawShopItem & {
-        product: RawShopItem['product'] & { rewardType: 'Product' };
-        distributionPolicy: RawShopItem['distributionPolicy'] & {
-            distributionType:
-                | 'ShopPurchaseDistributionPolicy'
-                | 'ShopAuctionDistributionPolicy'
-                | 'ShopLotteryDistributionPolicy';
-        };
+        product: Product;
+        distributionPolicy:
+            | SaleDistributionPolicy
+            | AuctionDistributionPolicy
+            | LotteryDistributionPolicy;
     }
 >;
 
 type RawShopPurchase = NonNullable<
     GetShopPurchasesQuery['getShopPurchases']['result']
 >[number];
+export type PurchasedProduct = Expand<RawShopPurchase['product'] & {
+    rewardType: 'Product';
+}>;
 export type MarketplacePurchase = Expand<
     RawShopPurchase & {
-        product: RawShopPurchase['product'] & { rewardType: 'Product' };
+        product: PurchasedProduct;
     }
 >;
 
@@ -292,20 +305,20 @@ export class MarketplaceModule {
     /**
      * Returns the current status of the auction for a lottery marketplace item.
      *
-     * @param userId - The user ID of the user.
      * @param rewardId - The reward ID of the item to get the auction status for.
      * @param distributionPolicyId - The ID of the distribution policy of the item to get the auction status for.
      * @param partnerId - The partner ID of the partner offering the item to get the
      * auction status for.
+     * @param userId - The user ID of the user (optional).
      *
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`) or if
      * the item does not exist (`unknownProductError`).
      */
     public async getAuctionStatus(
-        userId: string,
         rewardId: string,
         distributionPolicyId: string,
         partnerId: string,
+        userId?: string,
     ) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.getAuctionStatus({
