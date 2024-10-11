@@ -25,6 +25,7 @@ function unwrap<T, E extends object>({
     result?: T;
     errors?: E;
 }): T;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function unwrap(args: any) {
     if (args.result !== undefined && args.result !== null) return args.result;
