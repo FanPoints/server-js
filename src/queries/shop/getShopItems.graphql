@@ -38,6 +38,7 @@ query getShopItems(
                     distributionPolicyId: distribution_policy_id
                     price
                     currency
+                    isRecentlyAvailable: is_recently_available
                 }
                 ... on ShopAuctionDistributionPolicy {
                     distributionPolicyId: distribution_policy_id
@@ -48,6 +49,7 @@ query getShopItems(
                     auctionStatus: auction_status
                     currentHighestBid: current_highest_bid
                     currentNumberOfBids: current_number_of_bids
+                    isRecentlyAvailable: is_recently_available
                 }
                 ... on ShopLotteryDistributionPolicy {
                     distributionPolicyId: distribution_policy_id
@@ -57,6 +59,7 @@ query getShopItems(
                     lotteryEndDate: lottery_end_date
                     lotteryStatus: lottery_status
                     numTicketsToDraw: num_tickets_to_draw
+                    isRecentlyAvailable: is_recently_available
                 }
             }
         }
