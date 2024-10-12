@@ -48,6 +48,7 @@ query getShopPurchases(
                 deliveryName: delivery_name
             }
             purchaseDate: transaction_date
+            hasBeenUndone: has_been_undone
         }
     }
 }
