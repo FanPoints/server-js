@@ -2299,6 +2299,7 @@ export type PromotionDistributionPolicy = {
   campaign_start: Scalars['String']['output'];
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
+  is_recently_available: Scalars['Boolean']['output'];
   project: Project;
   rejection_reason: Maybe<Scalars['String']['output']>;
   total_amount_to_distribute: Scalars['Int']['output'];
@@ -2986,6 +2987,7 @@ export type ShopAuctionDistributionPolicy = {
   current_number_of_bids: Maybe<Scalars['Int']['output']>;
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
+  is_recently_available: Scalars['Boolean']['output'];
   min_bid: Scalars['Float']['output'];
   project: Project;
   rejection_reason: Maybe<Scalars['String']['output']>;
@@ -3001,6 +3003,7 @@ export type ShopLotteryDistributionPolicy = {
   currency: Currency;
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
+  is_recently_available: Scalars['Boolean']['output'];
   lottery_end_date: Scalars['String']['output'];
   lottery_start_date: Scalars['String']['output'];
   lottery_status: LotteryDrawStatus;
@@ -3015,6 +3018,7 @@ export type ShopPurchaseDistributionPolicy = {
   currency: Currency;
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
+  is_recently_available: Scalars['Boolean']['output'];
   price: Scalars['Float']['output'];
   project: Project;
   rejection_reason: Maybe<Scalars['String']['output']>;
@@ -3374,7 +3378,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { getShopItem: { result: { numAvailable: any, rewardId: string, partnerId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { numAvailable: any, rewardId: string, partnerId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3384,7 +3388,7 @@ export type GetShopItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, numAvailable: any, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, numAvailable: any, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
 
 export type GetShopPurchasesQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4080,6 +4084,7 @@ export const GetShopItemDocument = gql`
           distributionPolicyId: distribution_policy_id
           price
           currency
+          isRecentlyAvailable: is_recently_available
         }
         ... on ShopAuctionDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4090,6 +4095,7 @@ export const GetShopItemDocument = gql`
           auctionStatus: auction_status
           currentHighestBid: current_highest_bid
           currentNumberOfBids: current_number_of_bids
+          isRecentlyAvailable: is_recently_available
         }
         ... on ShopLotteryDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4099,6 +4105,7 @@ export const GetShopItemDocument = gql`
           lotteryEndDate: lottery_end_date
           lotteryStatus: lottery_status
           numTicketsToDraw: num_tickets_to_draw
+          isRecentlyAvailable: is_recently_available
         }
       }
     }
@@ -4146,6 +4153,7 @@ export const GetShopItemsDocument = gql`
           distributionPolicyId: distribution_policy_id
           price
           currency
+          isRecentlyAvailable: is_recently_available
         }
         ... on ShopAuctionDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4156,6 +4164,7 @@ export const GetShopItemsDocument = gql`
           auctionStatus: auction_status
           currentHighestBid: current_highest_bid
           currentNumberOfBids: current_number_of_bids
+          isRecentlyAvailable: is_recently_available
         }
         ... on ShopLotteryDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4165,6 +4174,7 @@ export const GetShopItemsDocument = gql`
           lotteryEndDate: lottery_end_date
           lotteryStatus: lottery_status
           numTicketsToDraw: num_tickets_to_draw
+          isRecentlyAvailable: is_recently_available
         }
       }
     }
