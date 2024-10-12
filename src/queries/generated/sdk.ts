@@ -2922,6 +2922,7 @@ export type RewardTransaction = {
   details: TransactionDetails;
   group_id: Scalars['String']['output'];
   group_size: Scalars['Int']['output'];
+  has_been_undone: Scalars['Boolean']['output'];
   nr: Scalars['Int']['output'];
   old_owner_id: Scalars['String']['output'];
   only_reserved: Scalars['Boolean']['output'];
@@ -3398,7 +3399,7 @@ export type GetShopPurchasesQueryVariables = Exact<{
 }>;
 
 
-export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { amount: number, title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, hasBeenUndone: boolean, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { amount: number, title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4227,6 +4228,7 @@ export const GetShopPurchasesDocument = gql`
         deliveryName: delivery_name
       }
       purchaseDate: transaction_date
+      hasBeenUndone: has_been_undone
     }
   }
 }
