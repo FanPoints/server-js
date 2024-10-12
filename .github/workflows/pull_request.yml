@@ -20,6 +20,9 @@ jobs:
             - name: Install Doppler CLI
               uses: dopplerhq/cli-action@v2
 
+            - name: generate secrets
+              run: npm run fetch-secrets
+
             - name: generate GraphQL boilerplate
               run: npm run generate-graphql
 
