@@ -316,7 +316,7 @@ export class MarketplaceModule {
     }
 
     /**
-     * Returns the current status of the auction for a lottery marketplace item.
+     * Returns the current status of the auction for a auction marketplace item.
      *
      * @param rewardId - The reward ID of the item to get the auction status for.
      * @param distributionPolicyId - The ID of the distribution policy of the item to get the auction status for.
@@ -342,5 +342,34 @@ export class MarketplaceModule {
             partnerId,
         });
         return unwrap(result.data.getAuctionStatus);
+    }
+
+    /**
+     * Returns the current status of the lottery for a lottery marketplace item.
+     *
+     * @param rewardId - The reward ID of the item to get the lottery status for.
+     * @param distributionPolicyId - The ID of the distribution policy of the item to get the lottery status for.
+     * @param partnerId - The partner ID of the partner offering the item to get the
+     * lottery status for.
+     * @param userId - The user ID of the user (optional).
+     *
+     * @throws {@link RequestError} if the user does not exist (`unknownUserError`) or if
+     * the item does not exist (`unknownProductError`).
+     */
+    public async getLotteryStatus(
+        rewardId: string,
+        distributionPolicyId: string,
+        partnerId: string,
+        userId?: string,
+    ) {
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.getLotteryStatus({
+            projectId: loyaltyProgramId,
+            userId,
+            distributionPolicyId,
+            rewardId,
+            partnerId,
+        });
+        return unwrap(result.data.getLotteryStatus);
     }
 }
