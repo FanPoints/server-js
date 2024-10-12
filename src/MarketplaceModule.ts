@@ -42,9 +42,12 @@ type RawShopPurchase = NonNullable<
     GetShopPurchasesQuery['getShopPurchases']['result']
 >[number];
 export type PurchasedProduct = Expand<
-    RawShopPurchase['product'] & {
-        rewardType: 'Product';
-    }
+    | (RawShopPurchase['product'] & {
+          rewardType: 'Product';
+      })
+    | (RawShopPurchase['product'] & {
+          rewardType: 'LotteryTicket';
+      })
 >;
 export type MarketplacePurchase = Expand<
     RawShopPurchase & {
