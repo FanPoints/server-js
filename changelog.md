@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.9] - 2024-10-12
+
+### Added
+
+-   The query `getLotteryStatus` has been added that allows to query the current status of the lottery and
+    potential number of tickets bought by the user.
+-   All marketplace items now have a `numAvailable` attribute that indicates how many items are still left.
+-   All marketplace distribution policies now have a `isRecentlyAvailable` attribute that indicate if the item
+    was added within the last week.
+-   The obtained products now have a flag `hasBeenUndone` that indicates if the purchase has been undone.
+
 ## [0.2.8] - 2024-10-10
 
 ### Added
