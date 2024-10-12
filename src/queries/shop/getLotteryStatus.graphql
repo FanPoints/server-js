@@ -1,0 +1,29 @@
+query getLotteryStatus(
+    $projectId: String!
+    $userId: String
+    $partnerId: String!
+    $rewardId: String!
+    $distributionPolicyId: String!
+) {
+    getLotteryStatus: get_current_lottery_status(
+        partner_id: $partnerId
+        project_id: $projectId
+        reward_id: $rewardId
+        user_id: $userId
+        distribution_policy_id: $distributionPolicyId
+    ) {
+        errors {
+            unknownProductError: unknown_product_error {
+                _empty
+            }
+            unknownUserError: unknown_user_error {
+                _empty
+            }
+        }
+        result {
+            isLotteryOpen: is_lottery_open
+            ticketsBoughtByUser: tickets_bought_by_user
+            totalTicketsSold: total_tickets_sold
+        }
+    }
+}

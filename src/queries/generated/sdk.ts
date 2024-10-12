@@ -3423,6 +3423,17 @@ export type GetAuctionStatusQueryVariables = Exact<{
 
 export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownProductError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, bids: Array<{ date: string, bidderId: string, fanPoints: number, byCurrentUser: boolean }> } | undefined } };
 
+export type GetLotteryStatusQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: InputMaybe<Scalars['String']['input']>;
+  partnerId: Scalars['String']['input'];
+  rewardId: Scalars['String']['input'];
+  distributionPolicyId: Scalars['String']['input'];
+}>;
+
+
+export type GetLotteryStatusQuery = { getLotteryStatus: { errors: { unknownProductError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isLotteryOpen: boolean, ticketsBoughtByUser: number | undefined, totalTicketsSold: number } | undefined } };
+
 export type GetShopItemQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
   partnerId: Scalars['String']['input'];
@@ -4102,6 +4113,31 @@ export const GetAuctionStatusDocument = gql`
   }
 }
     `;
+export const GetLotteryStatusDocument = gql`
+    query getLotteryStatus($projectId: String!, $userId: String, $partnerId: String!, $rewardId: String!, $distributionPolicyId: String!) {
+  getLotteryStatus: get_current_lottery_status(
+    partner_id: $partnerId
+    project_id: $projectId
+    reward_id: $rewardId
+    user_id: $userId
+    distribution_policy_id: $distributionPolicyId
+  ) {
+    errors {
+      unknownProductError: unknown_product_error {
+        _empty
+      }
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+    result {
+      isLotteryOpen: is_lottery_open
+      ticketsBoughtByUser: tickets_bought_by_user
+      totalTicketsSold: total_tickets_sold
+    }
+  }
+}
+    `;
 export const GetShopItemDocument = gql`
     query getShopItem($projectId: String!, $partnerId: String!, $distributionPolicyId: String!, $rewardId: String!) {
   getShopItem: get_shop_item(
@@ -4630,6 +4666,7 @@ const GetLootboxesDocumentString = print(GetLootboxesDocument);
 const OpenLootboxDocumentString = print(OpenLootboxDocument);
 const BidOnShopItemDocumentString = print(BidOnShopItemDocument);
 const GetAuctionStatusDocumentString = print(GetAuctionStatusDocument);
+const GetLotteryStatusDocumentString = print(GetLotteryStatusDocument);
 const GetShopItemDocumentString = print(GetShopItemDocument);
 const GetShopItemsDocumentString = print(GetShopItemsDocument);
 const GetShopPurchasesDocumentString = print(GetShopPurchasesDocument);
@@ -4695,6 +4732,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAuctionStatus(variables: GetAuctionStatusQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetAuctionStatusQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetAuctionStatusQuery>(GetAuctionStatusDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAuctionStatus', 'query');
+    },
+    getLotteryStatus(variables: GetLotteryStatusQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetLotteryStatusQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetLotteryStatusQuery>(GetLotteryStatusDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getLotteryStatus', 'query');
     },
     getShopItem(variables: GetShopItemQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetShopItemQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetShopItemQuery>(GetShopItemDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getShopItem', 'query');
