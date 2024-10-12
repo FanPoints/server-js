@@ -603,6 +603,26 @@ export type GetCurrentBiddingStatusResult = {
   result: Maybe<BiddingStatus>;
 };
 
+export type GetCurrentLotteryStatusErrors = {
+  unknown_product_error: Maybe<UnknownProductError>;
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type GetCurrentLotteryStatusResult = {
+  errors: Maybe<GetCurrentLotteryStatusErrors>;
+  result: Maybe<LotteryStatus>;
+};
+
+export type GetCurrentUserBidsResult = {
+  errors: Maybe<GetCurrentBiddingStatusErrors>;
+  result: Array<Bid>;
+};
+
+export type GetCurrentUserLotteryTicketsResult = {
+  errors: Maybe<GetCurrentLotteryStatusErrors>;
+  result: Array<LotteryTicket>;
+};
+
 export type GetDailyPartnerStatisticsResult = {
   result: PartnerStatistics;
 };
@@ -1097,20 +1117,28 @@ export type LotteryDrawStatus =
   | 'too_few_available'
   | 'too_few_tickets';
 
+export type LotteryStatus = {
+  is_lottery_open: Scalars['Boolean']['output'];
+  tickets_bought_by_user: Maybe<Scalars['Int']['output']>;
+  total_tickets_sold: Scalars['Int']['output'];
+};
+
 export type LotteryTicket = {
-  currency: Currency;
+  amount: Scalars['Int']['output'];
+  creation_date: Scalars['String']['output'];
+  delivery_date: Maybe<Scalars['String']['output']>;
+  delivery_status: DeliveryStatus;
   description: Scalars['String']['output'];
+  external_product_id: Maybe<Scalars['String']['output']>;
   image_ids: Array<Scalars['String']['output']>;
   image_urls: Array<Scalars['String']['output']>;
-  lottery_end_date: Scalars['String']['output'];
-  lottery_shop_item_reward_id: Scalars['String']['output'];
-  lottery_start_date: Scalars['String']['output'];
+  lottery_distribution_policy_id: Scalars['String']['output'];
+  lottery_product_reward_id: Scalars['String']['output'];
+  partner: Partner;
   partner_id: Scalars['String']['output'];
-  price: Scalars['Float']['output'];
-  project_id: Scalars['String']['output'];
+  product_category: ProductCategory;
   reward_id: Scalars['String']['output'];
   reward_type: Scalars['String']['output'];
-  shop_item_category: ProductCategory;
   title: Scalars['String']['output'];
 };
 
@@ -2355,6 +2383,9 @@ export type Query = {
   get_bought_products: GetBoughtProductsResult;
   get_bought_products_at_partner: GetBoughtProductsResult;
   get_current_bidding_status: GetCurrentBiddingStatusResult;
+  get_current_lottery_status: GetCurrentLotteryStatusResult;
+  get_current_user_bids: GetCurrentUserBidsResult;
+  get_current_user_lottery_tickets: GetCurrentUserLotteryTicketsResult;
   get_daily_partner_statistics: GetDailyPartnerStatisticsResult;
   get_daily_project_statistics: GetDailyProjectStatisticsResult;
   get_discount_code: GetDiscountCodeResult;
@@ -2465,6 +2496,27 @@ export type QueryGet_Current_Bidding_StatusArgs = {
   project_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
   user_id: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGet_Current_Lottery_StatusArgs = {
+  distribution_policy_id: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+  reward_id: Scalars['String']['input'];
+  user_id: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGet_Current_User_BidsArgs = {
+  project_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Current_User_Lottery_TicketsArgs = {
+  project_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
 };
 
 
@@ -3399,7 +3451,7 @@ export type GetShopPurchasesQueryVariables = Exact<{
 }>;
 
 
-export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, hasBeenUndone: boolean, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { amount: number, title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, hasBeenUndone: boolean, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { amount: number, title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, lotteryProductRewardId: string, lotteryProductDistributionPolicyId: string, rewardType: 'LotteryTicket', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { amount: number, title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4214,6 +4266,25 @@ export const GetShopPurchasesDocument = gql`
           }
           deliveryStatus: delivery_status
           deliveryDate: delivery_date
+        }
+        ... on LotteryTicket {
+          rewardId: reward_id
+          amount
+          title
+          description
+          productCategory: product_category
+          imageUrls: image_urls
+          partner {
+            partnerId: partner_id
+            name
+            branding {
+              logoColorUrl: logo_color_url
+            }
+          }
+          deliveryStatus: delivery_status
+          deliveryDate: delivery_date
+          lotteryProductRewardId: lottery_product_reward_id
+          lotteryProductDistributionPolicyId: lottery_distribution_policy_id
         }
       }
       transactionGroupId: group_id

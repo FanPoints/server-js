@@ -35,6 +35,26 @@ query getShopPurchases(
                     deliveryStatus: delivery_status
                     deliveryDate: delivery_date
                 }
+                ... on LotteryTicket {
+                    rewardId: reward_id
+                    amount
+                    title
+                    description
+                    productCategory: product_category
+                    imageUrls: image_urls
+                    partner {
+                        partnerId: partner_id
+                        name
+                        branding {
+                            logoColorUrl: logo_color_url
+                        }
+                    }
+                    deliveryStatus: delivery_status
+                    deliveryDate: delivery_date
+
+                    lotteryProductRewardId: lottery_product_reward_id
+                    lotteryProductDistributionPolicyId: lottery_distribution_policy_id
+                }
             }
             transactionGroupId: group_id
             transactionNr: nr
