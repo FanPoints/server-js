@@ -15,6 +15,7 @@ query getShopItems(
         result {
             rewardId: reward_id
             partnerId: owner_id
+            numAvailable: balance
             product: template {
                 rewardType: __typename
                 ... on Product {

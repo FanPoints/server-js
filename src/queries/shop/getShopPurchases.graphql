@@ -20,6 +20,7 @@ query getShopPurchases(
                 rewardType: __typename
                 ... on Product {
                     rewardId: reward_id
+                    amount
                     title
                     description
                     productCategory: product_category
