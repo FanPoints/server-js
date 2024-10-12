@@ -12,7 +12,9 @@ query getShopItem(
         return_prices_in_fan_points: true
     ) {
         result {
+            numAvailable: balance
             rewardId: reward_id
+            partnerId: owner_id
             product: template {
                 rewardType: __typename
                 ... on Product {
