@@ -62,6 +62,7 @@ query getShopItems(
                     isRecentlyAvailable: is_recently_available
                 }
             }
+            readableObjectId: readable_object_id
         }
     }
 }

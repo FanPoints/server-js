@@ -61,6 +61,7 @@ query getShopItem(
                     isRecentlyAvailable: is_recently_available
                 }
             }
+            readableObjectId: readable_object_id
         }
         errors {
             unknownProductError: unknown_product_error {
