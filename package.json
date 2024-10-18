@@ -25,7 +25,8 @@
         "fetch-secrets-exttest": "doppler secrets substitute --config exttest ./doppler/backendConfig.ts --output ./src/backendConfig.ts",
         "build": "rm -rf dist && rollup -c --bundleConfigAsCjs",
         "publish-to-npm": "npm run fetch-secrets-exttest && npm run docs && npm run build && npm publish --access public",
-        "generate-graphql": "doppler run -- graphql-codegen --config ./scripts/codegen.ts --watch"
+        "generate-graphql": "doppler run -- graphql-codegen --config ./scripts/codegen.ts",
+        "watch-and-gen": "doppler run -- graphql-codegen --config ./scripts/codegen.ts --watch"
     },
     "author": "FanPoints",
     "license": "MIT",
