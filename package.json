@@ -25,7 +25,7 @@
         "fetch-secrets-exttest": "doppler secrets substitute --config exttest ./doppler/backendConfig.ts --output ./src/backendConfig.ts",
         "build": "rm -rf dist && rollup -c --bundleConfigAsCjs",
         "publish-to-npm": "npm run fetch-secrets-exttest && npm run docs && npm run build && npm publish --access public",
-        "generate-graphql": "doppler run --mount ./scripts/backendRepoCredentials.json --mount-template ./doppler/backendRepoCredentials.tmpl.json -- graphql-codegen --config ./scripts/codegen.ts"
+        "generate-graphql": "doppler run -- graphql-codegen --config ./scripts/codegen.ts --watch"
     },
     "author": "FanPoints",
     "license": "MIT",
@@ -36,6 +36,7 @@
         "@graphql-codegen/typescript": "4.0.1",
         "@graphql-codegen/typescript-graphql-request": "^6.0.1",
         "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+        "@parcel/watcher": "^2.4.1",
         "@rollup/plugin-commonjs": "^25.0.7",
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-typescript": "^11.1.5",

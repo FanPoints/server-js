@@ -9,6 +9,13 @@ query getUserById($projectId: String!, $userId: String!) {
             mailAddress: mail_address
             fanPointsUserId: user_id
             userId: external_user_id
+            name
+            addresses {
+                street
+                zipCode: zip_code
+                city
+                country
+            }
         }
     }
 }
