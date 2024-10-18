@@ -110,6 +110,7 @@ export type AddUserResult = {
 export type Address = {
   city: Scalars['String']['output'];
   country: Scalars['String']['output'];
+  last_used: Scalars['String']['output'];
   street: Scalars['String']['output'];
   zip_code: Scalars['String']['output'];
 };
@@ -3554,7 +3555,7 @@ export type AddUserMutationVariables = Exact<{
 }>;
 
 
-export type AddUserMutation = { addUser: { errors: { invalidMailAddressError: { _empty: string | undefined } | undefined, invalidUserIdError: { reason: string } | undefined, userAlreadyExistsError: { _empty: string | undefined } | undefined } | undefined } };
+export type AddUserMutation = { addUser: { result: { mailAddress: string, fanPointsUserId: string, userId: string } | undefined, errors: { invalidMailAddressError: { _empty: string | undefined } | undefined, invalidUserIdError: { reason: string } | undefined, userAlreadyExistsError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type ChangeAdditionalUserInfoMutationVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -4567,6 +4568,11 @@ export const AddUserDocument = gql`
     project_id: $projectId
     user_id: $userId
   ) {
+    result {
+      mailAddress: mail_address
+      fanPointsUserId: user_id
+      userId: external_user_id
+    }
     errors {
       invalidMailAddressError: invalid_mail_address_error {
         _empty

@@ -4,6 +4,11 @@ mutation addUser($projectId: String!, $userId: String!, $mailAddress: String!) {
         project_id: $projectId
         user_id: $userId
     ) {
+        result {
+            mailAddress: mail_address
+            fanPointsUserId: user_id
+            userId: external_user_id
+        }
         errors {
             invalidMailAddressError: invalid_mail_address_error {
                 _empty
