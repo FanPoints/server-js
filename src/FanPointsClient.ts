@@ -74,7 +74,9 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
             ) {
                 await authSession.refreshToken();
                 return graphQLClient.rawRequest(
-                    response.request.query[0],
+                    Array.isArray(response.request.query)
+                        ? response.request.query[0]
+                        : response.request.query,
                     response.request.variables,
                 );
             }
