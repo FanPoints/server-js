@@ -162,11 +162,6 @@ export type ApproveProductResult = {
   errors: Maybe<ApproveProductErrors>;
 };
 
-export type Attribute = {
-  name: Scalars['String']['output'];
-  value: Scalars['String']['output'];
-};
-
 export type AuctionResultStatus =
   | 'distributed'
   | 'not_yet_distributed'
@@ -232,6 +227,14 @@ export type BrandingUploadUrls = {
   logo_color_upload_url: Scalars['String']['output'];
   logo_white_upload_params: Scalars['String']['output'];
   logo_white_upload_url: Scalars['String']['output'];
+};
+
+export type ChangeAdditionalUserInfoErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type ChangeAdditionalUserInfoResult = {
+  errors: Maybe<ChangeAdditionalUserInfoErrors>;
 };
 
 export type ChangePartnerApprovalSettingsResult = {
@@ -892,15 +895,6 @@ export type GetQrCodeResultErrors = {
   unknown_user_error: Maybe<UnknownUserError>;
 };
 
-export type GetReadableObjectIdErrors = {
-  unknown_object_error: Maybe<UnknownObjectError>;
-};
-
-export type GetReadableObjectIdResult = {
-  errors: Maybe<GetReadableObjectIdErrors>;
-  result: Maybe<ReadableObjectId>;
-};
-
 export type GetReceivedPartnershipRequestsResult = {
   result: Array<PartnershipRequest>;
 };
@@ -1312,6 +1306,7 @@ export type Mutation = {
   add_user: AddUserResult;
   approve_distribution_policy: ApproveDistributionPolicyResult;
   bid_on_shop_item: BidOnShopItemResult;
+  change_additional_user_info: ChangeAdditionalUserInfoResult;
   change_partner_approval_settings: ChangePartnerApprovalSettingsResult;
   change_user_id: ChangeUserIdResult;
   change_user_mail_address: ChangeUserMailAddressResult;
@@ -1515,6 +1510,14 @@ export type MutationBid_On_Shop_ItemArgs = {
   partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationChange_Additional_User_InfoArgs = {
+  addresses: Array<AddressInput>;
+  name: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
 
@@ -2445,7 +2448,6 @@ export type Query = {
   get_project_users: GetBackendUsersResult;
   get_promotion_distribution_policies: GetPromotionDistributionPoliciesResult;
   get_promotion_distribution_policy: GetPromotionDistributionPolicyResult;
-  get_readable_object_id: GetReadableObjectIdResult;
   get_received_partnership_requests: GetReceivedPartnershipRequestsResult;
   get_rejected_distribution_policies: GetRewardsToDistributeResult;
   get_samsung_store_url: GetSamsungStoreUrlResult;
@@ -2803,11 +2805,6 @@ export type QueryGet_Promotion_Distribution_PolicyArgs = {
 };
 
 
-export type QueryGet_Readable_Object_IdArgs = {
-  attributes: InputMaybe<Scalars['String']['input']>;
-};
-
-
 export type QueryGet_Received_Partnership_RequestsArgs = {
   requested_id: Scalars['String']['input'];
 };
@@ -2915,11 +2912,6 @@ export type QueryGet_Wallet_CustomizationArgs = {
   project_id: Scalars['String']['input'];
 };
 
-export type ReadableObjectId = {
-  attributes: Array<Attribute>;
-  readable_object_id: Scalars['String']['output'];
-};
-
 export type RegisterTerminalResult = {
   result: Scalars['String']['output'];
 };
@@ -2974,7 +2966,7 @@ export type RewardToDistribute = {
   balance: Scalars['Long']['output'];
   distribution_policy: DistributionPolicy;
   owner_id: Scalars['String']['output'];
-  readable_object_id: Scalars['String']['output'];
+  readable_object_id: Maybe<Scalars['String']['output']>;
   reward_id: Scalars['String']['output'];
   reward_type: Scalars['String']['output'];
   template: Maybe<Reward>;
@@ -3212,10 +3204,6 @@ export type UnknownLootboxError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
-export type UnknownObjectError = {
-  _empty: Maybe<Scalars['String']['output']>;
-};
-
 export type UnknownPartnershipError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
@@ -3265,8 +3253,10 @@ export type UseDiscountCodeResult = {
 };
 
 export type User = {
+  addresses: Maybe<Array<Address>>;
   external_user_id: Scalars['String']['output'];
   mail_address: Scalars['String']['output'];
+  name: Maybe<Scalars['String']['output']>;
   user_id: Scalars['String']['output'];
 };
 
@@ -3458,7 +3448,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { getShopItem: { result: { numAvailable: any, rewardId: string, partnerId: string, readableObjectId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { numAvailable: any, rewardId: string, partnerId: string, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3468,7 +3458,7 @@ export type GetShopItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, numAvailable: any, readableObjectId: string, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, numAvailable: any, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
 
 export type GetShopPurchasesQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3566,6 +3556,16 @@ export type AddUserMutationVariables = Exact<{
 
 export type AddUserMutation = { addUser: { errors: { invalidMailAddressError: { _empty: string | undefined } | undefined, invalidUserIdError: { reason: string } | undefined, userAlreadyExistsError: { _empty: string | undefined } | undefined } | undefined } };
 
+export type ChangeAdditionalUserInfoMutationVariables = Exact<{
+  userId: Scalars['String']['input'];
+  projectId: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  addresses: Array<AddressInput> | AddressInput;
+}>;
+
+
+export type ChangeAdditionalUserInfoMutation = { changeAdditionalUserInfo: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+
 export type ChangeUserIdMutationVariables = Exact<{
   newUserId: Scalars['String']['input'];
   oldUserId: Scalars['String']['input'];
@@ -3598,7 +3598,7 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { getUserById: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { mailAddress: string, fanPointsUserId: string, userId: string } | undefined } };
+export type GetUserByIdQuery = { getUserById: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { name: string | undefined, mailAddress: string, fanPointsUserId: string, userId: string, addresses: Array<{ street: string, city: string, country: string, zipCode: string }> | undefined } | undefined } };
 
 export type GetUserPassesMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4581,6 +4581,22 @@ export const AddUserDocument = gql`
   }
 }
     `;
+export const ChangeAdditionalUserInfoDocument = gql`
+    mutation changeAdditionalUserInfo($userId: String!, $projectId: String!, $name: String!, $addresses: [AddressInput!]!) {
+  changeAdditionalUserInfo: change_additional_user_info(
+    user_id: $userId
+    project_id: $projectId
+    name: $name
+    addresses: $addresses
+  ) {
+    errors {
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
 export const ChangeUserIdDocument = gql`
     mutation changeUserId($newUserId: String!, $oldUserId: String!, $projectId: String!) {
   changeUserId: change_user_id(
@@ -4643,6 +4659,13 @@ export const GetUserByIdDocument = gql`
       mailAddress: mail_address
       fanPointsUserId: user_id
       userId: external_user_id
+      name
+      addresses {
+        street
+        zipCode: zip_code
+        city
+        country
+      }
     }
   }
 }
@@ -4696,6 +4719,7 @@ const GetStatusPointsTransactionsDocumentString = print(GetStatusPointsTransacti
 const GiveStatusPointsDocumentString = print(GiveStatusPointsDocument);
 const UndoStatusPointsTransactionDocumentString = print(UndoStatusPointsTransactionDocument);
 const AddUserDocumentString = print(AddUserDocument);
+const ChangeAdditionalUserInfoDocumentString = print(ChangeAdditionalUserInfoDocument);
 const ChangeUserIdDocumentString = print(ChangeUserIdDocument);
 const ChangeUserMailAddressDocumentString = print(ChangeUserMailAddressDocument);
 const DeleteUserDocumentString = print(DeleteUserDocument);
@@ -4786,6 +4810,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     addUser(variables: AddUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: AddUserMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<AddUserMutation>(AddUserDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addUser', 'mutation');
+    },
+    changeAdditionalUserInfo(variables: ChangeAdditionalUserInfoMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: ChangeAdditionalUserInfoMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<ChangeAdditionalUserInfoMutation>(ChangeAdditionalUserInfoDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'changeAdditionalUserInfo', 'mutation');
     },
     changeUserId(variables: ChangeUserIdMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: ChangeUserIdMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<ChangeUserIdMutation>(ChangeUserIdDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'changeUserId', 'mutation');

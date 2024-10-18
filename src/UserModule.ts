@@ -1,4 +1,5 @@
 import FanPointsClient from './FanPointsClient';
+import { AddressInput } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
 
 /**
@@ -80,6 +81,29 @@ export class UserModule {
             newMailAddress,
         });
         return unwrap(result.data.changeUserMailAddress);
+    }
+
+    /** Changes the additional user info of a user in your loyalty program.
+     *
+     * @param userId - The user ID of the user.
+     * @param name - The new name of the user.
+     * @param addresses - The new addresses of the user.
+     *
+     * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
+     */
+    public async changeAdditionalUserInfo(
+        userId: string,
+        name: string,
+        addresses: AddressInput[],
+    ) {
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.changeAdditionalUserInfo({
+            projectId: loyaltyProgramId,
+            userId,
+            name,
+            addresses: addresses,
+        });
+        return unwrap(result.data.changeAdditionalUserInfo);
     }
 
     /**
