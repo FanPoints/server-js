@@ -511,10 +511,12 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @throws {@link RequestError} if the payload is not in the expected
      * format (`invalidDataFormatError`).
      */
-    public async registerTixevoCheckout(
-        jsonPayload: string,
-    ) {
+    public async registerTixevoCheckout(jsonPayload: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        
+        if (typeof jsonPayload !== 'string')
+            jsonPayload = JSON.stringify(jsonPayload);
+        
         const result = await sdk.registerTixevoCheckout({
             projectId: loyaltyProgramId,
             jsonPayload,
