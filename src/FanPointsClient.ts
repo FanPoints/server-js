@@ -1,8 +1,6 @@
 import {
-    ClientError,
     GraphQLClient,
     RequestMiddleware,
-    ResponseMiddleware,
 } from 'graphql-request';
 import config from './backendConfig';
 import { FanPointsModule } from './FanPointsModule';
@@ -58,32 +56,6 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
         };
 
     /**
-     * This middleware handles the response from the GraphQL API.
-     *
-     * If the response is a 401 error, the JWT token is refreshed and
-     * the request is sent again.
-     *
-     * @hidden
-     */
-    private getResponseMiddleware =
-        (authSession: AuthSession, graphQLClient: GraphQLClient) =>
-        async (response: Parameters<ResponseMiddleware>[0]) => {
-            if (
-                response instanceof ClientError &&
-                response.response.status === 401
-            ) {
-                await authSession.refreshToken();
-                return graphQLClient.rawRequest(
-                    Array.isArray(response.request.query)
-                        ? response.request.query[0]
-                        : response.request.query,
-                    response.request.variables,
-                );
-            }
-            return response;
-        };
-
-    /**
      * Registers a new access token (client id + secret) for the given loyalty
      * program id or partner id.
      * @hidden */
@@ -97,12 +69,6 @@ export default class FanPointsClient<PartnerLabel extends string = string> {
         this.graphQLClients[id] = new GraphQLClient(this.apiEndpoint);
         this.graphQLClients[id].requestConfig.requestMiddleware =
             this.getRequestMiddleware(this.authSessions[id]).bind(this);
-        this.graphQLClients[id].requestConfig.responseMiddleware =
-            this.getResponseMiddleware(
-                this.authSessions[id],
-                this.graphQLClients[id],
-            ).bind(this);
-
         this.SDKs[id] = getSdk(this.graphQLClients[id]);
     }
 

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+-   Refreshing a token should finally work correctly by explicitly decoding the token and checking if it has expired.
+
+## [0.2.14] - 2024-10-18
+
+### Changed
+
 -   After refreshing a refresh token, the SDK now correctly retries the request even when there it consists of a single GraphQl query.
 
 ## [0.2.13] - 2024-10-18

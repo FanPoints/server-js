@@ -4,6 +4,8 @@
  * token.
  */
 export class AuthSession {
+    private EXPIRATION_MARGIN_S = 30;
+
     private currentToken?: string;
 
     /**
@@ -51,11 +53,29 @@ export class AuthSession {
     }
 
     /**
+     * Decodes the current token and checks if it has expired.
+     *
+     * @returns true if the current token has expired or no current token is set.
+     */
+    public hasExpired(): boolean {
+        if (!this.currentToken) return true;
+
+        const decodedToken = JSON.parse(
+            Buffer.from(this.currentToken.split('.')[1], 'base64').toString(),
+        );
+
+        const expirationTime = decodedToken.exp;
+        const now = new Date().getTime() / 1000;
+
+        return expirationTime - this.EXPIRATION_MARGIN_S < now;
+    }
+
+    /**
      * Returns the current JWT token. If no token is available, a new one is fetched.
      * @returns A JWT token (Base64 encoded).
      */
     public async getToken() {
-        if (!this.currentToken) {
+        if (!this.currentToken || this.hasExpired()) {
             this.currentToken = await this.fetchToken(
                 this.clientId,
                 this.secret,
