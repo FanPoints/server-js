@@ -4,6 +4,8 @@
  * token.
  */
 export class AuthSession {
+    /** A safety margin in seconds to refresh the token before it actually expires.
+     * This is to prevent the token from being expired due to network issues. */
     private EXPIRATION_MARGIN_S = 30;
 
     private currentToken?: string;
