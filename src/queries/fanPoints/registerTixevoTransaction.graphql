@@ -1,6 +1,6 @@
-mutation registerTixevoCheckout($partnerId: String!, $jsonPayload: String!) {
+mutation registerTixevoCheckout($projectId: String!, $jsonPayload: String!) {
     registerTixevoCheckout: register_tixevo_checkout(
-        partner_id: $partnerId
+        project_id: $projectId
         json_payload: $jsonPayload
     ) {
         errors {
