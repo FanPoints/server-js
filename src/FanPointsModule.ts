@@ -507,23 +507,16 @@ export class FanPointsModule<PartnerLabel extends string> {
      * This method allows you to register a new or modified raw Tixevo checkout.
      *
      * @param jsonPayload - The JSON payload of the Tixevo checkout as a string.
-     * @param partnerId - The ID of the partner where the checkout happened.
-     * @param partnerLabel - The label of the partner where the checkout happened.
      *
      * @throws {@link RequestError} if the payload is not in the expected
      * format (`invalidDataFormatError`).
      */
     public async registerTixevoCheckout(
         jsonPayload: string,
-        partnerId?: string,
-        partnerLabel?: PartnerLabel,
     ) {
-        const { sdk, partnerId: specificPartnerId } = this.client.getPartner(
-            partnerId,
-            partnerLabel,
-        );
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
         const result = await sdk.registerTixevoCheckout({
-            partnerId: specificPartnerId,
+            projectId: loyaltyProgramId,
             jsonPayload,
         });
         return unwrap(result.data.registerTixevoCheckout);

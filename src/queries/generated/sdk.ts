@@ -110,7 +110,6 @@ export type AddUserResult = {
 export type Address = {
   city: Scalars['String']['output'];
   country: Scalars['String']['output'];
-  last_used: Scalars['String']['output'];
   street: Scalars['String']['output'];
   zip_code: Scalars['String']['output'];
 };
@@ -288,6 +287,13 @@ export type Contact = {
 export type Coordinates = {
   latitude: Scalars['String']['output'];
   longitude: Scalars['String']['output'];
+};
+
+export type CornerCard = {
+  card_code: Scalars['String']['output'];
+  card_product: Scalars['String']['output'];
+  last_transaction_date: Maybe<Scalars['String']['output']>;
+  user_id: Scalars['String']['output'];
 };
 
 export type CreateFanPointsPaymentSessionErrors = {
@@ -971,12 +977,25 @@ export type GetStatusPointsTransactionsResult = {
   result: Maybe<Array<StatusPointsTransaction>>;
 };
 
+export type GetTixevoConfigurationResult = {
+  result: TixevoConfiguration;
+};
+
 export type GetTokensResult = {
   result: Maybe<Array<Token>>;
 };
 
 export type GetUnknownTerminalsResult = {
   result: Array<Terminal>;
+};
+
+export type GetUserCornerCardsErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type GetUserCornerCardsResult = {
+  errors: Maybe<GetUserCornerCardsErrors>;
+  result: Maybe<Array<CornerCard>>;
 };
 
 export type GetUserErrors = {
@@ -1043,6 +1062,10 @@ export type InvalidModuleIdError = {
 
 export type InvalidNameError = {
   reason: Scalars['String']['output'];
+};
+
+export type InvalidPartnerIdError = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type InvalidPeriodError = {
@@ -1282,6 +1305,14 @@ export type ModifyStoreResult = {
   errors: Maybe<ModifyStoreErrors>;
 };
 
+export type ModifyTixevoConfigurationErrors = {
+  invalid_partner_id_error: Maybe<InvalidPartnerIdError>;
+};
+
+export type ModifyTixevoConfigurationResult = {
+  errors: Maybe<ModifyTixevoConfigurationErrors>;
+};
+
 export type Module = {
   active: Scalars['Boolean']['output'];
   can_be_deactivated: Scalars['Boolean']['output'];
@@ -1365,6 +1396,7 @@ export type Mutation = {
   modify_promotion_distribution_policy: ModifyPromotionDistributionPolicyResult;
   modify_shop_purchase_distribution_policy: ModifyShopDistributionPolicyResult;
   modify_store: ModifyStoreResult;
+  modify_tixevo_configuration: ModifyTixevoConfigurationResult;
   open_lootbox: OpenLootBoxResult;
   pay_purchase_with_fan_points: ExecuteFanPointsTransactionResult;
   purchase_lottery_ticket: ExecuteShopTransactionResult;
@@ -1372,6 +1404,7 @@ export type Mutation = {
   refund_shop_item: ExecuteShopTransactionResult;
   register_terminal: RegisterTerminalResult;
   register_tixevo_checkout: RegisterTransactionResult;
+  register_user_corner_card: RegisterUserCornerCardResult;
   reject_distribution_policy: RejectDistributionPolicyResult;
   remove_shopify_shop: RemoveShopifyShopResult;
   reset_partner_branding: ResetBrandingResult;
@@ -1946,6 +1979,14 @@ export type MutationModify_StoreArgs = {
 };
 
 
+export type MutationModify_Tixevo_ConfigurationArgs = {
+  merchandising_partner_id: InputMaybe<Scalars['String']['input']>;
+  project_id: Scalars['String']['input'];
+  subscription_partner_id: InputMaybe<Scalars['String']['input']>;
+  ticketing_partner_id: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type MutationOpen_LootboxArgs = {
   project_id: Scalars['String']['input'];
   transaction_group_id: Scalars['String']['input'];
@@ -2006,7 +2047,15 @@ export type MutationRegister_TerminalArgs = {
 
 export type MutationRegister_Tixevo_CheckoutArgs = {
   json_payload: Scalars['String']['input'];
-  partner_id: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+};
+
+
+export type MutationRegister_User_Corner_CardArgs = {
+  card_code: Scalars['String']['input'];
+  card_product: Scalars['String']['input'];
+  last_transaction_date: InputMaybe<Scalars['String']['input']>;
+  user_id: Scalars['String']['input'];
 };
 
 
@@ -2461,9 +2510,11 @@ export type Query = {
   get_status_points_balance: GetStatusPointsBalanceResult;
   get_status_points_for_action: GetNumStatusPointsForActionResult;
   get_status_points_transactions: GetStatusPointsTransactionsResult;
+  get_tixevo_configuration: GetTixevoConfigurationResult;
   get_unapproved_distribution_policies: GetRewardsToDistributeResult;
   get_unknown_terminals: GetUnknownTerminalsResult;
   get_user_by_id: GetUserResult;
+  get_user_corner_cards: GetUserCornerCardsResult;
   get_user_qr_code: GetQrCodeResult;
   get_users: GetUsersResult;
   get_wallet_customization: GetWalletCustomizationResult;
@@ -2884,6 +2935,11 @@ export type QueryGet_Status_Points_TransactionsArgs = {
 };
 
 
+export type QueryGet_Tixevo_ConfigurationArgs = {
+  project_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_Unapproved_Distribution_PoliciesArgs = {
   project_id: Scalars['String']['input'];
   purpose: RewardPurpose;
@@ -2891,6 +2947,12 @@ export type QueryGet_Unapproved_Distribution_PoliciesArgs = {
 
 
 export type QueryGet_User_By_IdArgs = {
+  project_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_User_Corner_CardsArgs = {
   project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
@@ -2923,6 +2985,14 @@ export type RegisterTransactionErrors = {
 
 export type RegisterTransactionResult = {
   errors: Maybe<RegisterTransactionErrors>;
+};
+
+export type RegisterUserCornerCardErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type RegisterUserCornerCardResult = {
+  errors: Maybe<RegisterUserCornerCardErrors>;
 };
 
 export type RejectDistributionPolicyErrors = {
@@ -3126,6 +3196,13 @@ export type Terminal = {
   merchant_location: Maybe<Scalars['String']['output']>;
   merchant_name: Maybe<Scalars['String']['output']>;
   terminal_id: Scalars['String']['output'];
+};
+
+export type TixevoConfiguration = {
+  merchandising_partner_id: Maybe<Scalars['String']['output']>;
+  project_id: Scalars['String']['output'];
+  subscription_partner_id: Maybe<Scalars['String']['output']>;
+  ticketing_partner_id: Maybe<Scalars['String']['output']>;
 };
 
 export type ToggleModuleErrors = {
@@ -3355,7 +3432,7 @@ export type PayPurchaseWithFanPointsMutationVariables = Exact<{
 export type PayPurchaseWithFanPointsMutation = { payPurchaseWithFanPoints: { errors: { unknownUserError: { _empty: string | undefined } | undefined, invalidRewardAmountError: { _empty: string | undefined } | undefined, tooFewAvailableError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, invalidRateLabelError: { _empty: string | undefined } | undefined, alreadyExecutedError: { _empty: string | undefined } | undefined, nonUniquePurchaseItemIdsError: { _empty: string | undefined } | undefined } | undefined, result: { purchaseId: string, userId: string, transactionType: FanPointsTransactionType, purchaseItems: Array<{ title: string, description: string, price: number, currency: Currency, amount: number, date: string, purchaseItemId: string, partnerId: string, rateLabel: string | undefined, hasBeenUndone: boolean, hasBeenSettled: boolean, partner: { name: string, description: string, website: string, branding: { logoUrl: string | undefined } } }> } | undefined } };
 
 export type RegisterTixevoCheckoutMutationVariables = Exact<{
-  partnerId: Scalars['String']['input'];
+  projectId: Scalars['String']['input'];
   jsonPayload: Scalars['String']['input'];
 }>;
 
@@ -3905,9 +3982,9 @@ export const PayPurchaseWithFanPointsDocument = gql`
 }
     `;
 export const RegisterTixevoCheckoutDocument = gql`
-    mutation registerTixevoCheckout($partnerId: String!, $jsonPayload: String!) {
+    mutation registerTixevoCheckout($projectId: String!, $jsonPayload: String!) {
   registerTixevoCheckout: register_tixevo_checkout(
-    partner_id: $partnerId
+    project_id: $projectId
     json_payload: $jsonPayload
   ) {
     errors {
