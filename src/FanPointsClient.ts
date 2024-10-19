@@ -1,7 +1,4 @@
-import {
-    GraphQLClient,
-    RequestMiddleware,
-} from 'graphql-request';
+import { GraphQLClient, RequestMiddleware } from 'graphql-request';
 import config from './backendConfig';
 import { FanPointsModule } from './FanPointsModule';
 import { MarketplaceModule } from './MarketplaceModule';
