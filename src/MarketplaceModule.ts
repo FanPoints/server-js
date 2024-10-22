@@ -372,4 +372,23 @@ export class MarketplaceModule {
         });
         return unwrap(result.data.getLotteryStatus);
     }
+
+    /**
+     * Returns the auctions and lotteries where the user is currently participating.
+     *
+     * @param userId - The ID of the user.
+     *
+     * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
+     */
+    public async getUserParticipations(userId: string) {
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+        const result = await sdk.getUserParticipations({
+            projectId: loyaltyProgramId,
+            userId,
+        });
+        return {
+            auctions: unwrap(result.data.auctions),
+            lotteries: unwrap(result.data.lotteries),
+        };
+    }
 }

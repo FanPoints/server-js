@@ -608,6 +608,10 @@ export type GetBoughtProductsResult = {
   result: Maybe<Array<RewardTransaction>>;
 };
 
+export type GetCurrentAuctionStatusErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
 export type GetCurrentBiddingStatusErrors = {
   unknown_product_error: Maybe<UnknownProductError>;
   unknown_user_error: Maybe<UnknownUserError>;
@@ -628,14 +632,18 @@ export type GetCurrentLotteryStatusResult = {
   result: Maybe<LotteryStatus>;
 };
 
-export type GetCurrentUserBidsResult = {
-  errors: Maybe<GetCurrentBiddingStatusErrors>;
-  result: Array<Bid>;
+export type GetCurrentUserAuctionsErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
 };
 
-export type GetCurrentUserLotteryTicketsResult = {
-  errors: Maybe<GetCurrentLotteryStatusErrors>;
-  result: Array<LotteryTicket>;
+export type GetCurrentUserAuctionsResult = {
+  errors: Maybe<GetCurrentAuctionStatusErrors>;
+  result: Array<RewardToDistribute>;
+};
+
+export type GetCurrentUserLotteriesResult = {
+  errors: Maybe<GetCurrentUserAuctionsErrors>;
+  result: Array<RewardToDistribute>;
 };
 
 export type GetDailyPartnerStatisticsResult = {
@@ -1980,10 +1988,11 @@ export type MutationModify_StoreArgs = {
 
 
 export type MutationModify_Tixevo_ConfigurationArgs = {
-  merchandising_partner_id: InputMaybe<Scalars['String']['input']>;
+  auth_secret: Scalars['String']['input'];
+  merchandising_partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
-  subscription_partner_id: InputMaybe<Scalars['String']['input']>;
-  ticketing_partner_id: InputMaybe<Scalars['String']['input']>;
+  subscription_partner_id: Scalars['String']['input'];
+  ticketing_partner_id: Scalars['String']['input'];
 };
 
 
@@ -2451,6 +2460,8 @@ export type Query = {
   get_bought_products_at_partner: GetBoughtProductsResult;
   get_current_bidding_status: GetCurrentBiddingStatusResult;
   get_current_lottery_status: GetCurrentLotteryStatusResult;
+  get_current_user_auctions: GetCurrentUserAuctionsResult;
+  get_current_user_lotteries: GetCurrentUserLotteriesResult;
   get_daily_partner_statistics: GetDailyPartnerStatisticsResult;
   get_daily_project_statistics: GetDailyProjectStatisticsResult;
   get_discount_code: GetDiscountCodeResult;
@@ -2572,6 +2583,18 @@ export type QueryGet_Current_Lottery_StatusArgs = {
   project_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
   user_id: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGet_Current_User_AuctionsArgs = {
+  project_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Current_User_LotteriesArgs = {
+  project_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
 };
 
 
@@ -3199,6 +3222,7 @@ export type Terminal = {
 };
 
 export type TixevoConfiguration = {
+  auth_secret: Maybe<Scalars['String']['output']>;
   merchandising_partner_id: Maybe<Scalars['String']['output']>;
   project_id: Scalars['String']['output'];
   subscription_partner_id: Maybe<Scalars['String']['output']>;
@@ -3547,6 +3571,14 @@ export type GetShopPurchasesQueryVariables = Exact<{
 
 
 export type GetShopPurchasesQuery = { getShopPurchases: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: Array<{ transactionGroupId: string, transactionNr: number, purchaseDate: string, hasBeenUndone: boolean, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { amount: number, title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, lotteryProductRewardId: string, lotteryProductDistributionPolicyId: string, rewardType: 'LotteryTicket', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { amount: number, title: string, description: string, rewardId: string, productCategory: ProductCategory, imageUrls: Array<string>, deliveryStatus: DeliveryStatus, deliveryDate: string | undefined, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' }, deliveryDetails: { deliveryName: string | undefined, deliveryAddress: { street: string, country: string, city: string, zipCode: string } | undefined } }> | undefined } };
+
+export type GetUserParticipationsQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetUserParticipationsQuery = { lotteries: { result: Array<{ numAvailable: any, rewardId: string, partnerId: string, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { distributionType: 'ShopPurchaseDistributionPolicy' } }>, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined }, auctions: { result: Array<{ numAvailable: any, rewardId: string, partnerId: string, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { distributionType: 'ShopLotteryDistributionPolicy' } | { distributionType: 'ShopPurchaseDistributionPolicy' } }>, errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type PurchaseLotteryTicketMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4436,6 +4468,95 @@ export const GetShopPurchasesDocument = gql`
   }
 }
     `;
+export const GetUserParticipationsDocument = gql`
+    query getUserParticipations($projectId: String!, $userId: String!) {
+  lotteries: get_current_user_lotteries(project_id: $projectId, user_id: $userId) {
+    result {
+      numAvailable: balance
+      rewardId: reward_id
+      partnerId: owner_id
+      product: template {
+        rewardType: __typename
+        ... on Product {
+          title
+          description
+          productCategory: product_category
+          imageUrls: image_urls
+          partner {
+            partnerId: partner_id
+            name
+            branding {
+              logoColorUrl: logo_color_url
+            }
+          }
+        }
+      }
+      distributionPolicy: distribution_policy {
+        distributionType: __typename
+        ... on ShopLotteryDistributionPolicy {
+          distributionPolicyId: distribution_policy_id
+          ticketPrice: price
+          currency
+          lotteryStartDate: lottery_start_date
+          lotteryEndDate: lottery_end_date
+          lotteryStatus: lottery_status
+          numTicketsToDraw: num_tickets_to_draw
+          isRecentlyAvailable: is_recently_available
+        }
+      }
+      readableObjectId: readable_object_id
+    }
+    errors {
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+  }
+  auctions: get_current_user_auctions(project_id: $projectId, user_id: $userId) {
+    result {
+      numAvailable: balance
+      rewardId: reward_id
+      partnerId: owner_id
+      product: template {
+        rewardType: __typename
+        ... on Product {
+          title
+          description
+          productCategory: product_category
+          imageUrls: image_urls
+          partner {
+            partnerId: partner_id
+            name
+            branding {
+              logoColorUrl: logo_color_url
+            }
+          }
+        }
+      }
+      distributionPolicy: distribution_policy {
+        distributionType: __typename
+        ... on ShopAuctionDistributionPolicy {
+          distributionPolicyId: distribution_policy_id
+          minBid: min_bid
+          currency
+          auctionStartDate: auction_start_date
+          auctionEndDate: auction_end_date
+          auctionStatus: auction_status
+          currentHighestBid: current_highest_bid
+          currentNumberOfBids: current_number_of_bids
+          isRecentlyAvailable: is_recently_available
+        }
+      }
+      readableObjectId: readable_object_id
+    }
+    errors {
+      unknownUserError: unknown_user_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
 export const PurchaseLotteryTicketDocument = gql`
     mutation purchaseLotteryTicket($projectId: String!, $userId: String!, $rewardId: String!, $distributionPolicyId: String!, $partnerId: String!, $amount: Int!, $deliveryAddress: AddressInput!, $deliveryName: String!) {
   purchaseLotteryTicket: purchase_lottery_ticket(
@@ -4794,6 +4915,7 @@ const GetLotteryStatusDocumentString = print(GetLotteryStatusDocument);
 const GetShopItemDocumentString = print(GetShopItemDocument);
 const GetShopItemsDocumentString = print(GetShopItemsDocument);
 const GetShopPurchasesDocumentString = print(GetShopPurchasesDocument);
+const GetUserParticipationsDocumentString = print(GetUserParticipationsDocument);
 const PurchaseLotteryTicketDocumentString = print(PurchaseLotteryTicketDocument);
 const PurchaseShopItemDocumentString = print(PurchaseShopItemDocument);
 const GetStatusPointsBalanceDocumentString = print(GetStatusPointsBalanceDocument);
@@ -4869,6 +4991,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getShopPurchases(variables: GetShopPurchasesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetShopPurchasesQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetShopPurchasesQuery>(GetShopPurchasesDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getShopPurchases', 'query');
+    },
+    getUserParticipations(variables: GetUserParticipationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetUserParticipationsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetUserParticipationsQuery>(GetUserParticipationsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserParticipations', 'query');
     },
     purchaseLotteryTicket(variables: PurchaseLotteryTicketMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: PurchaseLotteryTicketMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<PurchaseLotteryTicketMutation>(PurchaseLotteryTicketDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'purchaseLotteryTicket', 'mutation');

@@ -513,10 +513,10 @@ export class FanPointsModule<PartnerLabel extends string> {
      */
     public async registerTixevoCheckout(jsonPayload: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
-        
+
         if (typeof jsonPayload !== 'string')
             jsonPayload = JSON.stringify(jsonPayload);
-        
+
         const result = await sdk.registerTixevoCheckout({
             projectId: loyaltyProgramId,
             jsonPayload,
