@@ -211,6 +211,14 @@ export type BillingInfoNotSetError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type BlockType =
+  | 'image'
+  | 'paragraph'
+  | 'quote'
+  | 'quote_attribution'
+  | 'subtitle'
+  | 'video';
+
 export type Branding = {
   banner_url: Maybe<Scalars['String']['output']>;
   logo_black_url: Maybe<Scalars['String']['output']>;
@@ -283,6 +291,20 @@ export type Contact = {
   email: Scalars['String']['output'];
   legal_name: Scalars['String']['output'];
 };
+
+export type Content = Image | Post | Video;
+
+export type ContentFeedItem = {
+  content: Content;
+  content_id: Scalars['String']['output'];
+  published_date: Scalars['String']['output'];
+  views: Scalars['Int']['output'];
+};
+
+export type ContentType =
+  | 'image'
+  | 'post'
+  | 'video';
 
 export type Coordinates = {
   latitude: Scalars['String']['output'];
@@ -606,6 +628,10 @@ export type GetBoughtProductsErrors = {
 export type GetBoughtProductsResult = {
   errors: Maybe<GetBoughtProductsErrors>;
   result: Maybe<Array<RewardTransaction>>;
+};
+
+export type GetContentFeedResult = {
+  result: Array<ContentFeedItem>;
 };
 
 export type GetCurrentAuctionStatusErrors = {
@@ -1023,6 +1049,16 @@ export type GetWalletCustomizationResult = {
   result: WalletCustomization;
 };
 
+export type Image = {
+  content_type: ContentType;
+  s3_keys_images: Array<Scalars['String']['output']>;
+};
+
+export type ImageBlock = {
+  block_type: BlockType;
+  image_url: Scalars['String']['output'];
+};
+
 export type ImageUploadUrl = {
   upload_params: Scalars['String']['output'];
   upload_url: Scalars['String']['output'];
@@ -1038,6 +1074,10 @@ export type InvalidActionCategoryError = {
 
 export type InvalidAddressError = {
   reason: Scalars['String']['output'];
+};
+
+export type InvalidContentIdError = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type InvalidDataFormatError = {
@@ -2196,6 +2236,11 @@ export type OpenLootBoxResult = {
   result: Maybe<Array<RewardTransaction>>;
 };
 
+export type ParagraphBlock = {
+  block_type: BlockType;
+  content: Scalars['String']['output'];
+};
+
 export type Partner = {
   branding: Branding;
   creator_id: Scalars['String']['output'];
@@ -2300,6 +2345,15 @@ export type Payer =
 export type Period =
   | 'day'
   | 'day_cumulative';
+
+export type Post = {
+  blocks: Array<PostBlock>;
+  content_type: ContentType;
+  s3_key_header_image: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+};
+
+export type PostBlock = ImageBlock | ParagraphBlock | QuoteBlock | SubtitleBlock | VideoBlock;
 
 export type Product = {
   amount: Scalars['Int']['output'];
@@ -2458,6 +2512,7 @@ export type Query = {
   get_approved_distribution_policies: GetRewardsToDistributeResult;
   get_bought_products: GetBoughtProductsResult;
   get_bought_products_at_partner: GetBoughtProductsResult;
+  get_content_feed: GetContentFeedResult;
   get_current_bidding_status: GetCurrentBiddingStatusResult;
   get_current_lottery_status: GetCurrentLotteryStatusResult;
   get_current_user_auctions: GetCurrentUserAuctionsResult;
@@ -2998,12 +3053,19 @@ export type QueryGet_Wallet_CustomizationArgs = {
   project_id: Scalars['String']['input'];
 };
 
+export type QuoteBlock = {
+  attribution: Maybe<Scalars['String']['output']>;
+  block_type: BlockType;
+  content: Scalars['String']['output'];
+};
+
 export type RegisterTerminalResult = {
   result: Scalars['String']['output'];
 };
 
 export type RegisterTransactionErrors = {
   invalid_data_format_error: Maybe<InvalidDataFormatError>;
+  tixevo_configuration_not_set_error: Maybe<TixevoConfigurationNotSetError>;
 };
 
 export type RegisterTransactionResult = {
@@ -3213,6 +3275,11 @@ export type Subscription = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type SubtitleBlock = {
+  block_type: BlockType;
+  content: Scalars['String']['output'];
+};
+
 export type Terminal = {
   last_transaction_date: Maybe<Scalars['String']['output']>;
   merchant_country: Maybe<Scalars['String']['output']>;
@@ -3227,6 +3294,10 @@ export type TixevoConfiguration = {
   project_id: Scalars['String']['output'];
   subscription_partner_id: Maybe<Scalars['String']['output']>;
   ticketing_partner_id: Maybe<Scalars['String']['output']>;
+};
+
+export type TixevoConfigurationNotSetError = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type ToggleModuleErrors = {
@@ -3366,6 +3437,17 @@ export type UserAlreadyExistsError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type Video = {
+  content_type: ContentType;
+  stream_url: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+};
+
+export type VideoBlock = {
+  block_type: BlockType;
+  stream_url: Scalars['String']['output'];
+};
+
 export type WalletCustomization = {
   background_color: Scalars['String']['output'];
   logo_url: Scalars['String']['output'];
@@ -3461,7 +3543,7 @@ export type RegisterTixevoCheckoutMutationVariables = Exact<{
 }>;
 
 
-export type RegisterTixevoCheckoutMutation = { registerTixevoCheckout: { errors: { invalidDataFormatError: { _empty: string | undefined } | undefined } | undefined } };
+export type RegisterTixevoCheckoutMutation = { registerTixevoCheckout: { errors: { invalidDataFormatError: { _empty: string | undefined } | undefined, tixevoConfigurationNotSetError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type UndoFanPointsPurchaseMutationVariables = Exact<{
   projectId: InputMaybe<Scalars['String']['input']>;
@@ -4021,6 +4103,9 @@ export const RegisterTixevoCheckoutDocument = gql`
   ) {
     errors {
       invalidDataFormatError: invalid_data_format_error {
+        _empty
+      }
+      tixevoConfigurationNotSetError: tixevo_configuration_not_set_error {
         _empty
       }
     }
