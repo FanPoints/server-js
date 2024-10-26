@@ -509,7 +509,8 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @param jsonPayload - The JSON payload of the Tixevo checkout as a string.
      *
      * @throws {@link RequestError} if the payload is not in the expected
-     * format (`invalidDataFormatError`).
+     * format (`invalidDataFormatError`) or if the Tixevo configuration is not
+     * set (`tixevoConfigurationNotSetError`) in the dashboard.
      */
     public async registerTixevoCheckout(jsonPayload: string) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();

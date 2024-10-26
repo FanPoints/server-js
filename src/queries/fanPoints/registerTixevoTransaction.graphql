@@ -7,6 +7,9 @@ mutation registerTixevoCheckout($projectId: String!, $jsonPayload: String!) {
             invalidDataFormatError: invalid_data_format_error {
                 _empty
             }
+            tixevoConfigurationNotSetError: tixevo_configuration_not_set_error {
+                _empty
+            }
         }
     }
 }
