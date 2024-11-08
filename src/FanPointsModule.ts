@@ -300,10 +300,10 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @param price - the price of the purchase
      * @param successUrl - the URL to redirect to if the user completes the payment successfully
      * @param cancelUrl - the URL to redirect to if the user cancels the payment
+     * @param customPurchaseId - an optional custom purchase id which can be used to link the payment to a specific purchase in your system
      * @param loyaltyProgramId - the ID of the loyalty program, where the user belongs to (only needed if the client config does not contain a loyalty program ID)
      * @param partnerId - the id of the partner where the purchase happened (only needed if the client config does not contain a partner ID)
      * @param partnerLabel - the label of the partner where the purchase happened (optional)
-     * @param customPurchaseId - an optional custom purchase id which can be used to link the payment to a specific purchase in your system
      * @param currency - the currency of the price (only needed )
      *
      * @returns the created session with the session URL
@@ -312,10 +312,10 @@ export class FanPointsModule<PartnerLabel extends string> {
         price: number,
         successUrl: string,
         cancelUrl: string,
+        customPurchaseId?: string,
         loyaltyProgramId?: string,
         partnerId?: string,
         partnerLabel?: PartnerLabel,
-        customPurchaseId?: string,
         currency?: Currency,
     ) {
         const {
