@@ -298,32 +298,31 @@ export class FanPointsModule<PartnerLabel extends string> {
      * the user on the checkout page hosted by the loyalty program.
      *
      * @param price - the price of the purchase
-     * @param currency - the currency of the price
-     * @param displayPrice - whether the price (in the currency) should be displayed on the checkout page in addition to the number of FanPoints
-     * @param cancelUrl - the URL to redirect to if the user cancels the payment
      * @param successUrl - the URL to redirect to if the user completes the payment successfully
+     * @param cancelUrl - the URL to redirect to if the user cancels the payment
      * @param loyaltyProgramId - the ID of the loyalty program, where the user belongs to (only needed if the client config does not contain a loyalty program ID)
-     * @param customPurchaseId - an optional custom purchase id which can be used to link the payment to a specific purchase in your system
      * @param partnerId - the id of the partner where the purchase happened (only needed if the client config does not contain a partner ID)
      * @param partnerLabel - the label of the partner where the purchase happened (optional)
+     * @param customPurchaseId - an optional custom purchase id which can be used to link the payment to a specific purchase in your system
+     * @param currency - the currency of the price (only needed )
      *
      * @returns the created session with the session URL
      */
     public async createFanPointsPaymentSession(
         price: number,
-        currency: Currency,
-        displayPrice: boolean,
-        cancelUrl: string,
         successUrl: string,
+        cancelUrl: string,
         loyaltyProgramId?: string,
-        customPurchaseId?: string,
         partnerId?: string,
         partnerLabel?: PartnerLabel,
+        customPurchaseId?: string,
+        currency?: Currency,
     ) {
-        const { sdk, partnerId: specificPartnerId } = this.client.getPartner(
-            partnerId,
-            partnerLabel,
-        );
+        const {
+            sdk,
+            partnerId: specificPartnerId,
+            defaultCurrency,
+        } = this.client.getPartner(partnerId, partnerLabel);
 
         if (!loyaltyProgramId) {
             loyaltyProgramId = this.client.loyaltyProgramId;
@@ -339,8 +338,8 @@ export class FanPointsModule<PartnerLabel extends string> {
             projectId: loyaltyProgramId,
             partnerId: specificPartnerId,
             price,
-            currency,
-            displayPrice,
+            currency: currency || defaultCurrency,
+            displayPrice: false,
             cancelUrl,
             successUrl,
             customPurchaseId,
