@@ -33,3 +33,4 @@ export type {
     ShopItemDistributionType,
     DeliveryStatus,
 } from './queries/generated/sdk';
+
