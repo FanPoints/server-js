@@ -27,6 +27,8 @@ export { PrizesModule } from './PrizesModule';
 export { RequestError } from './utils/errors';
 
 
+
+
 export type {
     Currency,
     FanPointsTransactionType,
