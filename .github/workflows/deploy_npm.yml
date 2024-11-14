@@ -5,8 +5,6 @@ name: Deploy Package to NPM
 on:
   push:
     branches: ["main"]
-    paths:
-      - src/**
 
 env:
   DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_EXTTEST }}
