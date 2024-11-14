@@ -1,15 +1,15 @@
 {
     "name": "@fanpoints/server-js",
-    "version": "0.2.22",
+    "version": "0.2.23",
     "description": "The SDK that allows to integrate FanPoints on the server-side.",
     "files": [
         "dist"
     ],
-    "module": "dist/esm/index.js",
+    "module": "dist/esm/index.mjs",
     "main": "dist/cjs/index.js",
     "exports": {
         ".": {
-            "import": "./dist/esm/index.js",
+            "import": "./dist/esm/index.mjs",
             "require": "./dist/cjs/index.js",
             "types": "./dist/index.d.ts"
         }
