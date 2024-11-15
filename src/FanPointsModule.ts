@@ -4,6 +4,7 @@ import {
     Currency,
     PurchaseItemInput,
     PurchaseItemPriceInput,
+    TixevoPartnerType,
 } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
 
@@ -293,6 +294,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * 2. The payment session has a unique session URL with the checkout form hosted by the loyalty program.
      *    Redirect your user to this URL.
      * 3. The user completes the checkout and is redirected to the given callback URL or cancellation URL.
+     * 4. A request is sent to the webhook URL if provided.
      *
      * This flow is preferred over the `payPurchaseWithFanPoints` method as it allows to properly authenticate
      * the user on the checkout page hosted by the loyalty program.
@@ -302,6 +304,7 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @param cancelUrl - the URL to redirect to if the user cancels the payment
      * @param customPurchaseId - an optional custom purchase id which can be used to link the payment to a specific purchase in your system
      * @param loyaltyProgramId - the ID of the loyalty program, where the user belongs to (only needed if the client config does not contain a loyalty program ID)
+     * @param webhookUrl - the URL to send a request to after the payment is completed
      * @param partnerId - the id of the partner where the purchase happened (only needed if the client config does not contain a partner ID)
      * @param partnerLabel - the label of the partner where the purchase happened (optional)
      * @param currency - the currency of the price (only needed )
@@ -314,6 +317,7 @@ export class FanPointsModule<PartnerLabel extends string> {
         cancelUrl: string,
         customPurchaseId?: string,
         loyaltyProgramId?: string,
+        webhookUrl?: string,
         partnerId?: string,
         partnerLabel?: PartnerLabel,
         currency?: Currency,
@@ -343,8 +347,62 @@ export class FanPointsModule<PartnerLabel extends string> {
             cancelUrl,
             successUrl,
             customPurchaseId,
+            webhookUrl,
         });
         return unwrap(result.data.createFanPointsPaymentSession);
+    }
+
+    /**
+     * Creates a new payment session which can be used to allow payment with FanPoints.
+     *
+     * Use this method when your loyalty program is connected to Tixevo. In contrast to the
+     * `createFanPointsPaymentSession` method, this method only works if your client is
+     * configured with the loyalty program connected to Tixevo.
+     *
+     * The flow is as follows:
+     *
+     * 1. When your user chooses to pay with FanPoints, you can use this method to create a payment session.
+     * 2. The payment session has a unique session URL with the checkout form hosted by the loyalty program.
+     *    Redirect your user to this URL.
+     * 3. The user completes the checkout and is redirected to the given callback URL or cancellation URL.
+     * 4. A request is sent to the webhook URL if provided.
+     *
+     * This flow is preferred over the `payPurchaseWithFanPoints` method as it allows to properly authenticate
+     * the user on the checkout page hosted by the loyalty program.
+     *
+     * @param partnerType - the type of the Tixevo partner where the purchase happened
+     * @param price - the price of the purchase
+     * @param successUrl - the URL to redirect to if the user completes the payment successfully
+     * @param cancelUrl - the URL to redirect to if the user cancels the payment
+     * @param webhookUrl - the URL to send a request to after the payment is completed
+     * @param customPurchaseId - an optional custom purchase id which can be used to link the payment to a specific purchase in your system
+     * @param currency - the currency of the price (only needed )
+     *
+     * @returns the created session with the session URL
+     */
+    public async createTixevoFanPointsPaymentSession(
+        partnerType: TixevoPartnerType,
+        price: number,
+        successUrl: string,
+        cancelUrl: string,
+        webhookUrl?: string,
+        customPurchaseId?: string,
+        currency?: Currency,
+    ) {
+        const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+
+        const result = await sdk.createTixevoFanPointsPaymentSession({
+            projectId: loyaltyProgramId,
+            partnerType,
+            price,
+            currency: currency || 'chf',
+            displayPrice: false,
+            cancelUrl,
+            successUrl,
+            customPurchaseId,
+            webhookUrl,
+        });
+        return unwrap(result.data.createTixevoFanPointsPaymentSession);
     }
 
     /**
