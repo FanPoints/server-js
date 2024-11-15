@@ -3521,7 +3521,7 @@ export type CreateTixevoFanPointsPaymentSessionMutationVariables = Exact<{
 }>;
 
 
-export type CreateTixevoFanPointsPaymentSessionMutation = { createTixevoFanPointsPaymentSession: { result: { amount: number, currency: Currency, status: FanPointsPaymentSessionStatus, sessionId: string, partnerId: string, customPurchaseId: string | undefined, sessionUrl: string, cancelUrl: string, successUrl: string, expiryDate: string } | undefined, errors: { invalidAmountError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined } | undefined } };
+export type CreateTixevoFanPointsPaymentSessionMutation = { createTixevoFanPointsPaymentSession: { result: { amount: number, currency: Currency, status: FanPointsPaymentSessionStatus, sessionId: string, partnerId: string, customPurchaseId: string | undefined, sessionUrl: string, cancelUrl: string, successUrl: string, expiryDate: string } | undefined, errors: { invalidAmountError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined, notConfiguredError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type EstimateGivenOutFanPointsOnPurchaseQueryVariables = Exact<{
   partnerId: Scalars['String']['input'];
@@ -3920,6 +3920,9 @@ export const CreateTixevoFanPointsPaymentSessionDocument = gql`
         _empty
       }
       invalidTransactionIdError: invalid_transaction_id_error {
+        _empty
+      }
+      notConfiguredError: not_configured_error {
         _empty
       }
     }
