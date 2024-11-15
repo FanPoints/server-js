@@ -2,6 +2,12 @@
 
 A javascript SDK to integrate FanPoints into your server.
 
+## [0.2.26] - 2024-11-16
+
+### Changed
+
+-   The addresses argument of the function `changeAdditionalUserInfo` now accepts a `zipCode` attribute instead of a `zip_code` attribute.
+
 ## [0.2.25] - 2024-11-16
 
 ### Changed

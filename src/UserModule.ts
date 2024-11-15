@@ -1,5 +1,4 @@
 import FanPointsClient from './FanPointsClient';
-import { AddressInput } from './queries/generated/sdk';
 import { unwrap } from './utils/errors';
 
 /**
@@ -94,14 +93,27 @@ export class UserModule {
     public async changeAdditionalUserInfo(
         userId: string,
         name: string,
-        addresses: AddressInput[],
+        addresses: {
+            city: string;
+            country: string;
+            street: string;
+            zipCode: string;
+        }[],
     ) {
         const { sdk, loyaltyProgramId } = this.client.getLoyaltyProgram();
+
+        const modifiedAddresses = addresses.map((address) => ({
+            city: address.city,
+            country: address.country,
+            street: address.street,
+            zip_code: address.zipCode,
+        }));
+
         const result = await sdk.changeAdditionalUserInfo({
             projectId: loyaltyProgramId,
             userId,
             name,
-            addresses: addresses,
+            addresses: modifiedAddresses,
         });
         return unwrap(result.data.changeAdditionalUserInfo);
     }
