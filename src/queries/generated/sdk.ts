@@ -321,11 +321,16 @@ export type CornerCard = {
 export type CreateFanPointsPaymentSessionErrors = {
   invalid_reward_amount_error: Maybe<InvalidRewardAmountError>;
   invalid_transaction_id_error: Maybe<InvalidTransactionIdError>;
+  not_configured_error: Maybe<NotConfiguredError>;
 };
 
 export type CreateFanPointsPaymentSessionResult = {
   errors: Maybe<CreateFanPointsPaymentSessionErrors>;
   result: Maybe<FanPointsPaymentSession>;
+};
+
+export type CreateInvoiceResult = {
+  _empty: Maybe<Scalars['String']['output']>;
 };
 
 export type CreatePartnerErrors = {
@@ -512,6 +517,7 @@ export type FanPointsBalance = {
 
 export type FanPointsPaymentSession = {
   amount: Scalars['Int']['output'];
+  callback_url: Maybe<Scalars['String']['output']>;
   cancel_url: Scalars['String']['output'];
   currency: Currency;
   custom_purchase_id: Maybe<Scalars['String']['output']>;
@@ -520,6 +526,7 @@ export type FanPointsPaymentSession = {
   partner_id: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   project_id: Scalars['String']['output'];
+  result: Maybe<ExecuteFanPointsTransactionResult>;
   session_id: Scalars['String']['output'];
   session_url: Scalars['String']['output'];
   status: FanPointsPaymentSessionStatus;
@@ -1393,10 +1400,12 @@ export type Mutation = {
   claim_lootbox_rewards: ClaimLootboxRewardsResult;
   connect_shopify_shop: ConnectShopifyShopResult;
   create_fan_points_payment_session: CreateFanPointsPaymentSessionResult;
+  create_invoice: CreateInvoiceResult;
   create_partner: CreatePartnerResult;
   create_partner_token: CreateTokenResult;
   create_project: CreateProjectResult;
   create_project_token: CreateTokenResult;
+  create_tixevo_fan_points_payment_session: CreateFanPointsPaymentSessionResult;
   deactivate_module: ToggleModuleResult;
   decline_partnership_request: DeclinePartnershipRequestResult;
   delete_discount_code: DeleteDiscountCodeResult;
@@ -1641,6 +1650,7 @@ export type MutationConnect_Shopify_ShopArgs = {
 
 
 export type MutationCreate_Fan_Points_Payment_SessionArgs = {
+  callback_url: InputMaybe<Scalars['String']['input']>;
   cancel_url: Scalars['String']['input'];
   currency: Currency;
   custom_purchase_id: InputMaybe<Scalars['String']['input']>;
@@ -1649,6 +1659,11 @@ export type MutationCreate_Fan_Points_Payment_SessionArgs = {
   price: Scalars['Float']['input'];
   project_id: Scalars['String']['input'];
   success_url: Scalars['String']['input'];
+};
+
+
+export type MutationCreate_InvoiceArgs = {
+  partner_id: Scalars['String']['input'];
 };
 
 
@@ -1675,6 +1690,19 @@ export type MutationCreate_Project_TokenArgs = {
   expires_in_days: Scalars['Int']['input'];
   name: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
+};
+
+
+export type MutationCreate_Tixevo_Fan_Points_Payment_SessionArgs = {
+  callback_url: InputMaybe<Scalars['String']['input']>;
+  cancel_url: Scalars['String']['input'];
+  currency: Currency;
+  custom_purchase_id: InputMaybe<Scalars['String']['input']>;
+  display_price: Scalars['Boolean']['input'];
+  partner_type: TixevoPartnerType;
+  price: Scalars['Float']['input'];
+  project_id: Scalars['String']['input'];
+  success_url: Scalars['String']['input'];
 };
 
 
@@ -2222,6 +2250,10 @@ export type NoDiscountCodesAvailableError = {
 };
 
 export type NonUniquePurchaseItemIdsError = {
+  _empty: Maybe<Scalars['String']['output']>;
+};
+
+export type NotConfiguredError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
@@ -3300,6 +3332,11 @@ export type TixevoConfigurationNotSetError = {
   _empty: Maybe<Scalars['String']['output']>;
 };
 
+export type TixevoPartnerType =
+  | 'merchandising'
+  | 'subscription'
+  | 'ticketing';
+
 export type ToggleModuleErrors = {
   invalid_module_id_error: Maybe<InvalidModuleIdError>;
   module_cannot_be_deactivated_error: Maybe<ModuleCannotBeDeactivatedError>;
@@ -3464,11 +3501,27 @@ export type CreateFanPointsPaymentSessionMutationVariables = Exact<{
   displayPrice: Scalars['Boolean']['input'];
   cancelUrl: Scalars['String']['input'];
   successUrl: Scalars['String']['input'];
+  webhookUrl: InputMaybe<Scalars['String']['input']>;
   customPurchaseId: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type CreateFanPointsPaymentSessionMutation = { createFanPointsPaymentSession: { result: { amount: number, currency: Currency, status: FanPointsPaymentSessionStatus, sessionId: string, partnerId: string, customPurchaseId: string | undefined, sessionUrl: string, cancelUrl: string, successUrl: string, expiryDate: string } | undefined, errors: { invalidAmountError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined } | undefined } };
+
+export type CreateTixevoFanPointsPaymentSessionMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  partnerType: TixevoPartnerType;
+  price: Scalars['Float']['input'];
+  currency: Currency;
+  displayPrice: Scalars['Boolean']['input'];
+  cancelUrl: Scalars['String']['input'];
+  successUrl: Scalars['String']['input'];
+  webhookUrl: InputMaybe<Scalars['String']['input']>;
+  customPurchaseId: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CreateTixevoFanPointsPaymentSessionMutation = { createTixevoFanPointsPaymentSession: { result: { amount: number, currency: Currency, status: FanPointsPaymentSessionStatus, sessionId: string, partnerId: string, customPurchaseId: string | undefined, sessionUrl: string, cancelUrl: string, successUrl: string, expiryDate: string } | undefined, errors: { invalidAmountError: { _empty: string | undefined } | undefined, invalidTransactionIdError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type EstimateGivenOutFanPointsOnPurchaseQueryVariables = Exact<{
   partnerId: Scalars['String']['input'];
@@ -3802,7 +3855,7 @@ export type GetUserPassesMutation = { generateAppleWalletPass: { result: string 
 
 
 export const CreateFanPointsPaymentSessionDocument = gql`
-    mutation createFanPointsPaymentSession($projectId: String!, $partnerId: String!, $price: Float!, $currency: Currency!, $displayPrice: Boolean!, $cancelUrl: String!, $successUrl: String!, $customPurchaseId: String) {
+    mutation createFanPointsPaymentSession($projectId: String!, $partnerId: String!, $price: Float!, $currency: Currency!, $displayPrice: Boolean!, $cancelUrl: String!, $successUrl: String!, $webhookUrl: String, $customPurchaseId: String) {
   createFanPointsPaymentSession: create_fan_points_payment_session(
     project_id: $projectId
     partner_id: $partnerId
@@ -3811,6 +3864,43 @@ export const CreateFanPointsPaymentSessionDocument = gql`
     display_price: $displayPrice
     cancel_url: $cancelUrl
     success_url: $successUrl
+    callback_url: $webhookUrl
+    custom_purchase_id: $customPurchaseId
+  ) {
+    result {
+      sessionId: session_id
+      partnerId: partner_id
+      customPurchaseId: custom_purchase_id
+      amount
+      currency
+      status
+      sessionUrl: session_url
+      cancelUrl: cancel_url
+      successUrl: success_url
+      expiryDate: expiry_date
+    }
+    errors {
+      invalidAmountError: invalid_reward_amount_error {
+        _empty
+      }
+      invalidTransactionIdError: invalid_transaction_id_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
+export const CreateTixevoFanPointsPaymentSessionDocument = gql`
+    mutation createTixevoFanPointsPaymentSession($projectId: String!, $partnerType: TixevoPartnerType!, $price: Float!, $currency: Currency!, $displayPrice: Boolean!, $cancelUrl: String!, $successUrl: String!, $webhookUrl: String, $customPurchaseId: String) {
+  createTixevoFanPointsPaymentSession: create_tixevo_fan_points_payment_session(
+    project_id: $projectId
+    partner_type: $partnerType
+    price: $price
+    currency: $currency
+    display_price: $displayPrice
+    cancel_url: $cancelUrl
+    success_url: $successUrl
+    callback_url: $webhookUrl
     custom_purchase_id: $customPurchaseId
   ) {
     result {
@@ -4981,6 +5071,7 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 const CreateFanPointsPaymentSessionDocumentString = print(CreateFanPointsPaymentSessionDocument);
+const CreateTixevoFanPointsPaymentSessionDocumentString = print(CreateTixevoFanPointsPaymentSessionDocument);
 const EstimateGivenOutFanPointsOnPurchaseDocumentString = print(EstimateGivenOutFanPointsOnPurchaseDocument);
 const GetFanPointsTransactionDocumentString = print(GetFanPointsTransactionDocument);
 const GetFanPointsTransactionsDocumentString = print(GetFanPointsTransactionsDocument);
@@ -5019,6 +5110,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     createFanPointsPaymentSession(variables: CreateFanPointsPaymentSessionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: CreateFanPointsPaymentSessionMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<CreateFanPointsPaymentSessionMutation>(CreateFanPointsPaymentSessionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createFanPointsPaymentSession', 'mutation');
+    },
+    createTixevoFanPointsPaymentSession(variables: CreateTixevoFanPointsPaymentSessionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: CreateTixevoFanPointsPaymentSessionMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<CreateTixevoFanPointsPaymentSessionMutation>(CreateTixevoFanPointsPaymentSessionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createTixevoFanPointsPaymentSession', 'mutation');
     },
     estimateGivenOutFanPointsOnPurchase(variables: EstimateGivenOutFanPointsOnPurchaseQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: EstimateGivenOutFanPointsOnPurchaseQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<EstimateGivenOutFanPointsOnPurchaseQuery>(EstimateGivenOutFanPointsOnPurchaseDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'estimateGivenOutFanPointsOnPurchase', 'query');

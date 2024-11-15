@@ -1,6 +1,6 @@
-mutation createFanPointsPaymentSession(
+mutation createTixevoFanPointsPaymentSession(
     $projectId: String!
-    $partnerId: String!
+    $partnerType: TixevoPartnerType!
     $price: Float!
     $currency: Currency!
     $displayPrice: Boolean!
@@ -9,9 +9,9 @@ mutation createFanPointsPaymentSession(
     $webhookUrl: String
     $customPurchaseId: String
 ) {
-    createFanPointsPaymentSession: create_fan_points_payment_session(
+    createTixevoFanPointsPaymentSession: create_tixevo_fan_points_payment_session(
         project_id: $projectId
-        partner_id: $partnerId
+        partner_type: $partnerType
         price: $price
         currency: $currency
         display_price: $displayPrice

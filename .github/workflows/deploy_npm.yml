@@ -46,7 +46,7 @@ jobs:
         name: get version changelog
         uses: superfaceai/release-changelog-action@v1
         with:
-          path-to-changelog: changelog.md
+          path-to-changelog: README.md
           version: ${{ env.NEW_VERSION }}
           operation: read
       
