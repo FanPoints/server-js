@@ -8,6 +8,13 @@ mutation addUser($projectId: String!, $userId: String!, $mailAddress: String!) {
             mailAddress: mail_address
             fanPointsUserId: user_id
             userId: external_user_id
+            name
+            addresses {
+                street
+                zipCode: zip_code
+                city
+                country
+            }
         }
         errors {
             invalidMailAddressError: invalid_mail_address_error {

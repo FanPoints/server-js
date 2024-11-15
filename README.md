@@ -2,7 +2,11 @@
 
 A javascript SDK to integrate FanPoints into your server.
 
-All notable changes to this project will be documented in this file.
+## [0.2.25] - 2024-11-16
+
+### Added
+
+-   The function `addUser` now also returns the name and addresses of the created user (which will both be empty for new users).
 
 ## [0.2.24] - 2024-11-15
 
