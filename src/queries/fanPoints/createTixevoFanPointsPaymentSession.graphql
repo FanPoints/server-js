@@ -39,6 +39,9 @@ mutation createTixevoFanPointsPaymentSession(
             invalidTransactionIdError: invalid_transaction_id_error {
                 _empty
             }
+            notConfiguredError: not_configured_error {
+                _empty
+            }
         }
     }
 }

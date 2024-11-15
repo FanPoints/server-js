@@ -310,6 +310,9 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @param currency - the currency of the price (only needed )
      *
      * @returns the created session with the session URL
+     *
+     * @throws {@link RequestError} if the given price is not valid (`invalidRewardAmountError`) or if
+     * the given custom purchase id is not valid (`invalidTransactionIdError`).
      */
     public async createFanPointsPaymentSession(
         price: number,
@@ -379,6 +382,10 @@ export class FanPointsModule<PartnerLabel extends string> {
      * @param currency - the currency of the price (only needed )
      *
      * @returns the created session with the session URL
+     *
+     * * @throws {@link RequestError} if the given price is not valid (`invalidRewardAmountError`), if
+     * the given custom purchase id is not valid (`invalidTransactionIdError`), or if the configured loyalty
+     * program is not connected to Tixevo (`notConfiguredError`).
      */
     public async createTixevoFanPointsPaymentSession(
         partnerType: TixevoPartnerType,
