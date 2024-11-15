@@ -16,7 +16,7 @@
     },
     "typings": "dist/index.d.ts",
     "scripts": {
-        "format": "prettier --write .",
+        "format": "prettier --check --write .",
         "lint": "eslint src --ext .js,.ts",
         "check-types": "tsc --noemit",
         "docs": "npx typedoc",
