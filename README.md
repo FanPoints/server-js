@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 
 -   The function `createTixevoFanPointsPaymentSession` has been added to the `FanPointsModule` class. This allows to create a payment session for loyalty programs connected to Tixevo.
 
+### Changed
+
+-   Both methods to create payment sessions now allow to specify a webhook URL which is called after the payment is completed.
+
 ## [0.2.23] - 2024-11-15
 
 ### Changed
