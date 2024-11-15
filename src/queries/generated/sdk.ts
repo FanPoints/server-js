@@ -1056,6 +1056,14 @@ export type GetWalletCustomizationResult = {
   result: WalletCustomization;
 };
 
+export type GetWebhookInvocationsResult = {
+  result: Array<WebhookInvocation>;
+};
+
+export type GetWebhookSecretResult = {
+  result: WebhookSecret;
+};
+
 export type Image = {
   content_type: ContentType;
   s3_keys_images: Array<Scalars['String']['output']>;
@@ -2616,6 +2624,8 @@ export type Query = {
   get_user_qr_code: GetQrCodeResult;
   get_users: GetUsersResult;
   get_wallet_customization: GetWalletCustomizationResult;
+  get_webhook_invocations: GetWebhookInvocationsResult;
+  get_webhook_secret: GetWebhookSecretResult;
   ping: Scalars['String']['output'];
 };
 
@@ -3085,6 +3095,17 @@ export type QueryGet_Wallet_CustomizationArgs = {
   project_id: Scalars['String']['input'];
 };
 
+
+export type QueryGet_Webhook_InvocationsArgs = {
+  limit: InputMaybe<Scalars['Int']['input']>;
+  partner_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Webhook_SecretArgs = {
+  partner_id: Scalars['String']['input'];
+};
+
 export type QuoteBlock = {
   attribution: Maybe<Scalars['String']['output']>;
   block_type: BlockType;
@@ -3493,6 +3514,27 @@ export type WalletCustomization = {
   title: Scalars['String']['output'];
 };
 
+export type WebhookInvocation = {
+  invocation_date: Scalars['String']['output'];
+  invocation_id: Scalars['String']['output'];
+  invocation_type: WebhookInvocationType;
+  partner_id: Scalars['String']['output'];
+  status: WebhookInvocationStatus;
+  status_details: Maybe<Scalars['String']['output']>;
+};
+
+export type WebhookInvocationStatus =
+  | 'failed'
+  | 'success';
+
+export type WebhookInvocationType =
+  | 'payment';
+
+export type WebhookSecret = {
+  partner_id: Scalars['String']['output'];
+  secret: Scalars['String']['output'];
+};
+
 export type CreateFanPointsPaymentSessionMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
   partnerId: Scalars['String']['input'];
@@ -3799,7 +3841,7 @@ export type AddUserMutationVariables = Exact<{
 }>;
 
 
-export type AddUserMutation = { addUser: { result: { mailAddress: string, fanPointsUserId: string, userId: string } | undefined, errors: { invalidMailAddressError: { _empty: string | undefined } | undefined, invalidUserIdError: { reason: string } | undefined, userAlreadyExistsError: { _empty: string | undefined } | undefined } | undefined } };
+export type AddUserMutation = { addUser: { result: { name: string | undefined, mailAddress: string, fanPointsUserId: string, userId: string, addresses: Array<{ street: string, city: string, country: string, zipCode: string }> | undefined } | undefined, errors: { invalidMailAddressError: { _empty: string | undefined } | undefined, invalidUserIdError: { reason: string } | undefined, userAlreadyExistsError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type ChangeAdditionalUserInfoMutationVariables = Exact<{
   userId: Scalars['String']['input'];
@@ -4948,6 +4990,13 @@ export const AddUserDocument = gql`
       mailAddress: mail_address
       fanPointsUserId: user_id
       userId: external_user_id
+      name
+      addresses {
+        street
+        zipCode: zip_code
+        city
+        country
+      }
     }
     errors {
       invalidMailAddressError: invalid_mail_address_error {
