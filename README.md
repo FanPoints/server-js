@@ -2,6 +2,12 @@
 
 A javascript SDK to integrate FanPoints into your server.
 
+## [0.2.27] - 2024-12-02
+
+### Added
+
+-   The `bidOnItem` method now accepts a `useAutomaticBidding` parameter that allows to specify whether to use automatic bidding.
+
 ## [0.2.26] - 2024-11-16
 
 ### Changed

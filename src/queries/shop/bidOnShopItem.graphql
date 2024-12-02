@@ -7,6 +7,7 @@ mutation bidOnShopItem(
     $bid: Int!
     $deliveryAddress: AddressInput!
     $deliveryName: String!
+    $useAutomaticBidding: Boolean
 ) {
     bidOnShopItem: bid_on_shop_item(
         project_id: $projectId
@@ -17,6 +18,7 @@ mutation bidOnShopItem(
         bid_fan_points: $bid
         delivery_address: $deliveryAddress
         delivery_name: $deliveryName
+        use_automatic_bidding: $useAutomaticBidding
     ) {
         errors {
             invalidBidAmountError: invalid_bid_amount_error {
