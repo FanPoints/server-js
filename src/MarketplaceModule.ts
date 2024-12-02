@@ -279,6 +279,7 @@ export class MarketplaceModule {
      * @param distributionPolicyId - The ID of the distribution policy of the marketplace item to bid on.
      * @param partnerId - The partner ID of the partner offering the marketplace item to bid on.
      * @param bid - The number of fan points to bid on the item.
+     * @param useAutomaticBidding - Whether to use automatic bidding.
      * @param deliveryName - The name of the person to deliver the item to.
      * @param deliveryAddress - The address of the person to deliver the item to.
      *
@@ -293,6 +294,7 @@ export class MarketplaceModule {
         distributionPolicyId: string,
         partnerId: string,
         bid: number,
+        useAutomaticBidding: boolean,
         deliveryName: string,
         deliveryAddress: {
             city: string;
@@ -311,6 +313,7 @@ export class MarketplaceModule {
             bid,
             deliveryAddress,
             deliveryName,
+            useAutomaticBidding,
         });
         return unwrap(result.data.bidOnShopItem);
     }

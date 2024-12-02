@@ -32,6 +32,8 @@ query getAuctionStatus(
             currentUserBid: current_user_bid_fan_points
             nextHigherBid: next_higher_bid_fan_points
             isUserHighestBidder: is_user_highest_bidder
+            doesUserUseAutomaticBidding: does_user_use_automatic_bidding
+            maxAutomaticBid: max_automatic_bid_fan_points
         }
     }
 }
