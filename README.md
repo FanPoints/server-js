@@ -2,6 +2,12 @@
 
 A javascript SDK to integrate FanPoints into your server.
 
+## [0.2.28] - 2025-01-27
+
+### Added
+
+-   Shop items can now be `featured`.
+
 ## [0.2.27] - 2024-12-02
 
 ### Added
