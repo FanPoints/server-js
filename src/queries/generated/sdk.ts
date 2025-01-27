@@ -182,10 +182,10 @@ export type BasicDistributionPolicy = {
 
 export type Bid = {
   bidder_id: Scalars['String']['output'];
-  by_current_user: Scalars['Boolean']['output'];
+  by_current_user: Maybe<Scalars['Boolean']['output']>;
   date: Scalars['String']['output'];
   fan_points: Scalars['Int']['output'];
-  is_automatic_bid: Scalars['Boolean']['output'];
+  is_automatic_bid: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type BidOnShopItemErrors = {
@@ -369,6 +369,15 @@ export type Currency =
   | 'fp'
   | 'usd';
 
+export type CurrentState = {
+  key: Scalars['String']['output'];
+  last_updated_date: Maybe<Scalars['String']['output']>;
+  last_viewed_date: Maybe<Scalars['String']['output']>;
+  last_viewed_state: Maybe<Scalars['String']['output']>;
+  state: Maybe<Scalars['String']['output']>;
+  user_id: Scalars['String']['output'];
+};
+
 export type DeclinePartnershipRequestResult = {
   _empty: Maybe<Scalars['String']['output']>;
 };
@@ -545,6 +554,9 @@ export type FanPointsRate = {
   currency: Currency;
   fan_points_rate: Scalars['Float']['output'];
   fan_points_rate_type: FanPointsRateType;
+  limited_fan_points_rate: Maybe<Scalars['Float']['output']>;
+  num_fan_points_given_out_with_limited_rate: Maybe<Scalars['Int']['output']>;
+  num_fan_points_left_with_limited_rate: Maybe<Scalars['Int']['output']>;
   partner_id: Scalars['String']['output'];
   rate_label: Scalars['String']['output'];
 };
@@ -802,6 +814,15 @@ export type GetLootboxesResult = {
   result: Maybe<Array<RewardTransaction>>;
 };
 
+export type GetLotteryTicketPurchasesErrors = {
+  unknown_product_error: Maybe<UnknownProductError>;
+};
+
+export type GetLotteryTicketPurchasesResult = {
+  errors: Maybe<GetLotteryTicketPurchasesErrors>;
+  result: Maybe<Array<LotteryTicketPurchase>>;
+};
+
 export type GetModulesResult = {
   result: Maybe<Array<Module>>;
 };
@@ -1018,6 +1039,15 @@ export type GetShopItemsResult = {
 
 export type GetShopifyShopsResult = {
   result: Array<ShopifyShop>;
+};
+
+export type GetStateErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type GetStateResult = {
+  errors: Maybe<GetStateErrors>;
+  result: Maybe<CurrentState>;
 };
 
 export type GetStatusPointsBalanceResult = {
@@ -1265,6 +1295,12 @@ export type LotteryTicket = {
   reward_id: Scalars['String']['output'];
   reward_type: Scalars['String']['output'];
   title: Scalars['String']['output'];
+};
+
+export type LotteryTicketPurchase = {
+  amount: Scalars['Int']['output'];
+  purchase_date: Scalars['String']['output'];
+  user_id: Scalars['String']['output'];
 };
 
 export type MarkInvoiceAsPaidErrors = {
@@ -1516,6 +1552,7 @@ export type Mutation = {
   undo_status_points_transaction: ExecuteStatusPointsTransactionResult;
   unlink_terminal_from_partner: UnlinkTerminalFromPartnerResult;
   use_discount_code: UseDiscountCodeResult;
+  view_state: ViewStateResult;
 };
 
 
@@ -1537,6 +1574,7 @@ export type MutationAdd_Bidding_Distribution_PolicyArgs = {
   auction_start_date: Scalars['String']['input'];
   currency: Currency;
   enabled: Scalars['Boolean']['input'];
+  featured: Scalars['Boolean']['input'];
   min_bid: Scalars['Float']['input'];
   partner_id: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
@@ -1554,6 +1592,7 @@ export type MutationAdd_Discount_CodesArgs = {
 export type MutationAdd_Lottery_Distribution_PolicyArgs = {
   currency: Currency;
   enabled: Scalars['Boolean']['input'];
+  featured: Scalars['Boolean']['input'];
   lottery_end_date: Scalars['String']['input'];
   lottery_start_date: Scalars['String']['input'];
   num_tickets_to_draw: Scalars['Int']['input'];
@@ -1603,6 +1642,7 @@ export type MutationAdd_Promotion_Distribution_PolicyArgs = {
 export type MutationAdd_Shop_Purchase_Distribution_PolicyArgs = {
   currency: Currency;
   enabled: Scalars['Boolean']['input'];
+  featured: Scalars['Boolean']['input'];
   partner_id: Scalars['String']['input'];
   price: Scalars['Float']['input'];
   project_id: Scalars['String']['input'];
@@ -1686,7 +1726,6 @@ export type MutationClaim_Lootbox_RewardsArgs = {
 export type MutationConnect_Shopify_ShopArgs = {
   partner_id: Scalars['String']['input'];
   secret: Scalars['String']['input'];
-  shopify_shop_id: Scalars['String']['input'];
 };
 
 
@@ -1957,6 +1996,7 @@ export type MutationModify_Bidding_Distribution_PolicyArgs = {
   currency: InputMaybe<Currency>;
   distribution_policy_id: Scalars['String']['input'];
   enabled: InputMaybe<Scalars['Boolean']['input']>;
+  featured: InputMaybe<Scalars['Boolean']['input']>;
   min_bid: InputMaybe<Scalars['Float']['input']>;
   partner_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
@@ -1973,6 +2013,7 @@ export type MutationModify_Lottery_Distribution_PolicyArgs = {
   currency: InputMaybe<Currency>;
   distribution_policy_id: Scalars['String']['input'];
   enabled: InputMaybe<Scalars['Boolean']['input']>;
+  featured: InputMaybe<Scalars['Boolean']['input']>;
   lottery_end_date: InputMaybe<Scalars['String']['input']>;
   lottery_start_date: InputMaybe<Scalars['String']['input']>;
   num_tickets_to_draw: InputMaybe<Scalars['Int']['input']>;
@@ -2087,6 +2128,7 @@ export type MutationModify_Shop_Purchase_Distribution_PolicyArgs = {
   currency: InputMaybe<Currency>;
   distribution_policy_id: Scalars['String']['input'];
   enabled: InputMaybe<Scalars['Boolean']['input']>;
+  featured: InputMaybe<Scalars['Boolean']['input']>;
   partner_id: Scalars['String']['input'];
   plan_sale_start: InputMaybe<Scalars['Boolean']['input']>;
   price: InputMaybe<Scalars['Float']['input']>;
@@ -2235,6 +2277,8 @@ export type MutationSet_Fan_Points_RateArgs = {
   currency: Currency;
   fan_points_rate: Scalars['Float']['input'];
   fan_points_rate_type: InputMaybe<FanPointsRateType>;
+  limited_fan_points_rate: InputMaybe<Scalars['Float']['input']>;
+  num_fan_points_left_with_limited_rate: InputMaybe<Scalars['Int']['input']>;
   partner_id: Scalars['String']['input'];
   rate_label: Scalars['String']['input'];
 };
@@ -2293,6 +2337,14 @@ export type MutationUnlink_Terminal_From_PartnerArgs = {
 export type MutationUse_Discount_CodeArgs = {
   discount_code: Scalars['String']['input'];
   partner_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationView_StateArgs = {
+  key: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+  state: InputMaybe<Scalars['String']['input']>;
   user_id: Scalars['String']['input'];
 };
 
@@ -2621,6 +2673,7 @@ export type Query = {
   get_lootbox_info: GetLootboxInfoResult;
   get_lootbox_settings: GetLootboxSettingsResult;
   get_lootboxes: GetLootboxesResult;
+  get_lottery_ticket_purchases: GetLotteryTicketPurchasesResult;
   get_modules: GetModulesResult;
   get_my_partner: GetMyPartnerResult;
   get_my_partners: GetMyPartnersResult;
@@ -2662,6 +2715,7 @@ export type Query = {
   get_shop_item: GetShopItemResult;
   get_shop_items: GetShopItemsResult;
   get_shopify_shops: GetShopifyShopsResult;
+  get_state: GetStateResult;
   get_status_points_balance: GetStatusPointsBalanceResult;
   get_status_points_for_action: GetNumStatusPointsForActionResult;
   get_status_points_transactions: GetStatusPointsTransactionsResult;
@@ -2717,7 +2771,8 @@ export type QueryGet_Bought_Products_At_PartnerArgs = {
 export type QueryGet_Current_Bidding_StatusArgs = {
   distribution_policy_id: Scalars['String']['input'];
   partner_id: Scalars['String']['input'];
-  project_id: Scalars['String']['input'];
+  project_id: InputMaybe<Scalars['String']['input']>;
+  return_actual_user_ids: InputMaybe<Scalars['Boolean']['input']>;
   reward_id: Scalars['String']['input'];
   user_id: InputMaybe<Scalars['String']['input']>;
 };
@@ -2726,7 +2781,7 @@ export type QueryGet_Current_Bidding_StatusArgs = {
 export type QueryGet_Current_Lottery_StatusArgs = {
   distribution_policy_id: Scalars['String']['input'];
   partner_id: Scalars['String']['input'];
-  project_id: Scalars['String']['input'];
+  project_id: InputMaybe<Scalars['String']['input']>;
   reward_id: Scalars['String']['input'];
   user_id: InputMaybe<Scalars['String']['input']>;
 };
@@ -2848,6 +2903,13 @@ export type QueryGet_Lootbox_SettingsArgs = {
 export type QueryGet_LootboxesArgs = {
   project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
+};
+
+
+export type QueryGet_Lottery_Ticket_PurchasesArgs = {
+  distribution_policy_id: Scalars['String']['input'];
+  partner_id: Scalars['String']['input'];
+  reward_id: Scalars['String']['input'];
 };
 
 
@@ -3094,6 +3156,13 @@ export type QueryGet_Shopify_ShopsArgs = {
 };
 
 
+export type QueryGet_StateArgs = {
+  key: Scalars['String']['input'];
+  project_id: Scalars['String']['input'];
+  user_id: Scalars['String']['input'];
+};
+
+
 export type QueryGet_Status_Points_BalanceArgs = {
   project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
@@ -3321,6 +3390,7 @@ export type ShopAuctionDistributionPolicy = {
   current_number_of_bids: Maybe<Scalars['Int']['output']>;
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
+  featured: Scalars['Boolean']['output'];
   is_recently_available: Scalars['Boolean']['output'];
   min_bid: Scalars['Float']['output'];
   project: Project;
@@ -3337,6 +3407,7 @@ export type ShopLotteryDistributionPolicy = {
   currency: Currency;
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
+  featured: Scalars['Boolean']['output'];
   is_recently_available: Scalars['Boolean']['output'];
   lottery_end_date: Scalars['String']['output'];
   lottery_start_date: Scalars['String']['output'];
@@ -3352,6 +3423,7 @@ export type ShopPurchaseDistributionPolicy = {
   currency: Currency;
   distribution_policy_id: Scalars['String']['output'];
   enabled: Scalars['Boolean']['output'];
+  featured: Scalars['Boolean']['output'];
   is_recently_available: Scalars['Boolean']['output'];
   price: Scalars['Float']['output'];
   project: Project;
@@ -3578,6 +3650,15 @@ export type VideoBlock = {
   stream_url: Scalars['String']['output'];
 };
 
+export type ViewStateErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type ViewStateResult = {
+  errors: Maybe<ViewStateErrors>;
+  result: Maybe<CurrentState>;
+};
+
 export type WalletCustomization = {
   background_color: Scalars['String']['output'];
   logo_url: Scalars['String']['output'];
@@ -3779,7 +3860,7 @@ export type GetAuctionStatusQueryVariables = Exact<{
 }>;
 
 
-export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownProductError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, doesUserUseAutomaticBidding: boolean, maxAutomaticBid: number | undefined, bids: Array<{ date: string, bidderId: string, fanPoints: number, byCurrentUser: boolean }> } | undefined } };
+export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownProductError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, doesUserUseAutomaticBidding: boolean, maxAutomaticBid: number | undefined, bids: Array<{ date: string, bidderId: string, fanPoints: number, byCurrentUser: boolean | undefined }> } | undefined } };
 
 export type GetLotteryStatusQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3800,7 +3881,7 @@ export type GetShopItemQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemQuery = { getShopItem: { result: { numAvailable: any, rewardId: string, partnerId: string, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'FanPointsVoucher' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
+export type GetShopItemQuery = { getShopItem: { result: { numAvailable: any, rewardId: string, partnerId: string, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'FanPointsVoucher' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, featured: boolean, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, featured: boolean, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, featured: boolean, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } } | undefined, errors: { unknownProductError: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetShopItemsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -3810,7 +3891,7 @@ export type GetShopItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, numAvailable: any, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'FanPointsVoucher' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
+export type GetShopItemsQuery = { getShopItems: { result: Array<{ rewardId: string, partnerId: string, numAvailable: any, readableObjectId: string | undefined, product: { rewardType: 'FanPointsReward' } | { rewardType: 'FanPointsVoucher' } | { rewardType: 'Lootbox' } | { rewardType: 'LotteryTicket' } | { title: string, description: string, productCategory: ProductCategory, imageUrls: Array<string>, rewardType: 'Product', partner: { name: string, partnerId: string, branding: { logoColorUrl: string | undefined } } } | { rewardType: 'StatusPointsReward' } | undefined, distributionPolicy: { distributionType: 'BasicDistributionPolicy' } | { distributionType: 'PromotionDistributionPolicy' } | { currency: Currency, featured: boolean, distributionPolicyId: string, minBid: number, auctionStartDate: string, auctionEndDate: string, auctionStatus: AuctionResultStatus, currentHighestBid: number | undefined, currentNumberOfBids: number | undefined, isRecentlyAvailable: boolean, distributionType: 'ShopAuctionDistributionPolicy' } | { currency: Currency, featured: boolean, distributionPolicyId: string, ticketPrice: number, lotteryStartDate: string, lotteryEndDate: string, lotteryStatus: LotteryDrawStatus, numTicketsToDraw: number, isRecentlyAvailable: boolean, distributionType: 'ShopLotteryDistributionPolicy' } | { price: number, currency: Currency, featured: boolean, distributionPolicyId: string, isRecentlyAvailable: boolean, distributionType: 'ShopPurchaseDistributionPolicy' } }> } };
 
 export type GetShopPurchasesQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4596,6 +4677,7 @@ export const GetShopItemDocument = gql`
           price
           currency
           isRecentlyAvailable: is_recently_available
+          featured
         }
         ... on ShopAuctionDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4607,6 +4689,7 @@ export const GetShopItemDocument = gql`
           currentHighestBid: current_highest_bid
           currentNumberOfBids: current_number_of_bids
           isRecentlyAvailable: is_recently_available
+          featured
         }
         ... on ShopLotteryDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4617,6 +4700,7 @@ export const GetShopItemDocument = gql`
           lotteryStatus: lottery_status
           numTicketsToDraw: num_tickets_to_draw
           isRecentlyAvailable: is_recently_available
+          featured
         }
       }
       readableObjectId: readable_object_id
@@ -4666,6 +4750,7 @@ export const GetShopItemsDocument = gql`
           price
           currency
           isRecentlyAvailable: is_recently_available
+          featured
         }
         ... on ShopAuctionDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4677,6 +4762,7 @@ export const GetShopItemsDocument = gql`
           currentHighestBid: current_highest_bid
           currentNumberOfBids: current_number_of_bids
           isRecentlyAvailable: is_recently_available
+          featured
         }
         ... on ShopLotteryDistributionPolicy {
           distributionPolicyId: distribution_policy_id
@@ -4687,6 +4773,7 @@ export const GetShopItemsDocument = gql`
           lotteryStatus: lottery_status
           numTicketsToDraw: num_tickets_to_draw
           isRecentlyAvailable: is_recently_available
+          featured
         }
       }
       readableObjectId: readable_object_id
