@@ -2,6 +2,12 @@
 
 A javascript SDK to integrate FanPoints into your server.
 
+## [0.2.29] - 2025-02-09
+
+### Added
+
+-   Bids now have an attribute `isAutomaticBid` that indicates whether the bid was made automatically or not.
+
 ## [0.2.28] - 2025-01-27
 
 ### Added
