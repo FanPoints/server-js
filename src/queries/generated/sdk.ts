@@ -3530,6 +3530,7 @@ export type TransactionNotFoundError = {
 
 export type TransactionType =
   | 'achievement'
+  | 'bidding_win'
   | 'card_level_purchase'
   | 'card_progress_lootbox'
   | 'card_trade'
@@ -3546,6 +3547,7 @@ export type TransactionType =
   | 'issue_partner_reward'
   | 'lootbox_reveal'
   | 'lootbox_reward'
+  | 'lottery_win'
   | 'points_gift'
   | 'revoke_reservation'
   | 'shop_purchase'
@@ -3860,7 +3862,7 @@ export type GetAuctionStatusQueryVariables = Exact<{
 }>;
 
 
-export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownProductError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, doesUserUseAutomaticBidding: boolean, maxAutomaticBid: number | undefined, bids: Array<{ date: string, bidderId: string, fanPoints: number, byCurrentUser: boolean | undefined }> } | undefined } };
+export type GetAuctionStatusQuery = { getAuctionStatus: { errors: { unknownProductError: { _empty: string | undefined } | undefined, unknownUserError: { _empty: string | undefined } | undefined } | undefined, result: { isAuctionOpen: boolean, currentHighestBid: number, currentUserBid: number | undefined, nextHigherBid: number, isUserHighestBidder: boolean, doesUserUseAutomaticBidding: boolean, maxAutomaticBid: number | undefined, bids: Array<{ date: string, bidderId: string, fanPoints: number, byCurrentUser: boolean | undefined, isAutomaticBid: boolean | undefined }> } | undefined } };
 
 export type GetLotteryStatusQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -4605,6 +4607,7 @@ export const GetAuctionStatusDocument = gql`
         date
         fanPoints: fan_points
         byCurrentUser: by_current_user
+        isAutomaticBid: is_automatic_bid
       }
       currentHighestBid: current_highest_bid_fan_points
       currentUserBid: current_user_bid_fan_points
