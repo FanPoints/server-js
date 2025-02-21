@@ -172,11 +172,11 @@ export class UserModule {
     }
 
     /**
-     * Retrieves links to the user's Apple Wallet and Google Wallet pass.
+     * Retrieves the credit cards of a user.
      *
      * @param userId - The user ID of the user.
      *
-     * @returns an object containing URLs to the user's Apple Wallet and Google Wallet pass.
+     * @returns a list of credit cards.
      * @throws {@link RequestError} if the user does not exist (`unknownUserError`).
      */
     public async getUserCreditCards(userId: string) {
