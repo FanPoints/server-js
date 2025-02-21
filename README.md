@@ -2,6 +2,12 @@
 
 A javascript SDK to integrate FanPoints into your server.
 
+## [0.2.30] - 2025-02-21
+
+### Added
+
+-   An method returning the credit cards of a user has been added to the `UserModule` (`getUserCreditCards`).
+
 ## [0.2.29] - 2025-02-09
 
 ### Added

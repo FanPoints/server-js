@@ -240,6 +240,11 @@ export type BrandingUploadUrls = {
   logo_white_upload_url: Scalars['String']['output'];
 };
 
+export type CanWinFanPointsRewardResult = {
+  errors: Maybe<WinFanPointsRewardErrors>;
+  result: Scalars['Boolean']['output'];
+};
+
 export type ChangeAdditionalUserInfoErrors = {
   unknown_user_error: Maybe<UnknownUserError>;
 };
@@ -1467,6 +1472,7 @@ export type Mutation = {
   add_user: AddUserResult;
   approve_distribution_policy: ApproveDistributionPolicyResult;
   bid_on_shop_item: BidOnShopItemResult;
+  can_win_fan_points_reward: CanWinFanPointsRewardResult;
   change_additional_user_info: ChangeAdditionalUserInfoResult;
   change_partner_approval_settings: ChangePartnerApprovalSettingsResult;
   change_user_id: ChangeUserIdResult;
@@ -1553,6 +1559,7 @@ export type Mutation = {
   unlink_terminal_from_partner: UnlinkTerminalFromPartnerResult;
   use_discount_code: UseDiscountCodeResult;
   view_state: ViewStateResult;
+  win_fan_points_reward: WinFanPointsRewardResult;
 };
 
 
@@ -1682,6 +1689,12 @@ export type MutationBid_On_Shop_ItemArgs = {
   project_id: Scalars['String']['input'];
   reward_id: Scalars['String']['input'];
   use_automatic_bidding: InputMaybe<Scalars['Boolean']['input']>;
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationCan_Win_Fan_Points_RewardArgs = {
+  project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
 
@@ -2345,6 +2358,12 @@ export type MutationView_StateArgs = {
   key: Scalars['String']['input'];
   project_id: Scalars['String']['input'];
   state: InputMaybe<Scalars['String']['input']>;
+  user_id: Scalars['String']['input'];
+};
+
+
+export type MutationWin_Fan_Points_RewardArgs = {
+  project_id: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
 };
 
@@ -3690,6 +3709,15 @@ export type WebhookSecret = {
   secret: Scalars['String']['output'];
 };
 
+export type WinFanPointsRewardErrors = {
+  unknown_user_error: Maybe<UnknownUserError>;
+};
+
+export type WinFanPointsRewardResult = {
+  errors: Maybe<WinFanPointsRewardErrors>;
+  result: Scalars['Int']['output'];
+};
+
 export type CreateFanPointsPaymentSessionMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
   partnerId: Scalars['String']['input'];
@@ -4034,6 +4062,14 @@ export type DeleteUserMutationVariables = Exact<{
 
 
 export type DeleteUserMutation = { deleteUser: { errors: { unknownUserError: { _empty: string | undefined } | undefined } | undefined } };
+
+export type GetCreditCardsQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type GetCreditCardsQuery = { getCreditCards: { result: Array<{ cardCode: string, cardProduct: string, lastTransactionDate: string | undefined }> | undefined, errors: { unknown_user_error: { _empty: string | undefined } | undefined } | undefined } };
 
 export type GetUserByIdQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -5244,6 +5280,22 @@ export const DeleteUserDocument = gql`
   }
 }
     `;
+export const GetCreditCardsDocument = gql`
+    query getCreditCards($projectId: String!, $userId: String!) {
+  getCreditCards: get_user_corner_cards(project_id: $projectId, user_id: $userId) {
+    result {
+      cardCode: card_code
+      cardProduct: card_product
+      lastTransactionDate: last_transaction_date
+    }
+    errors {
+      unknown_user_error: unknown_user_error {
+        _empty
+      }
+    }
+  }
+}
+    `;
 export const GetUserByIdDocument = gql`
     query getUserById($projectId: String!, $userId: String!) {
   getUserById: get_user_by_id(project_id: $projectId, user_id: $userId) {
@@ -5322,6 +5374,7 @@ const ChangeAdditionalUserInfoDocumentString = print(ChangeAdditionalUserInfoDoc
 const ChangeUserIdDocumentString = print(ChangeUserIdDocument);
 const ChangeUserMailAddressDocumentString = print(ChangeUserMailAddressDocument);
 const DeleteUserDocumentString = print(DeleteUserDocument);
+const GetCreditCardsDocumentString = print(GetCreditCardsDocument);
 const GetUserByIdDocumentString = print(GetUserByIdDocument);
 const GetUserPassesDocumentString = print(GetUserPassesDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
@@ -5427,6 +5480,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     deleteUser(variables: DeleteUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: DeleteUserMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<DeleteUserMutation>(DeleteUserDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteUser', 'mutation');
+    },
+    getCreditCards(variables: GetCreditCardsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetCreditCardsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetCreditCardsQuery>(GetCreditCardsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getCreditCards', 'query');
     },
     getUserById(variables: GetUserByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetUserByIdQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetUserByIdQuery>(GetUserByIdDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserById', 'query');
