@@ -1,0 +1,17 @@
+query getCreditCards($projectId: String!, $userId: String!) {
+    getCreditCards: get_user_corner_cards(
+        project_id: $projectId
+        user_id: $userId
+    ) {
+        result {
+            cardCode: card_code
+            cardProduct: card_product
+            lastTransactionDate: last_transaction_date
+        }
+        errors {
+            unknown_user_error: unknown_user_error {
+                _empty
+            }
+        }
+    }
+}
